@@ -1,7 +1,5 @@
 import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-
 import {
   AuthPage,
   ErrorComponent,
@@ -31,7 +29,6 @@ import { StocksList, StocksCreate } from "./routes/stocks";
 function App() {
   return (
     <BrowserRouter>
-      <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
             <DevtoolsProvider>
@@ -120,7 +117,6 @@ function App() {
                   </Route>
                 </Routes>
 
-                <RefineKbar />
                 <UnsavedChangesNotifier />
                 <DocumentTitleHandler />
               </Refine>
@@ -128,7 +124,6 @@ function App() {
             </DevtoolsProvider>
           </AntdApp>
         </ColorModeContextProvider>
-      </RefineKbarProvider>
     </BrowserRouter>
   );
 }
