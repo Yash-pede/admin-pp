@@ -1,0 +1,1 @@
+export const supabaseBucket_Product_images = "https://dznfhiyfjniapdbzdjpt.supabase.co/storage/v1/object/public/Products/";
