@@ -56,31 +56,29 @@ export const ProductsEdit = () => {
                   ></DateField>
                 </Descriptions.Item>
               </Descriptions>
-              {admin && (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "16px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "50%",
-                  }}
-                >
-                  <Button type="primary" style={{ width: "50%" }} size="large">
-                    Edit
-                  </Button>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "16px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "50%",
+                }}
+              >
+                <Button type="primary" style={{ width: "50%" }} size="large">
+                  Edit
+                </Button>
 
-                  <DeleteButton
-                    style={{ width: "50%" }}
-                    onSuccess={() => {
-                      go({
-                        to: "/products",
-                        type: "push",
-                      });
-                    }}
-                  />
-                </div>
-              )}
+                <DeleteButton
+                  style={{ width: "50%" }}
+                  onSuccess={() => {
+                    go({
+                      to: "/products",
+                      type: "push",
+                    });
+                  }}
+                />
+              </div>
             </Row>
             <div>
               <Image
@@ -163,4 +161,3 @@ export const ProductsEdit = () => {
     </>
   );
 };
-
