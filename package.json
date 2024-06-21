@@ -37,8 +37,20 @@
   },
   "scripts": {
     "dev": "refine dev",
-    "build": "tsc && cross-env NODE_OPTIONS=--max_old_space_size=4096 refine build",
+    "build": "tsc && refine build",
     "preview": "refine start",
     "refine": "refine"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
