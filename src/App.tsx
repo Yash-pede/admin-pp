@@ -25,8 +25,12 @@ import DashboardHome from "./routes/dashboard/show";
 import { ProductsCreate, ProductsList, ProductsEdit } from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
 import { StocksList, StocksCreate } from "./routes/stocks";
-import { DistributorCreate, DistributorList, } from "./routes/clients/distributors";
+import {
+  DistributorCreate,
+  DistributorList,
+} from "./routes/clients/distributors";
 import { SalesCreate, SalesList } from "./routes/clients/sales";
+import { AuditLogList } from "./routes/audit-log";
 
 function App() {
   return (
@@ -90,6 +94,12 @@ function App() {
                     <Route path="sales">
                       <Route index element={<SalesList />} />
                       <Route path="create" element={<SalesCreate />} />
+                    </Route>
+                  </Route>
+
+                  <Route path="/administration">
+                    <Route path="audit-log">
+                      <Route index element={<AuditLogList />} />
                     </Route>
                   </Route>
 

@@ -56,7 +56,9 @@ export type Database = {
       }
       logs: {
         Row: {
+          changes: readonly AnyObject[] | undefined
           action: string
+          author: string
           created_at: string
           data: Json | null
           id: number
@@ -67,6 +69,7 @@ export type Database = {
         }
         Insert: {
           action: string
+          author: string
           created_at?: string
           data?: Json | null
           id?: number
@@ -77,6 +80,7 @@ export type Database = {
         }
         Update: {
           action?: string
+          author?: string
           created_at?: string
           data?: Json | null
           id?: number
@@ -85,7 +89,15 @@ export type Database = {
           previousData?: Json | null
           resource?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "logs_author_fkey"
+            columns: ["author"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {

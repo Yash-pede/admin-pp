@@ -118,7 +118,7 @@ export const resources: IResourceItem[] = [
     },
   },
   {
-    name: "audits",
+    name: "audit-log",
     list: "/administration/audit-log",
     meta: {
       label: "Audit Log",
