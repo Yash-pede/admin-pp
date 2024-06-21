@@ -87,6 +87,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
           </Text>
           <Image
             width={"100%"}
+            height={"230px"}
             src={supabaseBucket_Product_images + product.imageURL}
             loading="lazy"
           />

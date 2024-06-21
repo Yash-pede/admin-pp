@@ -13,39 +13,12 @@ export const ProductCardSkeleton = () => {
             width: "100%",
             height: "60px",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
+            justifyContent: "center",
+            alignItems: "center",
             padding: "0 16px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "6px",
-            }}
-          >
-            <Text size="xs">Related contacts</Text>
-            <Space size={4}>
-              <Skeleton.Avatar active shape="circle" size="small" />
-              <Skeleton.Avatar active shape="circle" size="small" />
-              <Skeleton.Avatar active shape="circle" size="small" />
-            </Space>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: "6px",
-            }}
-          >
-            <Text size="xs">Sales owner</Text>
-            <Space size={4}>
-              <Skeleton.Avatar active shape="circle" size="small" />
-            </Space>
-          </div>
+       <Skeleton.Input style={{ width:"100%"}} />
         </div>,
       ]}
     >
@@ -57,13 +30,12 @@ export const ProductCardSkeleton = () => {
           position: "relative",
         }}
       >
-        <Skeleton.Avatar
+        <Skeleton.Node
           active
-          shape="square"
           style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "4px",
+            width: "320px",
+            height: "240px",
+            borderRadius: "14px",
           }}
         />
         <Skeleton.Input
