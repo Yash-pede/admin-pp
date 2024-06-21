@@ -15,7 +15,7 @@ export type Database = {
           created_at: string
           distributor_id: string
           id: number
-          product_id: string
+          product_id: number
           quantity: number
           updated_at: string
         }
@@ -24,7 +24,7 @@ export type Database = {
           created_at: string
           distributor_id: string
           id?: number
-          product_id: string
+          product_id: number
           quantity: number
           updated_at: string
         }
@@ -33,7 +33,7 @@ export type Database = {
           created_at?: string
           distributor_id?: string
           id?: number
-          product_id?: string
+          product_id?: number
           quantity?: number
           updated_at?: string
         }
@@ -43,6 +43,13 @@ export type Database = {
             columns: ["distributor_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
@@ -148,6 +155,39 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          boss_id: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          role: Database["public"]["Enums"]["ROLES"] | null
+          username: string | null
+        }
+        Insert: {
+          boss_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["ROLES"] | null
+          username?: string | null
+        }
+        Update: {
+          boss_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["ROLES"] | null
+          username?: string | null
+        }
+        Relationships: []
+      }
       stocks: {
         Row: {
           available_quantity: number
@@ -155,15 +195,15 @@ export type Database = {
           expiry_date: string
           id: string
           ordered_quantity: number
-          product_id: string
+          product_id: number
         }
         Insert: {
           available_quantity: number
-          created_at: string
+          created_at?: string
           expiry_date: string
           id: string
-          ordered_quantity: number
-          product_id: string
+          ordered_quantity?: number
+          product_id: number
         }
         Update: {
           available_quantity?: number
@@ -171,9 +211,17 @@ export type Database = {
           expiry_date?: string
           id?: string
           ordered_quantity?: number
-          product_id?: string
+          product_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "stocks_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -184,6 +232,7 @@ export type Database = {
     }
     Enums: {
       order_status: "Pending"
+      ROLES: "admin" | "distributor" | "sales" | "null"
     }
     CompositeTypes: {
       [_ in never]: never

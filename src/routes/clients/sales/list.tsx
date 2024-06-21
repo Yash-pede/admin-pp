@@ -1,25 +1,21 @@
-import { type FC, type PropsWithChildren, useState } from "react";
+import { type FC, type PropsWithChildren } from "react";
 
 import { List, useTable } from "@refinedev/antd";
 import type { HttpError } from "@refinedev/core";
 
 import {
-  AppstoreOutlined,
   SearchOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons";
-import { Form, Grid, Input, Radio, Space, Spin } from "antd";
+import { Form, Grid, Input, Space, Spin } from "antd";
 import debounce from "lodash/debounce";
 
 import { ListTitleButton } from "@/components";
 import { Database } from "@/utilities";
-import { ProductsTableView } from "./components/table-view/table-view";
-import { ProductsCardView } from "./components/card-view";
+import { SalesTableView } from "./components/table-view/table-view";
 
 type View = "card" | "table";
 
-export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
-  const [view, setView] = useState<View>("card");
+export const SalesList: FC<PropsWithChildren> = ({ children }) => {
   const screens = Grid.useBreakpoint();
 
   const {
@@ -32,31 +28,39 @@ export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
     setPageSize,
     setFilters,
   } = useTable<
-    Database["public"]["Tables"]["products"]["Row"],
+    Database["public"]["Tables"]["profiles"]["Row"],
     HttpError,
     { name: string }
   >({
-    resource: "products",
+    resource: "profiles",
+    filters: {
+      mode:"server",
+      permanent:[
+        {
+          field: "role",
+          operator: "eq",
+          value: "sales",
+        }
+      ]
+    },
     onSearch: (values) => {
       return [
         {
-          field: "name",
+          field: "username",
           operator: "contains",
           value: values.name,
         },
+        {
+          field: "full_name",
+          operator: "contains",
+          value: values.name,
+        }
       ];
     },
     pagination: {
       pageSize: 12,
     },
   });
-
-  const onViewChange = (value: View) => {
-    setView(value);
-    setFilters([], "replace");
-    // TODO: useForm should handle this automatically. remove this when its fixed from antd useForm.
-    searchFormProps.form?.resetFields();
-  };
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     searchFormProps?.onFinish?.({
@@ -87,25 +91,11 @@ export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
                         spinning={tableQueryResult.isFetching}
                       />
                     }
-                    placeholder="Search by name"
+                    placeholder="Search by user name"
                     onChange={debouncedOnChange}
                   />
                 </Form.Item>
               </Form>
-              {!screens.xs ? (
-                <Radio.Group
-                  size="large"
-                  value={view}
-                  onChange={(e) => onViewChange(e.target.value)}
-                >
-                  <Radio.Button value="table">
-                    <UnorderedListOutlined />
-                  </Radio.Button>
-                  <Radio.Button value="card">
-                    <AppstoreOutlined />
-                  </Radio.Button>
-                </Radio.Group>
-              ) : null}
             </Space>
           );
         }}
@@ -115,22 +105,14 @@ export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
           },
         }}
         title={
-          <ListTitleButton toPath="products" buttonText="Add new Product" />
+          <ListTitleButton toPath="sales" buttonText="Add new Sales" />
         }
       >
-        {view === "table" ? (
-          <ProductsTableView
+        <SalesTableView
             tableProps={tableProps}
             filters={filters}
             sorters={sorters}
           />
-        ) : (
-          <ProductsCardView
-            tableProps={tableProps}
-            setPageSize={setPageSize}
-            setCurrent={setCurrent}
-          />
-        )}
       </List>
       {children}
     </div>

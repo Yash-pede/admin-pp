@@ -25,105 +25,118 @@ import DashboardHome from "./routes/dashboard/show";
 import { ProductsCreate, ProductsList, ProductsEdit } from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
 import { StocksList, StocksCreate } from "./routes/stocks";
+import { DistributorCreate, DistributorList, } from "./routes/clients/distributors";
+import { SalesCreate, SalesList } from "./routes/clients/sales";
 
 function App() {
   return (
     <BrowserRouter>
-        <ColorModeContextProvider>
-          <AntdApp>
-            <DevtoolsProvider>
-              <Refine
-                auditLogProvider={auditLogProvider}
-                dataProvider={dataProvider(supabaseServiceRoleClient)}
-                liveProvider={liveProvider(supabaseServiceRoleClient)}
-                authProvider={authProvider}
-                routerProvider={routerBindings}
-                notificationProvider={useNotificationProvider}
-                resources={resources}
-                options={{
-                  syncWithLocation: true,
-                  warnWhenUnsavedChanges: true,
-                  useNewQueryKeys: true,
-                  liveMode: "auto",
-                }}
-              >
-                <Routes>
+      <ColorModeContextProvider>
+        <AntdApp>
+          <DevtoolsProvider>
+            <Refine
+              auditLogProvider={auditLogProvider}
+              dataProvider={dataProvider(supabaseServiceRoleClient)}
+              liveProvider={liveProvider(supabaseServiceRoleClient)}
+              authProvider={authProvider}
+              routerProvider={routerBindings}
+              notificationProvider={useNotificationProvider}
+              resources={resources}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+                useNewQueryKeys: true,
+                liveMode: "auto",
+              }}
+            >
+              <Routes>
+                <Route
+                  element={
+                    <Authenticated
+                      key="authenticated-inner"
+                      fallback={<CatchAllNavigate to="/login" />}
+                    >
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    </Authenticated>
+                  }
+                >
                   <Route
-                    element={
-                      <Authenticated
-                        key="authenticated-inner"
-                        fallback={<CatchAllNavigate to="/login" />}
-                      >
-                        <Layout>
-                          <Outlet />
-                        </Layout>
-                      </Authenticated>
-                    }
-                  >
-                    <Route
-                      index
-                      element={<NavigateToResource resource="dashboard" />}
-                    />
+                    index
+                    element={<NavigateToResource resource="dashboard" />}
+                  />
 
-                    <Route path="/dashboard">
-                      <Route index element={<DashboardHome />} />
-                    </Route>
-
-                    <Route path="/products">
-                      <Route index element={<ProductsList />} />
-                      <Route path="create" element={<ProductsCreate />} />
-                      <Route path=":id" element={<ProductsEdit />} />
-                    </Route>
-
-                    <Route path="/stocks">
-                      <Route index element={<StocksList />} />
-                      <Route path="create" element={<StocksCreate />} />
-                    </Route>
-
-                    <Route path="*" element={<ErrorComponent />} />
+                  <Route path="/dashboard">
+                    <Route index element={<DashboardHome />} />
                   </Route>
+
+                  <Route path="/products">
+                    <Route index element={<ProductsList />} />
+                    <Route path="create" element={<ProductsCreate />} />
+                    <Route path=":id" element={<ProductsEdit />} />
+                  </Route>
+
+                  <Route path="/stocks">
+                    <Route index element={<StocksList />} />
+                    <Route path="create" element={<StocksCreate />} />
+                  </Route>
+
+                  <Route path="/clients">
+                    <Route path="distributors">
+                      <Route index element={<DistributorList />} />
+                      <Route path="create" element={<DistributorCreate />} />
+                    </Route>
+                    <Route path="sales">
+                      <Route index element={<SalesList />} />
+                      <Route path="create" element={<SalesCreate />} />
+                    </Route>
+                  </Route>
+
+                  <Route path="*" element={<ErrorComponent />} />
+                </Route>
+                <Route
+                  element={
+                    <Authenticated
+                      key="authenticated-outer"
+                      fallback={<Outlet />}
+                    >
+                      <NavigateToResource />
+                    </Authenticated>
+                  }
+                >
                   <Route
+                    path="/login"
                     element={
-                      <Authenticated
-                        key="authenticated-outer"
-                        fallback={<Outlet />}
-                      >
-                        <NavigateToResource />
-                      </Authenticated>
+                      <AuthPage
+                        type="login"
+                        // formProps={{
+                        //   initialValues: {
+                        //     email: "info@refine.dev",
+                        //     password: "refine-supabase",
+                        //   },
+                        // }}
+                      />
                     }
-                  >
-                    <Route
-                      path="/login"
-                      element={
-                        <AuthPage
-                          type="login"
-                          // formProps={{
-                          //   initialValues: {
-                          //     email: "info@refine.dev",
-                          //     password: "refine-supabase",
-                          //   },
-                          // }}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/register"
-                      element={<AuthPage type="register" />}
-                    />
-                    <Route
-                      path="/forgot-password"
-                      element={<AuthPage type="forgotPassword" />}
-                    />
-                  </Route>
-                </Routes>
+                  />
+                  <Route
+                    path="/register"
+                    element={<AuthPage type="register" />}
+                  />
+                  <Route
+                    path="/forgot-password"
+                    element={<AuthPage type="forgotPassword" />}
+                  />
+                </Route>
+              </Routes>
 
-                <UnsavedChangesNotifier />
-                <DocumentTitleHandler />
-              </Refine>
-              <DevtoolsPanel />
-            </DevtoolsProvider>
-          </AntdApp>
-        </ColorModeContextProvider>
+              <UnsavedChangesNotifier />
+              <DocumentTitleHandler />
+            </Refine>
+            <DevtoolsPanel />
+          </DevtoolsProvider>
+        </AntdApp>
+      </ColorModeContextProvider>
     </BrowserRouter>
   );
 }

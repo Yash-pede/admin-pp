@@ -1,3 +1,5 @@
+import { supabaseServiceRoleClient } from "./supabaseClient";
+
 export const transactionStatusColor = (status: string) => {
   switch (status) {
     case "Credit":
@@ -11,4 +13,12 @@ export const transactionStatusColor = (status: string) => {
     default:
       return "grey";
   }
+};
+
+export const banUser = async (userId: string, banDuration: string) => {
+  const result = await supabaseServiceRoleClient.auth.admin.updateUserById(
+    userId,
+    { ban_duration: banDuration }
+  );
+  return result;
 };
