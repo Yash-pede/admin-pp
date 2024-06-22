@@ -56,7 +56,6 @@ export type Database = {
       }
       logs: {
         Row: {
-          changes: readonly AnyObject[] | undefined
           action: string
           author: string
           created_at: string
@@ -243,8 +242,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      order_status: "Pending"
+      order_status:
+        | "Pending"
+        | "Fulfilled"
+        | "Cancelled"
+        | "InProcess"
+        | "Defected"
       ROLES: "admin" | "distributor" | "sales" | "null"
+      transfer_status: "Credit" | "Debit" | "Requested" | "Approved"
     }
     CompositeTypes: {
       [_ in never]: never

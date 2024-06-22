@@ -47,7 +47,7 @@ export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
         const timestamp = Date.now();
         const fileName = `images/${timestamp}-${filename}`;
 
-        const { data, error } = await supabaseServiceRoleClient.storage
+        const { data, error }: any = await supabaseServiceRoleClient.storage
           .from("Products")
           .upload(fileName, file);
 

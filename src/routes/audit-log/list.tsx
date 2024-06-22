@@ -60,8 +60,8 @@ export const AuditLogList = () => {
         value: [
           tableQueryResult.data?.data.map((item) => item.author),
           tableQueryResult.data?.data
-            .filter((item) => item.meta && isValidUUID(item.meta?.id as string))
-            .map((item) => item.meta?.id as string),
+            .filter((item:any) => item.meta && isValidUUID(item.meta?.id))
+            .map((item:any) => item.meta?.id as string),
         ],
       },
     ],
@@ -80,8 +80,8 @@ export const AuditLogList = () => {
         field: "id",
         operator: "in",
         value: tableQueryResult.data?.data
-          .filter((item) => item.meta && !isValidUUID(item.meta?.id as string))
-          .map((item) => item.meta?.id as string),
+          .filter((item:any) => item.meta && !isValidUUID(item.meta?.id as string))
+          .map((item:any) => item.meta?.id as string),
       },
     ],
     queryOptions: {

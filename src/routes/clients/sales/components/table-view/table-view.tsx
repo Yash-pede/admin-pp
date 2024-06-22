@@ -35,9 +35,7 @@ type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["profiles"]["Row"]>;
   filters: CrudFilters;
   sorters: CrudSorting;
-  tableQueryResult: GetListResponse<
-    Database["public"]["Tables"]["profiles"]["Row"]
-  >;
+  tableQueryResult: any;
 };
 let index = 0;
 
@@ -76,8 +74,8 @@ export const SalesTableView: FC<Props> = ({
         field: "id",
         operator: "in",
         value: tableQueryResult?.data
-          ?.filter((item) => !!item.boss_id)
-          .map((item) => item.boss_id),
+          ?.filter((item:any) => !!item.boss_id)
+          .map((item:any) => item.boss_id),
       },
     ],
     queryOptions: {
