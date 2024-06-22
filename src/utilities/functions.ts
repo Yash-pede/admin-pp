@@ -1,3 +1,4 @@
+import { TagProps } from "antd";
 import { supabaseServiceRoleClient } from "./supabaseClient";
 import { validate } from "uuid";
 
@@ -27,3 +28,15 @@ export const banUser = async (userId: string, banDuration: string) => {
 export function isValidUUID(uuid: string) {
   return validate(uuid);
 }
+export const getActionColor = (action: string): TagProps["color"] => {
+  switch (action) {
+    case "create":
+      return "green";
+    case "update":
+      return "cyan";
+    case "delete":
+      return "red";
+    default:
+      return "default";
+  }
+};

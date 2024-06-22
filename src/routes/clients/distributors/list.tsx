@@ -15,8 +15,6 @@ import { ListTitleButton } from "@/components";
 import { Database } from "@/utilities";
 import { DistributorsTableView } from "./components/table-view/table-view";
 
-type View = "card" | "table";
-
 export const DistributorList: FC<PropsWithChildren> = ({ children }) => {
   const screens = Grid.useBreakpoint();
 

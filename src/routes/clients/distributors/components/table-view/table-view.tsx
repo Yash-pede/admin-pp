@@ -3,6 +3,7 @@ import { useRef, useState, type FC } from "react";
 import {
   EditButton,
   FilterDropdown,
+  ShowButton,
   TextField,
 } from "@refinedev/antd";
 import {
@@ -101,10 +102,9 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
         fixed="right"
         dataIndex="id"
         title="Actions"
-        render={(value, row) => (
+        render={(value) => (
           <Space>
-            <EditButton
-              icon={<EyeOutlined />}
+            <ShowButton
               hideText
               size="small"
               recordItemId={value}

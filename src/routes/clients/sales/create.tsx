@@ -10,6 +10,7 @@ import {
   useUpdate,
 } from "@refinedev/core";
 import { Create } from "@refinedev/antd";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 export const SalesCreate = () => {
   const { open, close } = useNotification();
@@ -17,6 +18,8 @@ export const SalesCreate = () => {
   const { listUrl } = useNavigation();
   const go = useGo();
   const { status, mutate, isSuccess } = useUpdate();
+  const [searchParams] = useSearchParams();
+  const distributorId = searchParams.get("distributorId");
 
   const setUserRole = async (
     userId: string,
@@ -201,7 +204,11 @@ export const SalesCreate = () => {
               />
             </Form.Item>
             <Form.Item label="Distributor" name={"boss_id"} required>
-              <Select options={options} placeholder="Select Distributor" />
+              <Select
+                options={options}
+                placeholder="Select Distributor"
+                defaultValue={distributorId || null}
+              />
             </Form.Item>
             <Form.Item
               label="Password"

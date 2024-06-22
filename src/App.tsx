@@ -27,7 +27,9 @@ import { auditLogProvider } from "./utilities/providers/auditlogProvider";
 import { StocksList, StocksCreate } from "./routes/stocks";
 import {
   DistributorCreate,
+  DistributorEdit,
   DistributorList,
+  DistributorShow,
 } from "./routes/clients/distributors";
 import { SalesCreate, SalesList } from "./routes/clients/sales";
 import { AuditLogList } from "./routes/audit-log";
@@ -90,6 +92,8 @@ function App() {
                     <Route path="distributors">
                       <Route index element={<DistributorList />} />
                       <Route path="create" element={<DistributorCreate />} />
+                      <Route path="edit/:id" element={<DistributorEdit />} />
+                      <Route path=":id" element={<DistributorShow />} />
                     </Route>
                     <Route path="sales">
                       <Route index element={<SalesList />} />

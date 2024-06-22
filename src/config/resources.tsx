@@ -85,6 +85,7 @@ export const resources: IResourceItem[] = [
     list: "/clients/distributors",
     create: "/clients/distributors/create",
     edit: "/clients/distributors/edit/:id",
+    show: "/clients/distributors/:id",
     meta: {
       label: "Distributors",
       parent: "clients",
@@ -95,6 +96,7 @@ export const resources: IResourceItem[] = [
     name: "sales",
     list: "/clients/sales",
     create: "/clients/sales/create",
+    show: "/clients/distributors/:id",
     edit: "/clients/sales/edit/:id",
     meta: {
       label: "Sales",

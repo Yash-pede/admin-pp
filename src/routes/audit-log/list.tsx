@@ -24,22 +24,11 @@ import { PaginationTotal, Text } from "@/components";
 
 import { ActionCell } from "./components/action-cell";
 import { Database } from "@/utilities";
-import { isValidUUID } from "@/utilities/functions";
+import { getActionColor, isValidUUID } from "@/utilities/functions";
 
 export type Audit = Database["public"]["Tables"]["logs"]["Row"];
 
-const getActionColor = (action: string): TagProps["color"] => {
-  switch (action) {
-    case "create":
-      return "green";
-    case "update":
-      return "cyan";
-    case "delete":
-      return "red";
-    default:
-      return "default";
-  }
-};
+
 
 export const AuditLogList = () => {
   const { tableProps, filters, sorters, tableQueryResult } = useTable<Audit>({
