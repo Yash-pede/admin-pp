@@ -112,6 +112,7 @@ export const SalesList: FC<PropsWithChildren> = ({ children }) => {
             tableProps={tableProps}
             filters={filters}
             sorters={sorters}
+            tableQueryResult={tableQueryResult.data}
           />
       </List>
       {children}

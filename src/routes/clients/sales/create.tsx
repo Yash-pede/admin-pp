@@ -6,6 +6,7 @@ import {
   useGo,
   useNavigation,
   useNotification,
+  useSelect,
   useUpdate,
 } from "@refinedev/core";
 import { Create } from "@refinedev/antd";
@@ -59,7 +60,8 @@ export const SalesCreate = () => {
     phNo: string,
     password: string,
     full_name: string,
-    userrole: Database["public"]["Enums"]["ROLES"]
+    userrole: Database["public"]["Enums"]["ROLES"],
+    boss_id: string
   ) => {
     open &&
       open({
@@ -79,6 +81,7 @@ export const SalesCreate = () => {
           phone: phNo,
           full_name: full_name,
           role: userrole,
+          boss_id: boss_id,
         },
       });
     console.log(data, error);
@@ -106,9 +109,24 @@ export const SalesCreate = () => {
       values.phone,
       values.password,
       values.full_name,
-      "sales"
+      "sales",
+      values.boss_id
     );
   };
+  const { options } = useSelect<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    optionLabel: "username",
+    optionValue: "id",
+  });
   return (
     <SalesList>
       <Drawer
@@ -161,7 +179,13 @@ export const SalesCreate = () => {
             >
               <Space.Compact>
                 <Input
-                  style={{ width: "20%",pointerEvents:"none", userSelect:"none",cursor:"default",textAlign:"center" }}
+                  style={{
+                    width: "20%",
+                    pointerEvents: "none",
+                    userSelect: "none",
+                    cursor: "default",
+                    textAlign: "center",
+                  }}
                   defaultValue="+91"
                   contentEditable={false}
                 />
@@ -175,6 +199,9 @@ export const SalesCreate = () => {
                 defaultValue={"sales"}
                 options={[{ value: "sales", label: "Sales" }]}
               />
+            </Form.Item>
+            <Form.Item label="Distributor" name={"boss_id"} required>
+              <Select options={options} placeholder="Select Distributor" />
             </Form.Item>
             <Form.Item
               label="Password"

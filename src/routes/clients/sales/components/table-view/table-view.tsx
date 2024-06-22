@@ -11,6 +11,8 @@ import {
   type CrudFilters,
   type CrudSorting,
   getDefaultFilter,
+  useList,
+  GetListResponse,
 } from "@refinedev/core";
 
 import { EyeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
@@ -20,6 +22,7 @@ import {
   Input,
   InputRef,
   Select,
+  Skeleton,
   Space,
   Table,
   type TableProps,
@@ -32,10 +35,17 @@ type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["profiles"]["Row"]>;
   filters: CrudFilters;
   sorters: CrudSorting;
+  tableQueryResult: GetListResponse<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >;
 };
 let index = 0;
 
-export const SalesTableView: FC<Props> = ({ tableProps, filters }) => {
+export const SalesTableView: FC<Props> = ({
+  tableProps,
+  filters,
+  tableQueryResult,
+}) => {
   const [items, setItems] = useState(["30m", "1h", "24h", "7d", "30d"]);
   const [name, setName] = useState("");
   const inputRef = useRef<InputRef>(null);
@@ -54,6 +64,26 @@ export const SalesTableView: FC<Props> = ({ tableProps, filters }) => {
       inputRef.current?.focus();
     }, 0);
   };
+  const { data: Profile, isLoading: isLoadingProfile } = useList({
+    resource: "profiles",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult?.data
+          ?.filter((item) => !!item.boss_id)
+          .map((item) => item.boss_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
   return (
     <Table
       {...tableProps}
@@ -98,6 +128,11 @@ export const SalesTableView: FC<Props> = ({ tableProps, filters }) => {
         dataIndex="phone"
         title="phone"
         render={(value) => <TextField value={"+91 " + value} />}
+      />
+      <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
+        dataIndex="boss_id"
+        title="Distributor"
+       render={(value) => value} 
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         fixed="right"
