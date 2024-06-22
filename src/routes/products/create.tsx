@@ -1,7 +1,6 @@
-import React, { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { ProductsList } from "./list";
 import {
-  Card,
   Drawer,
   Form,
   GetProp,

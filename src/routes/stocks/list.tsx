@@ -259,7 +259,6 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
               render={(value) => {
                 return (
                   <Space>
-                    {/* <DatePicker defaultValue={dayjs(value)} /> */}
                     <DateField value={value} format="DD/MM/YYYY" />
                   </Space>
                 );

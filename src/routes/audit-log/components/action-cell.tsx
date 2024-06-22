@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { ZoomInOutlined } from "@ant-design/icons";
 import { Button, Modal, Space, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
 
 import { Text } from "@/components";
 import type { Audit } from "..";

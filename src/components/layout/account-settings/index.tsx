@@ -1,14 +1,10 @@
 import { useState } from "react";
 
-import { type HttpError, useOne, useUpdate } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 
 import {
   CloseOutlined,
   EditOutlined,
-  GlobalOutlined,
-  IdcardOutlined,
-  MailOutlined,
-  PhoneOutlined,
   SafetyCertificateOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -16,8 +12,6 @@ import {
   Button,
   Card,
   Drawer,
-  Input,
-  Select,
   Space,
   Spin,
   Typography,
@@ -26,7 +20,6 @@ import {
 
 
 import { CustomAvatar } from "../../custom-avatar";
-import { SingleElementForm } from "../../single-element-form";
 import { Text } from "../../text";
 import styles from "./index.module.css";
 
@@ -146,76 +139,6 @@ export const AccountSettings = ({ opened, setOpened, userId }: Props) => {
           headStyle={{ padding: "0 12px" }}
           bodyStyle={{ padding: "0" }}
         >
-          {/* <SingleElementForm
-            useFormProps={{
-              id,
-              resource: "users",
-              meta: {
-                gqlMutation: ACCOUNT_SETTINGS_UPDATE_USER_MUTATION,
-              },
-            }}
-            formProps={{ initialValues: { jobTitle } }}
-            
-            icon={<IdcardOutlined className="tertiary" />}
-            state={getActiveForm("jobTitle")}
-            itemProps={{
-              name: "jobTitle",
-              label: "Title",
-            }}
-            view={<Text>{jobTitle}</Text>}
-            onClick={() => setActiveForm("jobTitle")}
-            onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}
-          >
-            <Input />
-          </SingleElementForm>
-          <SingleElementForm
-            useFormProps={{
-              id,
-              resource: "users",
-              meta: {
-                gqlMutation: ACCOUNT_SETTINGS_UPDATE_USER_MUTATION,
-              },
-            }}
-            formProps={{ initialValues: { phone } }}
-            
-            icon={<PhoneOutlined className="tertiary" />}
-            state={getActiveForm("phone")}
-            itemProps={{
-              name: "phone",
-              label: "Phone",
-            }}
-            view={<Text>{phone}</Text>}
-            onClick={() => setActiveForm("phone")}
-            onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}
-          >
-            <Input />
-          </SingleElementForm>
-          <SingleElementForm
-            useFormProps={{
-              id,
-              resource: "users",
-              meta: {
-                gqlMutation: ACCOUNT_SETTINGS_UPDATE_USER_MUTATION,
-              },
-            }}
-            formProps={{ initialValues: { timezone } }}
-            style={{ borderBottom: "none" }}
-            
-            icon={<GlobalOutlined className="tertiary" />}
-            state={getActiveForm("timezone")}
-            itemProps={{
-              name: "timezone",
-              label: "TimezoneEnum",
-            }}
-            view={<Text>{timezone}</Text>}
-            onClick={() => setActiveForm("timezone")}
-            onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}
-          >
-            <Select style={{ width: "100%" }} options={timezoneOptions} />
-          </SingleElementForm> */}
         </Card>
         <Card
           title={
@@ -228,29 +151,6 @@ export const AccountSettings = ({ opened, setOpened, userId }: Props) => {
           headStyle={{ padding: "0 12px" }}
           bodyStyle={{ padding: "0" }}
         >
-          {/* <SingleElementForm
-            useFormProps={{
-              id,
-              resource: "users",
-              meta: {
-                gqlMutation: ACCOUNT_SETTINGS_UPDATE_USER_MUTATION,
-              },
-            }}
-            formProps={{ initialValues: { email } }}
-            
-            icon={<MailOutlined className="tertiary" />}
-            state={getActiveForm("email")}
-            itemProps={{
-              name: "email",
-              label: "Email",
-            }}
-            view={<Text>{email}</Text>}
-            onClick={() => setActiveForm("email")}
-            onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}
-          >
-            <Input />
-          </SingleElementForm> */}
         </Card>
       </div>
     </Drawer>

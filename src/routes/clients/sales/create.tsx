@@ -1,4 +1,3 @@
-import React from "react";
 import { SalesList } from "./list";
 import { Drawer, Form, Input, Select, Space } from "antd";
 import { Database, supabaseServiceRoleClient } from "@/utilities";

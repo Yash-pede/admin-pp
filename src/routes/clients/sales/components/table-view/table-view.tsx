@@ -1,8 +1,6 @@
 import { useRef, useState, type FC } from "react";
 
 import {
-  DateField,
-  DeleteButton,
   EditButton,
   FilterDropdown,
   TextField,
@@ -26,7 +24,6 @@ import {
 } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
-import { banUser } from "@/utilities/functions";
 
 type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["profiles"]["Row"]>;
@@ -140,7 +137,6 @@ export const SalesTableView: FC<Props> = ({ tableProps, filters }) => {
               size="small"
               options={items.map((item) => ({ label: item, value: item }))}
             />
-            {/* <DeleteButton hideText size="small" recordItemId={value} /> */}
           </Space>
         )}
       />

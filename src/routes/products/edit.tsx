@@ -3,7 +3,6 @@ import { supabaseBucket_Product_images } from "@/utilities/constants";
 import { DateField, DeleteButton, Show } from "@refinedev/antd";
 import { HttpError, useGo, useList } from "@refinedev/core";
 import { Button, Descriptions, Flex, Grid, Image, Row, Skeleton } from "antd";
-import React from "react";
 import { useLocation } from "react-router-dom";
 
 export const ProductsEdit = () => {

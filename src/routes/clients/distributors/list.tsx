@@ -4,18 +4,15 @@ import { List, useTable } from "@refinedev/antd";
 import type { HttpError } from "@refinedev/core";
 
 import {
-  AppstoreOutlined,
   SearchOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons";
-import { Form, Grid, Input, Radio, Space, Spin } from "antd";
+import { Form, Grid, Input, Space, Spin } from "antd";
 import debounce from "lodash/debounce";
 
 import { ListTitleButton } from "@/components";
 import { Database } from "@/utilities";
 import { DistributorsTableView } from "./components/table-view/table-view";
 
-type View = "card" | "table";
 
 export const DistributorList: FC<PropsWithChildren> = ({ children }) => {
   const screens = Grid.useBreakpoint();
@@ -26,9 +23,6 @@ export const DistributorList: FC<PropsWithChildren> = ({ children }) => {
     searchFormProps,
     filters,
     sorters,
-    setCurrent,
-    setPageSize,
-    setFilters,
   } = useTable<
     Database["public"]["Tables"]["profiles"]["Row"],
     HttpError,
