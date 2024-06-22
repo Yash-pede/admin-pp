@@ -1,4 +1,5 @@
 import { supabaseServiceRoleClient } from "./supabaseClient";
+import { validate } from "uuid";
 
 export const transactionStatusColor = (status: string) => {
   switch (status) {
@@ -22,3 +23,7 @@ export const banUser = async (userId: string, banDuration: string) => {
   );
   return result;
 };
+
+export function isValidUUID(uuid: string) {
+  return validate(uuid);
+}

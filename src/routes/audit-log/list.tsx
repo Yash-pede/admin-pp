@@ -24,6 +24,7 @@ import { PaginationTotal, Text } from "@/components";
 
 import { ActionCell } from "./components/action-cell";
 import { Database } from "@/utilities";
+import { isValidUUID } from "@/utilities/functions";
 
 export type Audit = Database["public"]["Tables"]["logs"]["Row"];
 
@@ -47,7 +48,6 @@ export const AuditLogList = () => {
       initial: [{ field: "created_at", order: "desc" }],
     },
   });
-
   const { data: users, isLoading: isLoadingUsers } = useList<
     Database["public"]["Tables"]["profiles"]["Row"],
     HttpError
@@ -57,13 +57,38 @@ export const AuditLogList = () => {
       {
         field: "id",
         operator: "in",
-        value: tableQueryResult.data?.data.map((item) => item.author),
+        value: [
+          tableQueryResult.data?.data.map((item) => item.author),
+          tableQueryResult.data?.data
+            .filter((item) => item.meta && isValidUUID(item.meta?.id as string))
+            .map((item) => item.meta?.id as string),
+        ],
       },
     ],
     queryOptions: {
       enabled: !!tableQueryResult,
     },
   });
+
+  const { data: Products, isLoading: isLoadingProducts } = useList<
+    Database["public"]["Tables"]["products"]["Row"],
+    HttpError
+  >({
+    resource: "products",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data
+          .filter((item) => item.meta && !isValidUUID(item.meta?.id as string))
+          .map((item) => item.meta?.id as string),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
+
   return (
     <div className="page-container">
       <List
@@ -139,15 +164,18 @@ export const AuditLogList = () => {
           <Table.Column
             dataIndex="resource"
             title="Resource"
-            render={(value) => (
-              <Text>{value}</Text>
-            )}
+            render={(value) => <Text>{value}</Text>}
           />
           <Table.Column
             dataIndex="meta"
             title="Entity"
             render={(value) => (
-              <Text>{JSON.parse(JSON.stringify(value)).id}</Text>
+              <Text>
+                {isValidUUID(value?.id)
+                  ? users?.data.find((user) => user.id === value?.id)?.username
+                  : Products?.data.find((product) => product.id === value?.id)
+                      ?.name || "-"}
+              </Text>
             )}
           />
           <Table.Column<Audit>
