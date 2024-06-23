@@ -63,7 +63,7 @@ export const SalesTableView: FC<Props> = ({
       inputRef.current?.focus();
     }, 0);
   };
-  const { data: Profile, isLoading: isLoadingProfile } = useList({
+  const { data: Profile, isLoading: isLoadingProfile } = useList<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
     filters: [
       {
@@ -131,7 +131,7 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="boss_id"
         title="Distributor"
-       render={(value) => value} 
+       render={(value) => Profile?.data.find((item) => item.id === value)?.username || "-"} 
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         fixed="right"
