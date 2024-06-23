@@ -33,6 +33,7 @@ import {
 } from "./routes/clients/distributors";
 import { SalesCreate, SalesList } from "./routes/clients/sales";
 import { AuditLogList } from "./routes/audit-log";
+import { OrdersEdit, OrdersList } from "./routes/orders";
 
 function App() {
   return (
@@ -99,6 +100,11 @@ function App() {
                       <Route index element={<SalesList />} />
                       <Route path="create" element={<SalesCreate />} />
                     </Route>
+                  </Route>
+
+                  <Route path="orders">
+                    <Route index element={<OrdersList />} />
+                    <Route path="edit/:id" element={<OrdersEdit />} />
                   </Route>
 
                   <Route path="/administration">

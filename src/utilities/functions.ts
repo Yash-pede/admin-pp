@@ -40,3 +40,11 @@ export const getActionColor = (action: string): TagProps["color"] => {
       return "default";
   }
 };
+
+export enum OrderStatus {
+  Pending = "Pending",
+  Fulfilled = "Fulfilled",
+  Cancelled = "Cancelled",
+  InProcess = "InProcess",
+  Defected = "Defected",
+}
