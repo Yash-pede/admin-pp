@@ -57,7 +57,7 @@ export const ActionCell = ({ record }: { record: Audit }) => {
                   title: key,
                   dataIndex: key,
                   key: key,
-                  render: (value) => <Text>{value}</Text>,
+                  render: (value) => <Text>{JSON.stringify(value)}</Text>,
                 }))}
               />
             </Space>
@@ -74,7 +74,7 @@ export const ActionCell = ({ record }: { record: Audit }) => {
                   title: key,
                   dataIndex: key,
                   key: key,
-                  render: (value) => <Text>{value}</Text>,
+                  render: (value) => <Text>{JSON.stringify(value)}</Text>,
                 }))}
               />
               <Text size="xl" strong>
@@ -88,7 +88,7 @@ export const ActionCell = ({ record }: { record: Audit }) => {
                   title: key,
                   dataIndex: key,
                   key: key,
-                  render: (value) => <Text>{value}</Text>,
+                  render: (value) => <Text>{JSON.stringify(value)}</Text>,
                 }))}
               />
             </Space>

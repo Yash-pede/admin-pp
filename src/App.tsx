@@ -35,6 +35,7 @@ import { SalesCreate, SalesList } from "./routes/clients/sales";
 import { AuditLogList } from "./routes/audit-log";
 import { SalesShow } from "./routes/clients/sales/show";
 import { SalesEdit } from "./routes/clients/sales/edit";
+import { OrdersEdit, OrdersList } from "./routes/orders";
 
 function App() {
   return (
@@ -103,6 +104,11 @@ function App() {
                       <Route path="edit/:id" element={<SalesEdit />} />
                       <Route path=":id" element={<SalesShow />} />
                     </Route>
+                  </Route>
+
+                  <Route path="orders">
+                    <Route index element={<OrdersList />} />
+                    <Route path="edit/:id" element={<OrdersEdit />} />
                   </Route>
 
                   <Route path="/administration">
