@@ -7,6 +7,7 @@ import { useOne } from "@refinedev/core";
 import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
 import { UserInfoForm } from "./components/infoForm";
+import { UserInventory } from "./components/UserInventory";
 
 export const DistributorShow = ({
   children,
@@ -50,6 +51,12 @@ export const DistributorShow = ({
         </Col>
         <Col span={8}>
           <UserInfoForm userDetails={distributorDetails.data} />
+          <UserInventory
+            userDetails={distributorDetails.data}
+            style={{
+              marginTop: 32,
+            }}
+          />
         </Col>
       </Row>
       {children}

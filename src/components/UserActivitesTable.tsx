@@ -66,7 +66,7 @@ export const UserActivitesTable = (props: Props) => {
           tableQueryResult.data?.data
             .filter((item: any) => item.meta && isValidUUID(item.meta?.id))
             .map((item: any) => item.meta?.id as string),
-        ],
+        ].pop(),
       },
     ],
     queryOptions: {

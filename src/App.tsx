@@ -30,6 +30,7 @@ import {
   DistributorEdit,
   DistributorList,
   DistributorShow,
+  InventoryDetails,
 } from "./routes/clients/distributors";
 import { SalesCreate, SalesList } from "./routes/clients/sales";
 import { AuditLogList } from "./routes/audit-log";
@@ -97,6 +98,7 @@ function App() {
                       <Route path="create" element={<DistributorCreate />} />
                       <Route path="edit/:id" element={<DistributorEdit />} />
                       <Route path=":id" element={<DistributorShow />} />
+                      <Route path="inventory/:id" element={<InventoryDetails />} />
                     </Route>
                     <Route path="sales">
                       <Route index element={<SalesList />} />
