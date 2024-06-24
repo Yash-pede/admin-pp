@@ -6,6 +6,7 @@ import { Card, Space } from "antd";
 
 type Props = {
   userDetails: Database["public"]["Tables"]["profiles"]["Row"];
+  style?: React.CSSProperties;
 };
 
 export const UserInfoForm = (props: Props) => {
@@ -30,6 +31,7 @@ export const UserInfoForm = (props: Props) => {
       }}
       style={{
         maxWidth: "500px",
+        ...props.style,
       }}
     >
       <Card.Grid style={gridStyle}>
@@ -59,7 +61,10 @@ export const UserInfoForm = (props: Props) => {
       <Card.Grid style={gridStyle}>
         <Space size="middle">
           <Text strong>Created At: </Text>
-          <DateField value={props.userDetails.created_at} format="DD-MM-YYYY hh:mm A" />
+          <DateField
+            value={props.userDetails.created_at}
+            format="DD-MM-YYYY hh:mm A"
+          />
         </Space>
       </Card.Grid>
       <Card.Grid style={gridStyle}>

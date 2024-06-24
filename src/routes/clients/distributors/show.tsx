@@ -1,4 +1,4 @@
-import { Col, Row, Skeleton } from "antd";
+import { Col, Grid, Row, Skeleton } from "antd";
 
 import { DistributorTitleForm } from "./components/DistributorTitleForm";
 import { SalesTable } from "./components/sales-table";
@@ -16,6 +16,9 @@ export const DistributorShow = ({
 }) => {
   const pathname = useLocation().pathname;
   const distributorId = pathname.split("/").pop();
+  const breakpoint = Grid.useBreakpoint();
+  const isMobile =
+    typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
 
   const {
     data: distributorDetails,
@@ -40,24 +43,65 @@ export const DistributorShow = ({
           marginTop: 32,
         }}
       >
-        <Col span={16}>
-          <SalesTable distributorDetails={distributorDetails.data} />
-          <UserActivitesTable
-            userId={distributorDetails.data.id}
+        {isMobile ? (
+          <Row
             style={{
               marginTop: 32,
             }}
-          />
-        </Col>
-        <Col span={8}>
-          <UserInfoForm userDetails={distributorDetails.data} />
-          <UserInventory
-            userDetails={distributorDetails.data}
+          >
+            <SalesTable distributorDetails={distributorDetails.data} />
+            <UserActivitesTable
+              isMobile={isMobile}
+              userId={distributorDetails.data.id}
+              style={{
+                marginTop: 32,
+              }}
+            />
+          </Row>
+        ) : (
+          <Col span={16}>
+            <SalesTable distributorDetails={distributorDetails.data} />
+            <UserActivitesTable
+              isMobile={isMobile}
+              userId={distributorDetails.data.id}
+              style={{
+                marginTop: 32,
+              }}
+            />
+          </Col>
+        )}
+        {isMobile ? (
+          <Row
             style={{
               marginTop: 32,
             }}
-          />
-        </Col>
+          >
+            <UserInfoForm
+              style={{
+                marginTop: 32,
+                width: "100%",
+              }}
+              userDetails={distributorDetails.data}
+            />
+            <UserInventory
+              userDetails={distributorDetails.data}
+              style={{
+                marginTop: 32,
+                width: "100%",
+              }}
+            />
+          </Row>
+        ) : (
+          <Col span={8}>
+            <UserInfoForm userDetails={distributorDetails.data} />
+            <UserInventory
+              userDetails={distributorDetails.data}
+              style={{
+                marginTop: 32,
+              }}
+            />
+          </Col>
+        )}
       </Row>
       {children}
     </div>

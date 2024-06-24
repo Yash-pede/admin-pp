@@ -28,6 +28,7 @@ import { Text } from "./text";
 type Props = {
   style: React.CSSProperties;
   userId: string;
+  isMobile?: boolean;
 };
 
 export const UserActivitesTable = (props: Props) => {
@@ -94,7 +95,112 @@ export const UserActivitesTable = (props: Props) => {
       enabled: !!tableQueryResult,
     },
   });
-
+  if (props.isMobile)
+    return (
+      <Table
+        className="audit-log-table"
+        {...tableProps}
+        style={props.style}
+        rowKey="id"
+        scroll={{ x: true }}
+        pagination={{
+          ...tableProps.pagination,
+          showTotal: (total) => (
+            <PaginationTotal total={total} entityName="audit logs" />
+          ),
+        }}
+      >
+        <Table.Column dataIndex="id" title="ID" />
+        <Table.Column
+          dataIndex="author"
+          title="User"
+          width="15%"
+          filterIcon={<SearchOutlined />}
+          render={(_, record: Database["public"]["Tables"]["logs"]["Row"]) => {
+            if (isLoadingUsers) return <Skeleton.Button size="small" />;
+            return (
+              users?.data.find((user) => user.id === record.author)?.username ||
+              "admin"
+            );
+          }}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Input />
+            </FilterDropdown>
+          )}
+        />
+        <Table.Column
+          dataIndex="action"
+          title="Action"
+          render={(_, record: Database["public"]["Tables"]["logs"]["Row"]) => {
+            return (
+              <Space>
+                <Tag color={getActionColor(record.action)}>
+                  {record.action.charAt(0) +
+                    record.action.slice(1).toLowerCase()}
+                </Tag>
+              </Space>
+            );
+          }}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Radio.Group>
+                <Radio value="create">Created</Radio>
+                <Radio value="update">Updated</Radio>
+                <Radio value="delete">Deleted</Radio>
+              </Radio.Group>
+            </FilterDropdown>
+          )}
+          defaultFilteredValue={getDefaultFilter("action", filters, "eq")}
+        />
+        <Table.Column
+          dataIndex="resource"
+          title="Resource"
+          render={(value) => <Text>{value}</Text>}
+        />
+        <Table.Column
+          dataIndex="meta"
+          title="Entity"
+          render={(value) => (
+            <Text>
+              {isValidUUID(value?.id)
+                ? users?.data.find((user) => user.id === value?.id)?.username
+                : Products?.data.find((product) => product.id === value?.id)
+                    ?.name || "-"}
+            </Text>
+          )}
+        />
+        <Table.Column<Database["public"]["Tables"]["logs"]["Row"]>
+          dataIndex="changes"
+          title="Changes"
+          render={(_, record) => <ActionCell record={record} />}
+        />
+        <Table.Column
+          dataIndex="createdAt"
+          title="Date & Time"
+          width="15%"
+          render={(value) => (
+            <DateField
+              style={{ verticalAlign: "middle" }}
+              value={value}
+              format="MM.DD.YYYY - hh:mm"
+            />
+          )}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={rangePickerFilterMapper}>
+              <DatePicker.RangePicker />
+            </FilterDropdown>
+          )}
+          sorter
+          defaultFilteredValue={getDefaultFilter(
+            "createdAt",
+            filters,
+            "between"
+          )}
+          defaultSortOrder={getDefaultSortOrder("createdAt", sorters)}
+        />
+      </Table>
+    );
   return (
     <Card
       style={props.style}
