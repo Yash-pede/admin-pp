@@ -113,7 +113,7 @@ export const SalesCreate = () => {
       values.password,
       values.full_name,
       "sales",
-      values.boss_id
+      distributorId ? distributorId : values.boss_id
     );
   };
   const { options } = useSelect<
@@ -207,7 +207,7 @@ export const SalesCreate = () => {
               <Select
                 options={options}
                 placeholder="Select Distributor"
-                defaultValue={distributorId || null}
+                defaultValue={distributorId}
               />
             </Form.Item>
             <Form.Item
