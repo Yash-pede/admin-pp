@@ -48,22 +48,13 @@ export const DistributorEdit = () => {
             <Form.Item
               label="Phone"
               name={"phone"}
-              rules={[
-                { required: true, message: "Invalid Phone", type: "number" },
-                { max: 9999999999, message: "Invalid Phone", type: "number" },
-                { min: 1000000000, message: "Invalid Phone", type: "number" },
-              ]}
+              // rules={[
+              //   { required: true, message: "Invalid Phone", type: "number" },
+              //   { max: 9999999999, message: "Invalid Phone", type: "number" },
+              //   { min: 1000000000, message: "Invalid Phone", type: "number" },
+              // ]}
             >
               <InputNumber placeholder="Phone" style={{ width: "100%" }} />
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              name={"email"}
-              rules={[
-                { required: true, message: "Invalid Email", type: "email" },
-              ]}
-            >
-              <Input placeholder="Email" type="email" />
             </Form.Item>
             <Form.Item label="Full Name" name={"full_name"}>
               <Input placeholder="Enter Full Name" />
