@@ -116,21 +116,45 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="email"
         title="email"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search email" />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="full_name"
         title="Full Name"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search Full Name" />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="phone"
         title="phone"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search Phone" />
+          </FilterDropdown>
+        )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="boss_id"
         title="Distributor"
+        // filterIcon={<SearchOutlined />}
+        // filterDropdown={(props) => (
+        //   <FilterDropdown {...props}>
+        //     <Input placeholder="Search Distributor" />
+        //   </FilterDropdown>
+        // )}
        render={(value) => Profile?.data.find((item) => item.id === value)?.username || "-"} 
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
