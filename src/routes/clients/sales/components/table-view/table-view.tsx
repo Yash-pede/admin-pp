@@ -136,6 +136,19 @@ export const SalesTableView: FC<Props> = ({
     ],
     defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
   });
+  const { selectProps:selectDistriProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
   return (
     <Table
       {...tableProps}
@@ -218,12 +231,16 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="boss_id"
         title="Distributor"
-        // filterIcon={<SearchOutlined />}
-        // filterDropdown={(props) => (
-        //   <FilterDropdown {...props}>
-        //     <Input placeholder="Search Distributor" />
-        //   </FilterDropdown>
-        // )}
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectDistriProps}
+            />
+          </FilterDropdown>
+        )}
        render={(value) => Profile?.data.find((item) => item.id === value)?.username || "-"} 
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
