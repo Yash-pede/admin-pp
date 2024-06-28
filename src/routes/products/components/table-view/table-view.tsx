@@ -7,6 +7,7 @@ import {
   FilterDropdown,
   TextField,
   getDefaultSortOrder,
+  useSelect,
 } from "@refinedev/antd";
 import {
   type CrudFilters,
@@ -30,6 +31,14 @@ export const ProductsTableView: FC<Props> = ({
   filters,
   sorters,
 }) => {
+
+  const { selectProps } = useSelect ({
+    resource: "products",
+    optionLabel: "name",
+    optionValue: "name",
+    defaultValue: getDefaultFilter("products.name", filters, "in"),
+  });
+
   return (
     <Table
       {...tableProps}
@@ -51,11 +60,14 @@ export const ProductsTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="name"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("name", filters)}
         filterIcon={<SearchOutlined />}
         filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Product" />
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectProps}
+            />
           </FilterDropdown>
         )}
         render={(value) => <div>{value}</div>}
