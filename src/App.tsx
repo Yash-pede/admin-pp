@@ -38,6 +38,9 @@ import { SalesShow } from "./routes/clients/sales/show";
 import { SalesEdit } from "./routes/clients/sales/edit";
 import { OrdersEdit, OrdersList } from "./routes/orders";
 import { AuthorizeUserRole } from "./components/layout/authorize";
+import { FundsList, FundsRequested } from "./routes/funds";
+import { ChallanList, ChallanShow } from "./routes/challan";
+import { ChallanPdf } from "./routes/challan/components/challanPdf";
 
 function App() {
   return (
@@ -117,6 +120,17 @@ function App() {
                       <Route index element={<OrdersList />} />
                       <Route path="edit/:id" element={<OrdersEdit />} />
                     </Route>
+
+                    <Route path="funds">
+                      <Route index element={<FundsList />} />
+                      <Route path="requested" element={<FundsRequested />} />
+                    </Route>
+
+                    <Route path="/challan">
+                        <Route index element={<ChallanList />} />
+                        <Route path=":id" element={<ChallanShow />} />
+                        <Route path="pdf/:id" element={<ChallanPdf />} />
+                      </Route>
 
                     <Route path="/administration">
                       <Route path="audit-log">
