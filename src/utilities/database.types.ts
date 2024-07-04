@@ -9,9 +9,176 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      inventory: {
+      challan: {
+        Row: {
+          bill_amt: number
+          created_at: string
+          customer_id: number
+          distributor_id: string
+          id: number
+          pending_amt: number
+          product_info: Json
+          received_amt: number
+          sales_id: string | null
+          total_amt: number
+        }
+        Insert: {
+          bill_amt: number
+          created_at?: string
+          customer_id: number
+          distributor_id: string
+          id?: number
+          pending_amt: number
+          product_info: Json
+          received_amt: number
+          sales_id?: string | null
+          total_amt: number
+        }
+        Update: {
+          bill_amt?: number
+          created_at?: string
+          customer_id?: number
+          distributor_id?: string
+          id?: number
+          pending_amt?: number
+          product_info?: Json
+          received_amt?: number
+          sales_id?: string | null
+          total_amt?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challan_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challan_distributor_id_fkey"
+            columns: ["distributor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challan_sales_id_fkey"
+            columns: ["sales_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challan_batch_info: {
         Row: {
           batch_info: Json
+          challan_id: number
+          created_at: string
+          id: number
+          product_id: number
+        }
+        Insert: {
+          batch_info: Json
+          challan_id: number
+          created_at?: string
+          id?: number
+          product_id: number
+        }
+        Update: {
+          batch_info?: Json
+          challan_id?: number
+          created_at?: string
+          id?: number
+          product_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_info_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          address: string
+          created_at: string
+          distributor_id: string
+          email: string | null
+          full_name: string
+          id: number
+          phone: string
+          sales_id: string
+          specialization: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          distributor_id: string
+          email?: string | null
+          full_name: string
+          id?: number
+          phone: string
+          sales_id: string
+          specialization?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          distributor_id?: string
+          email?: string | null
+          full_name?: string
+          id?: number
+          phone?: string
+          sales_id?: string
+          specialization?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_distributor_id_fkey"
+            columns: ["distributor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customers_sales_id_fkey"
+            columns: ["sales_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funds: {
+        Row: {
+          id: string
+          total: number
+        }
+        Insert: {
+          id?: string
+          total: number
+        }
+        Update: {
+          id?: string
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funds_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory: {
+        Row: {
+          batch_id: string
           created_at: string
           distributor_id: string
           id: number
@@ -20,16 +187,16 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          batch_info: Json
-          created_at: string
+          batch_id: string
+          created_at?: string
           distributor_id: string
           id?: number
           product_id: number
           quantity: number
-          updated_at: string
+          updated_at?: string
         }
         Update: {
-          batch_info?: Json
+          batch_id?: string
           created_at?: string
           distributor_id?: string
           id?: number
@@ -107,7 +274,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
         }
         Insert: {
-          created_at: string
+          created_at?: string
           distributor_id: string
           id?: number
           order: Json
@@ -234,12 +401,93 @@ export type Database = {
           },
         ]
       }
+      transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_id: number | null
+          description: string | null
+          from_user_id: string
+          id: number
+          status: Database["public"]["Enums"]["order_status"]
+          to_user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_id?: number | null
+          description?: string | null
+          from_user_id: string
+          id?: number
+          status: Database["public"]["Enums"]["order_status"]
+          to_user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_id?: number | null
+          description?: string | null
+          from_user_id?: string
+          id?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          to_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funds_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfers_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfers_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      add_batch_info_to_order: {
+        Args: {
+          order_id: number
+          product_id: number
+          key_value: number
+          batch_id: string
+          quantity_value: number
+        }
+        Returns: undefined
+      }
+      add_to_d_inventory: {
+        Args: {
+          distributor_id_param: string
+          product_id_param: number
+          batch_id_param: string
+          batch_quantity_param: number
+        }
+        Returns: undefined
+      }
+      log_batch_details: {
+        Args: {
+          order_id: number
+          product_id: number
+          batch_info: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       order_status:
@@ -248,7 +496,7 @@ export type Database = {
         | "Cancelled"
         | "InProcess"
         | "Defected"
-      ROLES: "admin" | "distributor" | "sales" | "null"
+      ROLES: "admin" | "distributor" | "sales" | "null" | "customer"
       transfer_status: "Credit" | "Debit" | "Requested" | "Approved"
     }
     CompositeTypes: {
