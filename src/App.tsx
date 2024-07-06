@@ -41,6 +41,7 @@ import { AuthorizeUserRole } from "./components/layout/authorize";
 import { FundsList, FundsRequested } from "./routes/funds";
 import { ChallanList, ChallanShow } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
+import { CustomersList } from "./routes/clients/customers";
 
 function App() {
   return (
@@ -107,6 +108,12 @@ function App() {
                           path="inventory/:id"
                           element={<InventoryDetails />}
                         />
+                      </Route>
+                      <Route path="customers">
+                        <Route index element={<CustomersList />} />
+                        <Route path="create" element={<SalesCreate />} />
+                        <Route path="edit/:id" element={<SalesEdit />} />
+                        <Route path=":id" element={<SalesShow />} />
                       </Route>
                       <Route path="sales">
                         <Route index element={<SalesList />} />

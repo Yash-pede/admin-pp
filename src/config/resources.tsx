@@ -81,6 +81,18 @@ export const resources: IResourceItem[] = [
     create: "/challan/create",
   },
   {
+    name: "customers",
+    list: "/clients/customers",
+    create: "/clients/customers/create",
+    edit: "/clients/customers/edit/:id",
+    show: "/clients/customers/:id",
+    meta: {
+      label: "Customers",
+      parent: "clients",
+      icon: <IconUser />,
+    },
+  },
+  {
     name: "distributors",
     list: "/clients/distributors",
     create: "/clients/distributors/create",
