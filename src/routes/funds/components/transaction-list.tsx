@@ -71,7 +71,7 @@ export const TransactionList = (props: Props) => {
           render: (value) => <div>{value}</div>,
         },
         {
-          title: "Customer",
+          title: "Customer", hidden: true,
           dataIndex: "customer_id",
           render: (value) => <div>{value || "-    "}</div>,
         },
