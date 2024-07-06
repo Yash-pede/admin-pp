@@ -24,7 +24,7 @@ import { Layout } from "./components/layout";
 import DashboardHome from "./routes/dashboard/show";
 import { ProductsCreate, ProductsList, ProductsEdit } from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
-import { StocksList, StocksCreate } from "./routes/stocks";
+import { StocksList, StocksCreate, StocksPast, StocksProductWise } from "./routes/stocks";
 import {
   DistributorCreate,
   DistributorEdit,
@@ -96,6 +96,8 @@ function App() {
                     <Route path="/stocks">
                       <Route index element={<StocksList />} />
                       <Route path="create" element={<StocksCreate />} />
+                      <Route path="past" element={<StocksPast />} />
+                      <Route path="product-wise" element={<StocksProductWise />} />
                     </Route>
 
                     <Route path="/clients">

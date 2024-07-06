@@ -126,13 +126,13 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
           <Flex gap={10}>
             <Button
               type="primary"
-              onClick={() => go({ to: "/inventory/past" })}
+              onClick={() => go({ to: "/stocks/past" })}
             >
               Past
             </Button>
             <Button
               type="primary"
-              onClick={() => go({ to: "/inventory/product-wise" })}
+              onClick={() => go({ to: "/stocks/product-wise" })}
             >
               Product wise
             </Button>
