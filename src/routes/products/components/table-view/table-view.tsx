@@ -6,6 +6,8 @@ import {
   EditButton,
   FilterDropdown,
   TextField,
+  getDefaultSortOrder,
+  useSelect,
 } from "@refinedev/antd";
 import {
   type CrudFilters,
@@ -24,7 +26,19 @@ type Props = {
   sorters: CrudSorting;
 };
 
-export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
+export const ProductsTableView: FC<Props> = ({
+  tableProps,
+  filters,
+  sorters,
+}) => {
+
+  const { selectProps } = useSelect ({
+    resource: "products",
+    optionLabel: "name",
+    optionValue: "name",
+    defaultValue: getDefaultFilter("products.name", filters, "in"),
+  });
+
   return (
     <Table
       {...tableProps}
@@ -46,11 +60,14 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="name"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("name", filters)}
         filterIcon={<SearchOutlined />}
         filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Product" />
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectProps}
+            />
           </FilterDropdown>
         )}
         render={(value) => <div>{value}</div>}
@@ -58,11 +75,15 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="mrp"
         title="MRP"
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("mrp", sorters)}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="selling_price"
         title="Selling Price"
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("selling_price", sorters)}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
@@ -73,16 +94,22 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="base_q"
         title="Base Quantity"
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("base_q", sorters)}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="free_q"
         title="Free Quantity"
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("free_q", sorters)}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="created_at"
         title="Created At"
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("created_at", sorters)}
         render={(value) => <DateField value={value} />}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>

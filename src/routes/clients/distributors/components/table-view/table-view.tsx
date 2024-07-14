@@ -5,11 +5,13 @@ import {
   FilterDropdown,
   ShowButton,
   TextField,
+  useSelect,
 } from "@refinedev/antd";
 import {
   type CrudFilters,
   type CrudSorting,
   getDefaultFilter,
+  useGetIdentity,
 } from "@refinedev/core";
 
 import { EyeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
@@ -53,6 +55,63 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
       inputRef.current?.focus();
     }, 0);
   };
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
+  const { selectProps: selectEmailProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "email",
+    optionValue: "email",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.email", filters, "in"),
+  });
+
+  const { selectProps: selectFullNameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "full_name",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
+  });
+
+  const { selectProps: selectPhnProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "phone",
+    optionValue: "phone",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
+  });
+
   return (
     <Table
       {...tableProps}
@@ -74,11 +133,14 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="username"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("username", filters)}
         filterIcon={<SearchOutlined />}
         filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search UserName" />
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectProps}
+            />
           </FilterDropdown>
         )}
         render={(value) => <div>{value}</div>}
@@ -86,16 +148,46 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="email"
         title="email"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectEmailProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="full_name"
         title="Full Name"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectFullNameProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="phone"
         title="phone"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectPhnProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
@@ -104,11 +196,7 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
         title="Actions"
         render={(value) => (
           <Space>
-            <ShowButton
-              hideText
-              size="small"
-              recordItemId={value}
-            />
+            <ShowButton hideText size="small" recordItemId={value} />
 
             <Select
               style={{ width: 100 }}

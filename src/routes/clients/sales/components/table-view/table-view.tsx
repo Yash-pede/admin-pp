@@ -7,6 +7,7 @@ import {
   FilterDropdown,
   ShowButton,
   TextField,
+  useSelect,
 } from "@refinedev/antd";
 import {
   type CrudFilters,
@@ -83,6 +84,71 @@ export const SalesTableView: FC<Props> = ({
       enabled: !!tableQueryResult,
     },
   });
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+  const { selectProps:selectEmailProps  } = useSelect({
+    resource: "profiles",
+    optionLabel: "email",
+    optionValue: "email",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.email", filters, "in"),
+  });
+  const { selectProps:selectFullNameProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "full_name",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.full_name", filters, "in"),
+  });
+  const { selectProps:selectPhnProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "phone",
+    optionValue: "phone",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.phone", filters, "in"),
+  });
+  const { selectProps:selectDistriProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "username",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
   return (
     <Table
       {...tableProps}
@@ -107,8 +173,12 @@ export const SalesTableView: FC<Props> = ({
         defaultFilteredValue={getDefaultFilter("username", filters)}
         filterIcon={<SearchOutlined />}
         filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search UserName" />
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectProps}
+            />
           </FilterDropdown>
         )}
         render={(value) => <div>{value}</div>}
@@ -116,21 +186,61 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="email"
         title="email"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectEmailProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="full_name"
         title="Full Name"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectFullNameProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="phone"
         title="phone"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectPhnProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="boss_id"
         title="Distributor"
+        filterIcon={<SearchOutlined />}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              {...selectDistriProps}
+            />
+          </FilterDropdown>
+        )}
        render={(value) => Profile?.data.find((item) => item.id === value)?.username || "-"} 
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>

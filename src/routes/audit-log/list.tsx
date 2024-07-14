@@ -28,8 +28,6 @@ import { getActionColor, isValidUUID } from "@/utilities/functions";
 
 export type Audit = Database["public"]["Tables"]["logs"]["Row"];
 
-
-
 export const AuditLogList = () => {
   const { tableProps, filters, sorters, tableQueryResult } = useTable<Audit>({
     resource: "logs",
@@ -49,8 +47,8 @@ export const AuditLogList = () => {
         value: [
           tableQueryResult.data?.data.map((item) => item.author),
           tableQueryResult.data?.data
-            .filter((item:any) => item.meta && isValidUUID(item.meta?.id))
-            .map((item:any) => item.meta?.id as string),
+            .filter((item: any) => item.meta && isValidUUID(item.meta?.id))
+            .map((item: any) => item.meta?.id as string),
         ],
       },
     ],
@@ -69,8 +67,10 @@ export const AuditLogList = () => {
         field: "id",
         operator: "in",
         value: tableQueryResult.data?.data
-          .filter((item:any) => item.meta && !isValidUUID(item.meta?.id as string))
-          .map((item:any) => item.meta?.id as string),
+          .filter(
+            (item: any) => item.meta && !isValidUUID(item.meta?.id as string)
+          )
+          .map((item: any) => item.meta?.id as string),
       },
     ],
     queryOptions: {
@@ -107,7 +107,19 @@ export const AuditLogList = () => {
             ),
           }}
         >
-          <Table.Column dataIndex="id" title="ID" />
+          <Table.Column
+            dataIndex="id"
+            title="ID"
+            sorter={{ multiple: 2 }}
+            defaultSortOrder={getDefaultSortOrder("id", sorters)}
+            filterIcon={<SearchOutlined />}
+            filterDropdown={(props) => (
+              <FilterDropdown {...props}>
+                <Input placeholder="Search ID" />
+              </FilterDropdown>
+            )}
+          />
+          
           <Table.Column
             dataIndex="author"
             title="User"
