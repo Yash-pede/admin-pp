@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useOne } from "@refinedev/core";
 import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
-import { UserInfoForm } from "./components/salesInfoForm";
+import { UserInfoForm } from "@/components/infoForm";
 
 export const SalesShow = ({
   children,
@@ -49,7 +49,7 @@ export const SalesShow = ({
           />
         </Col>
         <Col span={8}>
-          <UserInfoForm userDetails={salesDetails.data} />
+          <UserInfoForm sales userDetails={salesDetails.data} />
         </Col>
       </Row>
       {children}

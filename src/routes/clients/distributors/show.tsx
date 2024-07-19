@@ -6,8 +6,8 @@ import { useLocation } from "react-router-dom";
 import { useOne } from "@refinedev/core";
 import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
-import { UserInfoForm } from "./components/infoForm";
 import { UserInventory } from "./components/UserInventory";
+import { UserInfoForm } from "@/components/infoForm";
 
 export const DistributorShow = ({
   children,

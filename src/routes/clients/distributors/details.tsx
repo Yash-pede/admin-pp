@@ -1,13 +1,19 @@
 import React from "react";
 import { Database } from "@/utilities";
-import { DateField, useTable } from "@refinedev/antd";
+import {
+  DateField,
+  FilterDropdown,
+  getDefaultSortOrder,
+  useSelect,
+  useTable,
+} from "@refinedev/antd";
 import { useList } from "@refinedev/core";
-import { List, Skeleton, Table } from "antd";
+import { List, Select, Skeleton, Table } from "antd";
 import { useLocation } from "react-router-dom";
 
 export const InventoryDetails = () => {
-    const user = useLocation().pathname.split("/").pop();
-  const { tableProps, tableQueryResult } = useTable<
+  const user = useLocation().pathname.split("/").pop();
+  const { tableProps, tableQueryResult,sorters } = useTable<
     Database["public"]["Tables"]["inventory"]["Row"]
   >({
     resource: "inventory",
@@ -39,6 +45,20 @@ export const InventoryDetails = () => {
     },
   });
 
+  const { selectProps: productSelectProps } = useSelect({
+    resource: "products",
+    optionLabel: "name",
+    optionValue: "id",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data.map((item) => item.product_id),
+      },
+    ],
+    defaultValue: tableQueryResult.data?.data.map((item) => item.product_id),
+  });
+
   return (
     <List header={<h1>Inventory Details</h1>}>
       <Table {...tableProps} rowKey={"id"}>
@@ -46,6 +66,16 @@ export const InventoryDetails = () => {
         <Table.Column
           dataIndex="product_id"
           title="Product ID"
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Select
+                mode="multiple"
+                style={{ minWidth: 200 }}
+                placeholder="Select Products"
+                {...productSelectProps}
+              />
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isLoadingProducts) {
               return <Skeleton.Input style={{ width: 100 }} />;
@@ -56,11 +86,18 @@ export const InventoryDetails = () => {
             return product?.name;
           }}
         />
-        <Table.Column dataIndex="quantity" title="Quantity" />
+        <Table.Column
+          dataIndex="quantity"
+          title="Quantity"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorters)}
+        />
         <Table.Column dataIndex="batch_id" title="Batch ID" />
         <Table.Column
           dataIndex="created_at"
           title="Created"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorters)}
           render={(value) => <DateField value={value} />}
         />
       </Table>

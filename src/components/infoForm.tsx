@@ -7,6 +7,8 @@ import { Card, Skeleton, Space } from "antd";
 
 type Props = {
   userDetails: Database["public"]["Tables"]["profiles"]["Row"];
+  style?: React.CSSProperties;
+  sales?: boolean;
 };
 
 export const UserInfoForm = (props: Props) => {
@@ -21,10 +23,17 @@ export const UserInfoForm = (props: Props) => {
     isError,
   } = useOne<Database["public"]["Tables"]["profiles"]["Row"]>({
     resource: "profiles",
-    id: props.userDetails.boss_id||"",
+    id: props.userDetails.boss_id || "",
     queryOptions: {
       enabled: !!props.userDetails.boss_id,
     },
+  });
+
+  const { data: fundDetails, isLoading: fundLoading } = useOne<
+    Database["public"]["Tables"]["funds"]["Row"]
+  >({
+    resource: "funds",
+    id: props.userDetails.id,
   });
 
   return (
@@ -43,12 +52,21 @@ export const UserInfoForm = (props: Props) => {
       }}
       style={{
         maxWidth: "500px",
+        ...props.style,
       }}
     >
       <Card.Grid style={gridStyle}>
         <Space size="middle">
           <Text strong>User Name: </Text>
           <Text>{props.userDetails.username}</Text>
+        </Space>
+      </Card.Grid>
+      <Card.Grid style={gridStyle}>
+        <Space size="middle">
+          <Text strong>Funds: </Text>
+          <Text>
+            {fundLoading ? <Skeleton active /> : "₹ " + fundDetails?.data.total}
+          </Text>
         </Space>
       </Card.Grid>
       <Card.Grid style={gridStyle}>
@@ -72,13 +90,20 @@ export const UserInfoForm = (props: Props) => {
       <Card.Grid style={gridStyle}>
         <Space size="middle">
           <Text strong>Created At: </Text>
-          <DateField value={props.userDetails.created_at} format="DD-MM-YYYY hh:mm A" />
+          <DateField
+            value={props.userDetails.created_at}
+            format="DD-MM-YYYY hh:mm A"
+          />
         </Space>
       </Card.Grid>
-      <Card.Grid style={gridStyle}>
+      <Card.Grid style={gridStyle} hidden={!props.userDetails.boss_id}>
         <Space size="middle">
           <Text strong>Boss: </Text>
-          {isLoading?<Skeleton.Input/>:distributorDetails?.data.username|| "Distributor"}
+          {isLoading ? (
+            <Skeleton.Input />
+          ) : (
+            distributorDetails?.data.username || "Distributor"
+          )}
         </Space>
       </Card.Grid>
     </Card>

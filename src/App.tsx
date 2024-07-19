@@ -175,14 +175,14 @@ function App() {
                       />
                     }
                   />
-                  <Route
+                  {/* <Route
                     path="/register"
                     element={<AuthPage type="register" />}
                   />
                   <Route
                     path="/forgot-password"
                     element={<AuthPage type="forgotPassword" />}
-                  />
+                  /> */}
                 </Route>
               </Routes>
 
