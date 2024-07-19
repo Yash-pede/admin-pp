@@ -24,7 +24,12 @@ import { Layout } from "./components/layout";
 import DashboardHome from "./routes/dashboard/show";
 import { ProductsCreate, ProductsList, ProductsEdit } from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
-import { StocksList, StocksCreate, StocksPast, StocksProductWise } from "./routes/stocks";
+import {
+  StocksList,
+  StocksCreate,
+  StocksPast,
+  StocksProductWise,
+} from "./routes/stocks";
 import {
   DistributorCreate,
   DistributorEdit,
@@ -97,7 +102,10 @@ function App() {
                       <Route index element={<StocksList />} />
                       <Route path="create" element={<StocksCreate />} />
                       <Route path="past" element={<StocksPast />} />
-                      <Route path="product-wise" element={<StocksProductWise />} />
+                      <Route
+                        path="product-wise"
+                        element={<StocksProductWise />}
+                      />
                     </Route>
 
                     <Route path="/clients">
@@ -136,12 +144,23 @@ function App() {
                     </Route>
 
                     <Route path="/challan">
-                        <Route index element={<ChallanList />} />
-                        <Route path=":id" element={<ChallanShow />} />
-                        <Route path="pdf/:id" element={<ChallanPdf />} />
-                      </Route>
+                      <Route index element={<ChallanList />} />
+                      <Route path=":id" element={<ChallanShow />} />
+                      <Route path="pdf/:id" element={<ChallanPdf />} />
+                    </Route>
 
                     <Route path="/administration">
+                      <Route path="settings">
+                        <Route index element={<>Settings</>} />
+                        <Route
+                          path="user-credentials/:id"
+                          element={
+                            <>
+                              Editing the users details is temporaryly disabled
+                            </>
+                          }
+                        />
+                      </Route>
                       <Route path="audit-log">
                         <Route index element={<AuditLogList />} />
                       </Route>

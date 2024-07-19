@@ -65,7 +65,11 @@ export const UserInfoForm = (props: Props) => {
         <Space size="middle">
           <Text strong>Funds: </Text>
           <Text>
-            {fundLoading ? <Skeleton active /> : "₹ " + fundDetails?.data.total}
+            {fundLoading ? (
+              <Skeleton active />
+            ) : (
+              "₹ " + (fundDetails?.data?.total ?? 0)
+            )}
           </Text>
         </Space>
       </Card.Grid>

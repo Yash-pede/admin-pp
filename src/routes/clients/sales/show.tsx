@@ -1,12 +1,12 @@
 import { Col, Row, Skeleton } from "antd";
 
-import { SalesTitleForm } from "./components/SalesTitleForm";
 import { CustomerTable } from "./components/customer-table";
 import { useLocation } from "react-router-dom";
 import { useOne } from "@refinedev/core";
 import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
 import { UserInfoForm } from "@/components/infoForm";
+import { UserTitleForm } from "@/components/UserTitleForm";
 
 export const SalesShow = ({
   children,
@@ -32,7 +32,7 @@ export const SalesShow = ({
 
   return (
     <div className="page-container">
-      <SalesTitleForm salesDetails={salesDetails.data} />
+      <UserTitleForm userDetails={salesDetails.data} sales />
       <Row
         gutter={[32, 32]}
         style={{

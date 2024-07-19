@@ -2,12 +2,13 @@ import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { useGo } from "@refinedev/core";
 import { Button, Flex, Skeleton, Space } from "antd";
-import React from "react";
 
-export const DistributorTitleForm = ({
-  distributorDetails,
+export const UserTitleForm = ({
+  userDetails,
+  sales
 }: {
-  distributorDetails: Database["public"]["Tables"]["profiles"]["Row"];
+  userDetails: Database["public"]["Tables"]["profiles"]["Row"];
+  sales?: boolean;
 }) => {
   const go = useGo();
 
@@ -20,8 +21,8 @@ export const DistributorTitleForm = ({
           style={{ width: 64, height: 64 }}
         />
         <Space direction="vertical" size={0}>
-          <Text size="xl">{distributorDetails?.username}</Text>
-          <Text size="sm">{distributorDetails?.email}</Text>
+          <Text size="xl">{userDetails?.username}</Text>
+          <Text size="sm">{userDetails?.email}</Text>
         </Space>
       </Space>
       <Space>
@@ -31,15 +32,15 @@ export const DistributorTitleForm = ({
             go({
               to: {
                 action: "edit",
-                id: distributorDetails?.id,
-                resource: "distributors",
+                id: userDetails?.id,
+                resource: sales ? "sales" : "distributors",
               },
             })
           }
         >
           Edit Details
         </Button>
-        <Button> Edit Credentials</Button>
+        <Button onClick={() => go({ to: `/administration/settings/user-credentials/${userDetails?.id}` })}> Edit Credentials</Button>
       </Space>
     </Flex>
   );

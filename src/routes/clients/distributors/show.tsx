@@ -1,6 +1,5 @@
 import { Col, Grid, Row, Skeleton } from "antd";
 
-import { DistributorTitleForm } from "./components/DistributorTitleForm";
 import { SalesTable } from "./components/sales-table";
 import { useLocation } from "react-router-dom";
 import { useOne } from "@refinedev/core";
@@ -8,6 +7,7 @@ import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
 import { UserInventory } from "./components/UserInventory";
 import { UserInfoForm } from "@/components/infoForm";
+import { UserTitleForm } from "@/components/UserTitleForm";
 
 export const DistributorShow = ({
   children,
@@ -36,7 +36,7 @@ export const DistributorShow = ({
 
   return (
     <div className="page-container">
-      <DistributorTitleForm distributorDetails={distributorDetails.data} />
+      <UserTitleForm userDetails={distributorDetails.data} />
       <Row
         gutter={[32, 32]}
         style={{
