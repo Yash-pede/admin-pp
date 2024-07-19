@@ -24,9 +24,6 @@ export const CustomersList: FC<PropsWithChildren> = ({ children }) => {
     searchFormProps,
     filters,
     sorters,
-    setCurrent,
-    setPageSize,
-    setFilters,
   } = useTable<
     Database["public"]["Tables"]["customers"]["Row"],
     HttpError,

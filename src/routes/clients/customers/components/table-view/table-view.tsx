@@ -1,28 +1,27 @@
 import { type FC } from "react";
 
-import { FilterDropdown, TextField } from "@refinedev/antd";
+import { FilterDropdown, getDefaultSortOrder, TextField, useSelect } from "@refinedev/antd";
 import {
-  type CrudFilters,
+  CrudFilters,
   type CrudSorting,
   getDefaultFilter,
   useList,
 } from "@refinedev/core";
 
-import { SearchOutlined } from "@ant-design/icons";
-import { Input, Table, type TableProps } from "antd";
+import { Input, Select, Table, type TableProps } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
-import { banUser } from "@/utilities/functions";
 
 type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["customers"]["Row"]>;
-  filters: CrudFilters;
   sorters: CrudSorting;
+  filters: CrudFilters;
   tableQueryResult: any;
 };
 
 export const CustomersTableView: FC<Props> = ({
   tableProps,
+  sorters,
   filters,
   tableQueryResult,
 }) => {
@@ -47,29 +46,76 @@ export const CustomersTableView: FC<Props> = ({
         enabled: !!tableQueryResult,
       },
     });
-  const { data: salesProfile, isLoading: isLoadingSalesProfile } =
-    useList<Database["public"]["Tables"]["profiles"]["Row"]>({
-      resource: "profiles",
-      filters: [
-        {
-          field: "role",
-          operator: "eq",
-          value: "sales",
-        },
-        {
-          field: "id",
-          operator: "in",
-          value: tableQueryResult?.data
-            ?.filter((item: any) => !!item.sales_id)
-            .map((item: any) => item.sales_id),
-        },
-      ],
-      queryOptions: {
-        enabled: !!tableQueryResult,
+  const { data: salesProfile, isLoading: isLoadingSalesProfile } = useList<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
       },
-    });
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult?.data
+          ?.filter((item: any) => !!item.sales_id)
+          .map((item: any) => item.sales_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
 
-    return (
+  const { selectProps: distributorSelectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult?.data
+          ?.filter((item: any) => !!item.distributor_id)
+          .map((item: any) => item.distributor_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
+
+  const { selectProps: salesSelectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult?.data
+          ?.filter((item: any) => !!item.sales_id)
+          .map((item: any) => item.sales_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
+
+  return (
     <Table
       {...tableProps}
       pagination={{
@@ -84,19 +130,13 @@ export const CustomersTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="id"
         title="ID"
-        hidden
+        sorter={{ multiple: 2 }}
+        defaultSortOrder={getDefaultSortOrder("id", sorters)}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="full_name"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("username", filters)}
-        filterIcon={<SearchOutlined />}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search UserName" />
-          </FilterDropdown>
-        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
@@ -112,11 +152,27 @@ export const CustomersTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="phone"
         title="phone"
+        defaultFilteredValue={getDefaultFilter("phone", filters)}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search Phone" />
+          </FilterDropdown>
+        )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="distributor_id"
         title="Distributor"
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              placeholder="Filter products"
+              {...distributorSelectProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) =>
           distributorsProfile?.data.find((item) => item.id === value)
             ?.username || "-"
@@ -125,9 +181,18 @@ export const CustomersTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="sales_id"
         title="Sales"
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              placeholder="Filter products"
+              {...salesSelectProps}
+            />
+          </FilterDropdown>
+        )}
         render={(value) =>
-          salesProfile?.data.find((item) => item.id === value)
-            ?.username || "-"
+          salesProfile?.data.find((item) => item.id === value)?.username || "-"
         }
       />
     </Table>

@@ -23,7 +23,6 @@ import {
   Table,
 } from "antd";
 import { useLocation } from "react-router-dom";
-import dayjs from "dayjs";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { OrderStatus } from "@/utilities/functions";
 import { Database } from "@/utilities";
@@ -293,7 +292,7 @@ export const OrdersEdit = () => {
                         style={{ margin: 0 }}
                         initialValue={record.quantity}
                       >
-                        <InputNumber />
+                        <InputNumber readOnly />
                       </Form.Item>
                     );
                   }
@@ -378,14 +377,14 @@ export const OrdersEdit = () => {
                         hideText
                         size="small"
                       />
-                      <DeleteButton
+                      {/* <DeleteButton
                         hideText
                         size="small"
                         recordItemId={record.key}
                         mutationMode="pessimistic"
                         onSuccess={() => setEditId("")}
                         onError={() => setEditId("")}
-                      />
+                      /> */}
                     </Space>
                   );
                 }}

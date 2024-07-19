@@ -1,7 +1,6 @@
 import { useRef, useState, type FC } from "react";
 
 import {
-  EditButton,
   FilterDropdown,
   ShowButton,
   TextField,
@@ -12,7 +11,7 @@ import {
   getDefaultFilter,
 } from "@refinedev/core";
 
-import { EyeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Divider,
@@ -25,7 +24,6 @@ import {
 } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
-import { banUser } from "@/utilities/functions";
 
 type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["profiles"]["Row"]>;
@@ -74,13 +72,6 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="username"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("username", filters)}
-        filterIcon={<SearchOutlined />}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search UserName" />
-          </FilterDropdown>
-        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>

@@ -1,12 +1,11 @@
 import { Database } from "@/utilities";
-import { DateField, List, useTable } from "@refinedev/antd";
+import { DateField, FilterDropdown, getDefaultSortOrder, List, useSelect, useTable } from "@refinedev/antd";
 import { useGo, useList } from "@refinedev/core";
-import { Table } from "antd";
+import { Select, Table } from "antd";
 import React from "react";
 
 export const StocksPast = () => {
-  const go = useGo();
-  const { tableProps, tableQueryResult, filters, sorter } = useTable<
+  const { tableProps, tableQueryResult,sorter } = useTable<
     Database["public"]["Tables"]["stocks"]["Row"]
   >({
     resource: "stocks",
@@ -46,32 +45,61 @@ export const StocksPast = () => {
       enabled: !!tableQueryResult?.data?.data,
     },
   });
+
+  const { selectProps } = useSelect<Database["public"]["Tables"]["products"]["Row"]>({
+    resource: "products",
+    optionLabel: "name",
+    optionValue: "id",
+    queryOptions: {
+      enabled: !!tableQueryResult?.data?.data,
+    },
+  });
+
   return (
     <List title="Past Stocks" canCreate={false}>
       <Table {...tableProps} rowKey="id">
         <Table.Column
           dataIndex="product_id"
           title="Product"
-          render={(value) => <div>{productsData?.data.find((p) => p.id === value)?.name}</div>}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Select style={{ minWidth: 200 }}
+                mode="multiple"
+                placeholder="Filter products"
+                {...selectProps}
+              />
+            </FilterDropdown>
+          )}
+          render={(value) => (
+            <div>{productsData?.data.find((p) => p.id === value)?.name}</div>
+          )}
         />
         <Table.Column
           dataIndex="available_quantity"
           title="Available Quantity"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
           render={(value) => <div>{value}</div>}
         />
         <Table.Column
           dataIndex="ordered_quantity"
           title="Ordered Quantity"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
           render={(value) => <div>{value}</div>}
         />
         <Table.Column
           dataIndex="expiry_date"
           title="Expiry"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
           render={(value) => <DateField value={value} />}
         />
         <Table.Column
           dataIndex="created_at"
           title="Created At"
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("id", sorter)}
           render={(value) => <DateField value={value} />}
         />
       </Table>

@@ -7,6 +7,7 @@ import {
   FilterDropdown,
   ShowButton,
   TextField,
+  useSelect,
 } from "@refinedev/antd";
 import {
   type CrudFilters,
@@ -63,7 +64,9 @@ export const SalesTableView: FC<Props> = ({
       inputRef.current?.focus();
     }, 0);
   };
-  const { data: Profile, isLoading: isLoadingProfile } = useList<Database["public"]["Tables"]["profiles"]["Row"]>({
+  const { data: Profile, isLoading: isLoadingProfile } = useList<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
     resource: "profiles",
     filters: [
       {
@@ -75,14 +78,38 @@ export const SalesTableView: FC<Props> = ({
         field: "id",
         operator: "in",
         value: tableQueryResult?.data
-          ?.filter((item:any) => !!item.boss_id)
-          .map((item:any) => item.boss_id),
+          ?.filter((item: any) => !!item.boss_id)
+          .map((item: any) => item.boss_id),
       },
     ],
     queryOptions: {
       enabled: !!tableQueryResult,
     },
   });
+
+  const { selectProps: distributorSelectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult?.data
+          ?.filter((item: any) => !!item.boss_id)
+          .map((item: any) => item.boss_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult,
+    },
+  });
+
   return (
     <Table
       {...tableProps}
@@ -104,13 +131,6 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="username"
         title="Name"
-        defaultFilteredValue={getDefaultFilter("username", filters)}
-        filterIcon={<SearchOutlined />}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search UserName" />
-          </FilterDropdown>
-        )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
@@ -126,12 +146,30 @@ export const SalesTableView: FC<Props> = ({
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="phone"
         title="phone"
+        defaultFilteredValue={getDefaultFilter("phone", filters)}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search Phone" />
+          </FilterDropdown>
+        )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="boss_id"
         title="Distributor"
-       render={(value) => Profile?.data.find((item) => item.id === value)?.username || "-"} 
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Select
+              style={{ minWidth: 200 }}
+              mode="multiple"
+              placeholder="Filter products"
+              {...distributorSelectProps}
+            />
+          </FilterDropdown>
+        )}
+        render={(value) =>
+          Profile?.data.find((item) => item.id === value)?.username || "-"
+        }
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         fixed="right"
