@@ -101,7 +101,7 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
               recordItemId={value}
             />
 
-            <Select
+            {/* <Select
               style={{ width: 100 }}
               placeholder="BAN"
               dropdownRender={(menu) => (
@@ -128,7 +128,7 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
               )}
               size="small"
               options={items.map((item) => ({ label: item, value: item }))}
-            />
+            /> */}
             {/* <DeleteButton hideText size="small" recordItemId={value} /> */}
           </Space>
         )}

@@ -25,6 +25,11 @@ export const banUser = async (userId: string, banDuration: string) => {
   return result;
 };
 
+export const getUserSupabase = async (userId: string) => {
+const result = await supabaseServiceRoleClient.auth.admin.getUserById(userId);  
+  return result;
+};
+
 export function isValidUUID(uuid: string) {
   return validate(uuid);
 }

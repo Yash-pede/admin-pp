@@ -1,9 +1,6 @@
 import { useRef, useState, type FC } from "react";
 
 import {
-  DateField,
-  DeleteButton,
-  EditButton,
   FilterDropdown,
   ShowButton,
   TextField,
@@ -14,24 +11,19 @@ import {
   type CrudSorting,
   getDefaultFilter,
   useList,
-  GetListResponse,
 } from "@refinedev/core";
 
-import { EyeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { EyeOutlined} from "@ant-design/icons";
 import {
-  Button,
-  Divider,
   Input,
   InputRef,
   Select,
-  Skeleton,
   Space,
   Table,
   type TableProps,
 } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
-import { banUser } from "@/utilities/functions";
 
 type Props = {
   tableProps: TableProps<Database["public"]["Tables"]["profiles"]["Row"]>;
@@ -184,7 +176,7 @@ export const SalesTableView: FC<Props> = ({
               recordItemId={value}
             />
 
-            <Select
+            {/* <Select
               style={{ width: 100 }}
               placeholder="BAN"
               dropdownRender={(menu) => (
@@ -211,7 +203,7 @@ export const SalesTableView: FC<Props> = ({
               )}
               size="small"
               options={items.map((item) => ({ label: item, value: item }))}
-            />
+            /> */}
             {/* <DeleteButton hideText size="small" recordItemId={value} /> */}
           </Space>
         )}
