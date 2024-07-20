@@ -1,14 +1,20 @@
 import { type FC } from "react";
 
-import { FilterDropdown, getDefaultSortOrder, TextField, useSelect } from "@refinedev/antd";
+import {
+  FilterDropdown,
+  getDefaultSortOrder,
+  TextField,
+  useSelect,
+} from "@refinedev/antd";
 import {
   CrudFilters,
   type CrudSorting,
   getDefaultFilter,
+  useGo,
   useList,
 } from "@refinedev/core";
 
-import { Input, Select, Table, type TableProps } from "antd";
+import { Button, Input, Select, Table, type TableProps } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
 
@@ -25,6 +31,7 @@ export const CustomersTableView: FC<Props> = ({
   filters,
   tableQueryResult,
 }) => {
+  const go = useGo();
   const { data: distributorsProfile, isLoading: isLoadingDistributorsProfile } =
     useList<Database["public"]["Tables"]["profiles"]["Row"]>({
       resource: "profiles",
@@ -194,6 +201,30 @@ export const CustomersTableView: FC<Props> = ({
         render={(value) =>
           salesProfile?.data.find((item) => item.id === value)?.username || "-"
         }
+      />
+      <Table.Column
+        dataIndex="action"
+        render={(_, record) => (
+          <Button
+            type="primary"
+            onClick={() =>
+              go({
+                to: `/challan`,
+                query: {
+                  filters: [
+                    {
+                      field: "customer_id",
+                      operator: "eq",
+                      value: JSON.parse(JSON.stringify(record)).id,
+                    },
+                  ],
+                },
+              })
+            }
+          >
+            Challan's
+          </Button>
+        )}
       />
     </Table>
   );

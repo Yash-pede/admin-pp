@@ -2,8 +2,8 @@ import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { ShopOutlined } from "@ant-design/icons";
 import { DateField } from "@refinedev/antd";
-import { useOne } from "@refinedev/core";
-import { Card, Skeleton, Space } from "antd";
+import { useGo, useOne } from "@refinedev/core";
+import { Button, Card, Flex, Skeleton, Space } from "antd";
 
 type Props = {
   userDetails: Database["public"]["Tables"]["profiles"]["Row"];
@@ -12,6 +12,7 @@ type Props = {
 };
 
 export const UserInfoForm = (props: Props) => {
+  const go = useGo();
   const gridStyle: React.CSSProperties = {
     width: "100%",
     textAlign: "left",
@@ -39,10 +40,36 @@ export const UserInfoForm = (props: Props) => {
   return (
     <Card
       title={
-        <Space size={15}>
-          <ShopOutlined className="sm" />
-          <Text>User info</Text>
-        </Space>
+        <Flex
+          gap="xl"
+          justify="space-between"
+          align="center"
+          style={{ width: "100%" }}
+        >
+          <Space size="small">
+            <ShopOutlined className="sm" />
+            <Text>User info</Text>
+          </Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              go({
+                to: `/challan`,
+                query: {
+                  filters: [
+                    {
+                      field: props.sales ? "sales_id" : "distributor_id",
+                      operator: "eq",
+                      value: props.userDetails.id,
+                    },
+                  ],
+                },
+              })
+            }
+          >
+            Challan's
+          </Button>
+        </Flex>
       }
       headStyle={{
         padding: "1rem",

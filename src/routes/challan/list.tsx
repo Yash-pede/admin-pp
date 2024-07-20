@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Flex,
-  Form,
-  Input,
-  Skeleton,
-  Table,
-  Typography,
-} from "antd";
+import { Flex, Form, Input, Select, Skeleton, Table, Typography } from "antd";
 import {
   DateField,
   FilterDropdown,
@@ -14,6 +7,7 @@ import {
   ShowButton,
   getDefaultSortOrder,
   useModal,
+  useSelect,
   useTable,
 } from "@refinedev/antd";
 import { useList, useUpdate } from "@refinedev/core";
@@ -38,20 +32,42 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
   });
 
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
-  Database["public"]["Tables"]["customers"]["Row"]
->({
-  resource: "customers",
-  filters: [
-    {
-      field: "id",
-      operator: "in",
-      value: tableQueryResult.data?.data.filter((item) => item.customer_id).map((item) => item.customer_id),
+    Database["public"]["Tables"]["customers"]["Row"]
+  >({
+    resource: "customers",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data
+          .filter((item) => item.customer_id)
+          .map((item) => item.customer_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
     },
-  ],
-  queryOptions: {
-    enabled: !!tableQueryResult.data,
-  },
-});
+  });
+
+  const { selectProps: customerSelectProps } = useSelect<
+    Database["public"]["Tables"]["customers"]["Row"]
+  >({
+    resource: "customers",
+    optionLabel: "full_name",
+    optionValue: "id",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data
+          .filter((item) => item.customer_id)
+          .map((item) => item.customer_id),
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
+    },
+  });
 
   const { data: profiles, isLoading: isProfileLoading } = useList<
     Database["public"]["Tables"]["profiles"]["Row"]
@@ -62,8 +78,8 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
         field: "id",
         operator: "in",
         value: tableQueryResult.data?.data
-          .filter((item) => item.sales_id)
-          .map((item) => item.sales_id),
+          .filter((item) => item.sales_id || item.distributor_id)
+          .map((item) => item.sales_id || item.distributor_id),
       },
     ],
     meta: {
@@ -92,7 +108,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     setIdToUpdateReceived(null);
   };
   return (
-    <List canCreate>
+    <List canCreate={false}>
       <Flex justify="space-between" align="center" gap={2}>
         <Typography.Paragraph>
           Total:{" "}
@@ -143,6 +159,12 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("customer_id", sorter)}
           dataIndex="customer_id"
           title="customer"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select {...customerSelectProps} style={{ width: 200 }}/>
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isLoadingCustomers) return <Skeleton.Button />;
             return (
@@ -160,6 +182,23 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("sales_id", sorter)}
           dataIndex="sales_id"
           title="sales"
+          render={(value) => {
+            if (isProfileLoading) return <Skeleton.Button />;
+            return (
+              <Text>
+                {
+                  profiles?.data?.find((profile) => profile.id === value)
+                    ?.username
+                }
+              </Text>
+            );
+          }}
+        />
+        <Table.Column<Database["public"]["Tables"]["challan"]["Row"]>
+          sorter={{ multiple: 2 }}
+          defaultSortOrder={getDefaultSortOrder("distributor_id", sorter)}
+          dataIndex="distributor_id"
+          title="Distributor"
           render={(value) => {
             if (isProfileLoading) return <Skeleton.Button />;
             return (
