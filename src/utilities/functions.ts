@@ -29,9 +29,9 @@ export const getUserSupabase = async (userId: string) => {
 const result = await supabaseServiceRoleClient.auth.admin.getUserById(userId);  
   return result;
 };
-
+  
 export function isValidUUID(uuid: string) {
-  return validate(uuid);
+  return validate(uuid);      
 }
 export const getActionColor = (action: string): TagProps["color"] => {
   switch (action) {

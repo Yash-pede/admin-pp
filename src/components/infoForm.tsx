@@ -55,7 +55,7 @@ export const UserInfoForm = (props: Props) => {
   const [bannedStatus, setBannedStatus] = React.useState("");
   React.useEffect(() => {
     async function banned() {
-      const user = await getUserSupabase(props.userDetails.id);
+      const user:any = await getUserSupabase(props.userDetails.id);
       setBannedStatus(user?.data.user?.banned_until ?? "");
     }
     banned();
@@ -173,7 +173,7 @@ export const UserInfoForm = (props: Props) => {
           <Button
             type="primary"
             onClick={async () => {
-              const result = await banUser(props.userDetails.id, "1s");
+              const result:any = await banUser(props.userDetails.id, "1s");
               if (result.data.user) {
                 notification.success({
                   message: "User Banned",
@@ -202,7 +202,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result = await banUser(props.userDetails.id, "1h");
+                const result:any = await banUser(props.userDetails.id, "1h");
                 if (result.data.user) {
                   notification.success({
                     message: "User Banned",
@@ -222,7 +222,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result = await banUser(props.userDetails.id, "24h");
+                const result:any = await banUser(props.userDetails.id, "24h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -242,7 +242,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result = await banUser(props.userDetails.id, "168h");
+                const result:any = await banUser(props.userDetails.id, "168h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -262,7 +262,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result = await banUser(props.userDetails.id, "730h");
+                const result:any = await banUser(props.userDetails.id, "730h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -282,7 +282,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result = await banUser(props.userDetails.id, "999999h");
+                const result:any = await banUser(props.userDetails.id, "999999h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
