@@ -47,6 +47,7 @@ import { FundsList, FundsRequested } from "./routes/funds";
 import { ChallanList, ChallanShow } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
 import { CustomersList } from "./routes/clients/customers";
+import { ReportsList } from "./routes/reports";
 
 function App() {
   return (
@@ -142,7 +143,7 @@ function App() {
                       <Route index element={<FundsList />} />
                       <Route path="requested" element={<FundsRequested />} />
                     </Route>
-
+                  
                     <Route path="/challan">
                       <Route index element={<ChallanList />} />
                       <Route path=":id" element={<ChallanShow />} />
@@ -164,6 +165,7 @@ function App() {
                       <Route path="audit-log">
                         <Route index element={<AuditLogList />} />
                       </Route>
+                    <Route path="reports" element={<ReportsList />} />
                     </Route>
 
                     <Route path="*" element={<ErrorComponent />} />

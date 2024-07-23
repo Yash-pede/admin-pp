@@ -124,6 +124,14 @@ export const resources: IResourceItem[] = [
     },
   },
   {
+    name: "reports",
+    list: "/administration/reports",
+    meta: {
+      label: "Reports",
+      parent: "administration",
+    },
+  },
+  {
     name: "settings",
     list: "/administration/settings",
     meta: {
