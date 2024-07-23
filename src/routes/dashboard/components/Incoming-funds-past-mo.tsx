@@ -43,7 +43,7 @@ const IncomingFundsPastMonth = () => {
     tooltip: false,
     animation: false,
     data: totalTransfersCount?.data,
-    xField: (d) => {
+    xField: (d:any) => {
       return new Date(d.created_at);
     },
     yField: "amount",

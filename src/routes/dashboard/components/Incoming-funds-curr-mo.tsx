@@ -34,29 +34,6 @@ const IncomingFundsCurrentMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
-  const { data: totalTransfersCountLastMonth, isLoadingLastMonth } = useList<
-    Database["public"]["Tables"]["transfers"]["Row"]
-  >({
-    resource: "transfers",
-    filters: [
-      {
-        field: "customer_id",
-        operator: "nnull",
-        value: null,
-      },
-      {
-        field: "created_at",
-        operator: "lt",
-        value: dayjs().subtract(1, "month").toISOString(),
-      },
-    ],
-    meta: {
-      select: "id , created_at , amount",
-    },
-    queryOptions: {
-      refetchInterval: 1 * 60 * 60 * 1000,
-    },
-  });
   const config = {
     className: styles.area,
     appendPadding: [1, 0, 0, 0],
@@ -66,7 +43,7 @@ const IncomingFundsCurrentMonth = () => {
     tooltip: false,
     animation: false,
     data: totalTransfersCount?.data,
-    xField: (d) => {
+    xField: (d:any) => {
       return new Date(d.created_at);
     },
     yField: "amount",
