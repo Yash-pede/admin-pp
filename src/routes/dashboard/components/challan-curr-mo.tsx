@@ -1,13 +1,14 @@
+import React, { FC, PropsWithChildren, Suspense } from "react";
 import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { ShopOutlined } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import dayjs from "dayjs";
-import React, { FC, PropsWithChildren, Suspense } from "react";
+import TinyAreaChart from "../../../components/area-chart";
+import IconWrapper from "./icon-wrapper";
 
 export const ChallanCurrentMonth = () => {
-  const Area = React.lazy(() => import("@ant-design/plots/es/components/area"));
 
   const { data: totalChallansCount, isLoading } = useList<
     Database["public"]["Tables"]["challan"]["Row"]
@@ -27,7 +28,7 @@ export const ChallanCurrentMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
-
+  
   return (
     <Card
       style={{ height: "96px", padding: 0 }}
@@ -85,30 +86,10 @@ export const ChallanCurrentMonth = () => {
               .reduce((a, b) => a + b, 0)
           )}
         </Text>
-
-        hi
+        <Suspense>
+          <TinyAreaChart data={totalChallansCount?.data ?? []} dataKey="bill_amt" />
+        </Suspense>
       </div>
     </Card>
-  );
-};
-
-const IconWrapper: FC<PropsWithChildren<{ color: string }>> = ({
-  color,
-  children,
-}) => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "32px",
-        height: "32px",
-        borderRadius: "50%",
-        backgroundColor: color,
-      }}
-    >
-      {children}
-    </div>
   );
 };

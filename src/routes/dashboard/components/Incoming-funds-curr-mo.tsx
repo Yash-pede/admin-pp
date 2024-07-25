@@ -4,12 +4,13 @@ import { MoneyCollectFilled } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import React, { Suspense } from "react";
+import { ShopOutlined } from "@ant-design/icons";
 
-import styles from "./index.module.css";
 import dayjs from "dayjs";
+import TinyAreaChart from "../../../components/area-chart";
+import IconWrapper from "./icon-wrapper";
 
 const IncomingFundsCurrentMonth = () => {
-  const Area = React.lazy(() => import("@ant-design/plots/es/components/area"));
   const { data: totalTransfersCount, isLoading } = useList<
     Database["public"]["Tables"]["transfers"]["Row"]
   >({
@@ -33,32 +34,7 @@ const IncomingFundsCurrentMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
-  const config = {
-    className: styles.area,
-    appendPadding: [1, 0, 0, 0],
-    padding: 0,
-    syncViewPadding: true,
-    autoFit: true,
-    tooltip: false,
-    animation: false,
-    data: totalTransfersCount?.data,
-    xField: (d:any) => {
-      return new Date(d.created_at);
-    },
-    yField: "amount",
-    style: {
-      fill: "linear-gradient(-90deg, white 0%, darkgreen 100%)",
-    },
-    axis: {
-      y: { labelFormatter: "~s" },
-    },
-    line: {
-      style: {
-        stroke: "darkgreen",
-        strokeWidth: 2,
-      },
-    },
-  };
+
   return (
     <Card
       style={{ height: "96px", padding: 0 }}
@@ -75,7 +51,14 @@ const IncomingFundsCurrentMonth = () => {
           whiteSpace: "nowrap",
         }}
       >
-        <MoneyCollectFilled />
+        <IconWrapper color="#E6F4FF">
+          <ShopOutlined
+            className="md"
+            style={{
+              color: "#1677FF",
+            }}
+          />
+        </IconWrapper>
         <Text size="md" className="secondary" style={{ marginLeft: "8px" }}>
           Collected Funds as of {dayjs().format("MMMM YYYY")}
         </Text>
@@ -91,10 +74,11 @@ const IncomingFundsCurrentMonth = () => {
           strong
           style={{
             textAlign: "start",
-            
+
             fontVariantNumeric: "tabular-nums",
           }}
-        >₹{" "}
+        >
+          ₹{" "}
           {isLoading ? (
             <Skeleton.Button
               style={{
@@ -109,7 +93,10 @@ const IncomingFundsCurrentMonth = () => {
           )}
         </Text>
         <Suspense>
-          <Area {...config} />
+          <TinyAreaChart
+            data={totalTransfersCount?.data ?? []}
+            dataKey="amount"
+          />
         </Suspense>
       </div>
     </Card>
