@@ -1,9 +1,8 @@
 import { Text } from "@/components";
 import { Database } from "@/utilities";
-import { ArrowUpOutlined, MoneyCollectFilled } from "@ant-design/icons";
-import { AreaConfig } from "@ant-design/plots";
+import { MoneyCollectFilled } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
-import { Card, Skeleton, Statistic } from "antd";
+import { Card, Skeleton } from "antd";
 import React, { Suspense } from "react";
 
 import styles from "./index.module.css";
@@ -92,10 +91,10 @@ const IncomingFundsCurrentMonth = () => {
           strong
           style={{
             textAlign: "start",
-            marginLeft: "48px",
+            
             fontVariantNumeric: "tabular-nums",
           }}
-        >
+        >₹{" "}
           {isLoading ? (
             <Skeleton.Button
               style={{

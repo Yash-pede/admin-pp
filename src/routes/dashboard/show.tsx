@@ -2,7 +2,8 @@ import { useGetIdentity } from "@refinedev/core";
 import { Col, Row } from "antd";
 import React from "react";
 import IncomingFundsCurrentMonth from "./components/Incoming-funds-curr-mo";
-import IncomingFundsPastMonth from "./components/Incoming-funds-past-mo";
+import { IncomingFundsPastMonth } from "./components/Incoming-funds-past-mo";
+import { ChallanCurrentMonth } from "./components/challan-curr-mo";
 
 const DashboardHome = () => {
   const { data } = useGetIdentity();
@@ -17,7 +18,7 @@ const DashboardHome = () => {
           <IncomingFundsPastMonth />
         </Col>
         <Col xs={24} sm={24} xl={8}>
-          dashboardcount card
+          <ChallanCurrentMonth/>
         </Col>
       </Row>
 

@@ -1,7 +1,6 @@
 import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { MoneyCollectFilled } from "@ant-design/icons";
-import { AreaConfig } from "@ant-design/plots";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import React, { Suspense } from "react";
@@ -9,7 +8,7 @@ import React, { Suspense } from "react";
 import styles from "./index.module.css";
 import dayjs from "dayjs";
 
-const IncomingFundsPastMonth = () => {
+export const IncomingFundsPastMonth = () => {
   const Area = React.lazy(() => import("@ant-design/plots/es/components/area"));
   const { data: totalTransfersCount, isLoading } = useList<
     Database["public"]["Tables"]["transfers"]["Row"]
@@ -24,16 +23,22 @@ const IncomingFundsPastMonth = () => {
       {
         field: "created_at",
         operator: "lt",
-        value: dayjs().subtract(1, "month").toISOString(),
+        value: dayjs().startOf("month").toISOString(),
+      },
+      {
+        field: "created_at",
+        operator: "gte",
+        value: dayjs().subtract(1, "month").startOf("month").toISOString(),
       },
     ],
-    queryOptions: {
-      refetchInterval: 1 * 60 * 60 * 1000,
-    },
     meta: {
       select: "id , created_at , amount",
     },
+    queryOptions: {
+      refetchInterval: 1 * 60 * 60 * 1000,
+    },
   });
+
   const config = {
     className: styles.area,
     appendPadding: [1, 0, 0, 0],
@@ -43,7 +48,7 @@ const IncomingFundsPastMonth = () => {
     tooltip: false,
     animation: false,
     data: totalTransfersCount?.data,
-    xField: (d:any) => {
+    xField: (d: any) => {
       return new Date(d.created_at);
     },
     yField: "amount",
@@ -55,11 +60,12 @@ const IncomingFundsPastMonth = () => {
     },
     line: {
       style: {
-        stroke: "blue",
+        stroke: "darkgreen",
         strokeWidth: 2,
       },
     },
   };
+
   return (
     <Card
       style={{ height: "96px", padding: 0 }}
@@ -93,10 +99,10 @@ const IncomingFundsPastMonth = () => {
           strong
           style={{
             textAlign: "start",
-            marginLeft: "48px",
+            
             fontVariantNumeric: "tabular-nums",
           }}
-        >
+        >₹{" "}
           {isLoading ? (
             <Skeleton.Button
               style={{
@@ -117,5 +123,3 @@ const IncomingFundsPastMonth = () => {
     </Card>
   );
 };
-
-export default IncomingFundsPastMonth;
