@@ -3,16 +3,6 @@ import { Database } from "@/utilities";
 import { ShopOutlined } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-
 import dayjs from "dayjs";
 import React, { FC, PropsWithChildren, Suspense } from "react";
 
@@ -95,18 +85,8 @@ export const ChallanCurrentMonth = () => {
               .reduce((a, b) => a + b, 0)
           )}
         </Text>
-            <AreaChart
-              width={40}
-              height={70}
-              data={totalChallansCount?.data}
-            >
-              <Area
-                type="monotone"
-                dataKey="bill_amt"
-                stroke="#8884d8"
-                fill="#8884d8"
-              />
-            </AreaChart>
+
+        hi
       </div>
     </Card>
   );
