@@ -7,7 +7,7 @@ import React, { Suspense } from "react";
 import { ShopOutlined } from "@ant-design/icons";
 
 import dayjs from "dayjs";
-import TinyAreaChart from "../../../components/area-chart";
+import TinyAreaChart from "../../../components/charts/area-chart";
 import IconWrapper from "./icon-wrapper";
 
 const IncomingFundsCurrentMonth = () => {
@@ -34,6 +34,15 @@ const IncomingFundsCurrentMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
+    const totalAmount = totalTransfersCount?.data
+      ?.map((d) => d.amount)
+      ?.reduce((a, b) => a + b, 0);
+
+    const textSize = totalAmount
+      ? totalAmount.toString().length > 2
+        ? "lg"  
+        : "md"
+      : "xl";
 
   return (
     <Card
@@ -70,7 +79,7 @@ const IncomingFundsCurrentMonth = () => {
         }}
       >
         <Text
-          size="xxxl"
+          size={textSize}
           strong
           style={{
             textAlign: "start",
@@ -87,9 +96,7 @@ const IncomingFundsCurrentMonth = () => {
               }}
             />
           ) : (
-            totalTransfersCount?.data
-              .map((d) => d.amount)
-              .reduce((a, b) => a + b, 0)
+            totalAmount
           )}
         </Text>
         <Suspense>

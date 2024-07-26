@@ -6,7 +6,7 @@ import { Card, Skeleton } from "antd";
 import React, { Suspense } from "react";
 
 import dayjs from "dayjs";
-import TinyAreaChart from "../../../components/area-chart";
+import TinyAreaChart from "../../../components/charts/area-chart";
 import IconWrapper from "./icon-wrapper";
 
 export const IncomingFundsPastMonth = () => {
@@ -38,7 +38,15 @@ export const IncomingFundsPastMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
+  const totalAmount = totalTransfersCount?.data
+    .map((d) => d.amount)
+    .reduce((a, b) => a + b, 0);
 
+  const textSize = totalAmount
+    ? totalAmount.toString().length > 2
+      ? "lg"
+      : "md"
+    : "xl";
   return (
     <Card
       style={{ height: "96px", padding: 0 }}
@@ -55,7 +63,7 @@ export const IncomingFundsPastMonth = () => {
           whiteSpace: "nowrap",
         }}
       >
-         <IconWrapper color="#E6F4FF">
+        <IconWrapper color="#E6F4FF">
           <ShopOutlined
             className="md"
             style={{
@@ -64,8 +72,7 @@ export const IncomingFundsPastMonth = () => {
           />
         </IconWrapper>
         <Text size="md" className="secondary" style={{ marginLeft: "8px" }}>
-          Last month -{" "}
-          {dayjs().subtract(1, "month").format("MMMM YYYY")}
+          Last month - {dayjs().subtract(1, "month").format("MMMM YYYY")}
         </Text>
       </div>
       <div
@@ -75,14 +82,15 @@ export const IncomingFundsPastMonth = () => {
         }}
       >
         <Text
-          size="xxxl"
+          size={textSize}
           strong
           style={{
             textAlign: "start",
-            
+
             fontVariantNumeric: "tabular-nums",
           }}
-        >₹{" "}
+        >
+          ₹{" "}
           {isLoading ? (
             <Skeleton.Button
               style={{
@@ -91,13 +99,14 @@ export const IncomingFundsPastMonth = () => {
               }}
             />
           ) : (
-            totalTransfersCount?.data
-              .map((d) => d.amount)
-              .reduce((a, b) => a + b, 0)
+            totalAmount
           )}
         </Text>
         <Suspense>
-        <TinyAreaChart data={totalTransfersCount?.data ?? []} dataKey="amount" />
+          <TinyAreaChart
+            data={totalTransfersCount?.data ?? []}
+            dataKey="amount"
+          />
         </Suspense>
       </div>
     </Card>

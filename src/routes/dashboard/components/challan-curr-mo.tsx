@@ -5,11 +5,10 @@ import { ShopOutlined } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import dayjs from "dayjs";
-import TinyAreaChart from "../../../components/area-chart";
+import TinyAreaChart from "../../../components/charts/area-chart";
 import IconWrapper from "./icon-wrapper";
 
 export const ChallanCurrentMonth = () => {
-
   const { data: totalChallansCount, isLoading } = useList<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
@@ -28,7 +27,16 @@ export const ChallanCurrentMonth = () => {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
   });
-  
+  const totalAmount = totalChallansCount?.data
+    .map((d) => d.bill_amt)
+    .reduce((a, b) => a + b, 0);  
+
+  const textSize = totalAmount
+    ? totalAmount.toString().length > 2
+      ? "lg"
+      : "md"
+    : "xl";
+
   return (
     <Card
       style={{ height: "96px", padding: 0 }}
@@ -64,7 +72,7 @@ export const ChallanCurrentMonth = () => {
         }}
       >
         <Text
-          size="xxxl"
+          size={textSize}
           strong
           style={{
             textAlign: "start",
@@ -87,7 +95,10 @@ export const ChallanCurrentMonth = () => {
           )}
         </Text>
         <Suspense>
-          <TinyAreaChart data={totalChallansCount?.data ?? []} dataKey="bill_amt" />
+          <TinyAreaChart
+            data={totalChallansCount?.data ?? []}
+            dataKey="bill_amt"
+          />
         </Suspense>
       </div>
     </Card>

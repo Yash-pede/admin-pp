@@ -4,6 +4,7 @@ import React from "react";
 import IncomingFundsCurrentMonth from "./components/Incoming-funds-curr-mo";
 import { IncomingFundsPastMonth } from "./components/Incoming-funds-past-mo";
 import { ChallanCurrentMonth } from "./components/challan-curr-mo";
+import ChallanDetails from "./components/challan-details";
 
 const DashboardHome = () => {
   const { data } = useGetIdentity();
@@ -46,7 +47,7 @@ const DashboardHome = () => {
             height: "432px",
           }}
         >
-          DashboardDealsChart
+          <ChallanDetails/>
         </Col>
       </Row>
 
