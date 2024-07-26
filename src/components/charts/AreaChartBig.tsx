@@ -3,14 +3,14 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 
 export const AreaChartBig = ({
   data,
-  data2,
   XDataKey,
   dataKey,
+  dataKey2,
 }: {
   data: Array<any>;
-  data2?: Array<any>;
   XDataKey: string;
   dataKey: string;
+  dataKey2?: string;
 }) => {
   const isValidDate = (date: any) => {
     return dayjs(date).isValid();
@@ -30,12 +30,17 @@ export const AreaChartBig = ({
           }}
         >
           <h4 style={{ fontSize: "18px", fontWeight: "bold" }}>
-            {isValidDate(label) ? dayjs(label).format("MMMM YYYY") : label}
+            {isValidDate(label) ? dayjs(label).format("MMMM") : label}
           </h4>
           <hr />
           <p style={{ fontSize: "16px", fontWeight: "semibold" }}>
             {dataKey}: {payload[0].value}
           </p>
+          {dataKey2 && (
+            <p style={{ fontSize: "16px", fontWeight: "semibold" }}>
+              {dataKey2}: {payload[1].value}
+            </p>
+          )}
           {/* {JSON.stringify(payload[0].payload, null, 2)} */}
         </div>
       );
@@ -70,7 +75,7 @@ export const AreaChartBig = ({
         dataKey={XDataKey}
         tickFormatter={(x) => {
           if (isValidDate(x)) {
-            return dayjs(x).format("MMMM YYYY");
+            return dayjs(x).format("MMM YYYY");
           }
           return x;
         }}
@@ -84,10 +89,10 @@ export const AreaChartBig = ({
         fillOpacity={1}
         fill="url(#colorUv)"
       />
-      {data2 && (
+      {!!dataKey2 && (
         <Area
           type="monotone"
-          dataKey={dataKey}
+          dataKey={dataKey2}
           stroke="#82ca9d"
           fillOpacity={1}
           fill="url(#colorPv)"
