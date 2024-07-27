@@ -6,6 +6,7 @@ import { IconCurrencyRupee } from "@tabler/icons-react";
 import { Button, Card } from "antd";
 import dayjs from "dayjs";
 import React, { Suspense } from "react";
+import IconWrapper from "./icon-wrapper";
 
 const ChallanDetails = () => {
   const [groupedChallanAccToMo, setGroupedChallanAccToMo] = React.useState<
@@ -149,7 +150,14 @@ const ChallanDetails = () => {
             gap: "8px",
           }}
         >
-          <IconCurrencyRupee />
+          <IconWrapper color="#E6F4FF">
+            <IconCurrencyRupee
+              className="md"
+              style={{
+                color: "#1677FF",
+              }}
+            />
+          </IconWrapper>
           <Text size="sm" style={{ marginLeft: ".5rem" }}>
             Challans
           </Text>

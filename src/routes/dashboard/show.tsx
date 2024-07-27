@@ -5,6 +5,7 @@ import IncomingFundsCurrentMonth from "./components/Incoming-funds-curr-mo";
 import { IncomingFundsPastMonth } from "./components/Incoming-funds-past-mo";
 import { ChallanCurrentMonth } from "./components/challan-curr-mo";
 import ChallanDetails from "./components/challan-details";
+import ProductsChart from "./components/products-proportion";
 
 const DashboardHome = () => {
   const { data } = useGetIdentity();
@@ -19,7 +20,7 @@ const DashboardHome = () => {
           <IncomingFundsPastMonth />
         </Col>
         <Col xs={24} sm={24} xl={8}>
-          <ChallanCurrentMonth/>
+          <ChallanCurrentMonth />
         </Col>
       </Row>
 
@@ -37,7 +38,7 @@ const DashboardHome = () => {
             height: "432px",
           }}
         >
-          DashboardTotalRevenueChart
+          <ProductsChart />
         </Col>
         <Col
           xs={24}
@@ -47,7 +48,7 @@ const DashboardHome = () => {
             height: "432px",
           }}
         >
-          <ChallanDetails/>
+          <ChallanDetails />
         </Col>
       </Row>
 
