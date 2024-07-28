@@ -6,6 +6,7 @@ import { IncomingFundsPastMonth } from "./components/Incoming-funds-past-mo";
 import { ChallanCurrentMonth } from "./components/challan-curr-mo";
 import ChallanDetails from "./components/challan-details";
 import ProductsChart from "./components/products-proportion";
+import TopPerformers from "./components/top-performers";
 
 const DashboardHome = () => {
   const { data } = useGetIdentity();
@@ -52,21 +53,21 @@ const DashboardHome = () => {
         </Col>
       </Row>
 
-      <Row
+      {/* <Row
         gutter={[32, 32]}
         style={{
           marginTop: "32px",
         }}
       >
         <Col xs={24} sm={24} xl={14} xxl={16}>
-          DashboardLatestActivities
+          <TopPerformers />
         </Col>
         <Col xs={24} sm={24} xl={10} xxl={8}>
           CalendarUpcomingEvents
         </Col>
-      </Row>
+      </Row> */}
 
-      <Row
+      {/* <Row
         gutter={[32, 32]}
         style={{
           marginTop: "32px",
@@ -92,7 +93,7 @@ const DashboardHome = () => {
         >
           CompaniesMap
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 };
