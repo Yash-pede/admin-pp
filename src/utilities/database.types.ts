@@ -235,7 +235,7 @@ export type Database = {
         }
         Insert: {
           action: string
-          author: string
+          author?: string
           created_at?: string
           data?: Json | null
           id?: number
@@ -293,6 +293,35 @@ export type Database = {
             columns: ["distributor_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      passwords: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          password: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          password: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          password?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passwords_id_fkey"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -401,50 +430,88 @@ export type Database = {
           },
         ]
       }
+      targets: {
+        Row: {
+          achieved: boolean
+          id: number
+          month: number
+          target: number | null
+          total: number
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          achieved?: boolean
+          id?: number
+          month: number
+          target?: number | null
+          total?: number
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          achieved?: boolean
+          id?: number
+          month?: number
+          target?: number | null
+          total?: number
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "targets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transfers: {
         Row: {
           amount: number
           created_at: string
           customer_id: number | null
           description: string | null
-          from_user_id: string
+          from_user_id: string | null
           id: number
-          status: Database["public"]["Enums"]["order_status"]
-          to_user_id: string
+          status: Database["public"]["Enums"]["transfer_status"]
+          to_user_id: string | null
         }
         Insert: {
           amount: number
           created_at?: string
           customer_id?: number | null
           description?: string | null
-          from_user_id: string
+          from_user_id?: string | null
           id?: number
-          status: Database["public"]["Enums"]["order_status"]
-          to_user_id: string
+          status?: Database["public"]["Enums"]["transfer_status"]
+          to_user_id?: string | null
         }
         Update: {
           amount?: number
           created_at?: string
           customer_id?: number | null
           description?: string | null
-          from_user_id?: string
+          from_user_id?: string | null
           id?: number
-          status?: Database["public"]["Enums"]["order_status"]
-          to_user_id?: string
+          status?: Database["public"]["Enums"]["transfer_status"]
+          to_user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "funds_to_user_id_fkey"
-            columns: ["to_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "transfers_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfers_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
@@ -477,6 +544,18 @@ export type Database = {
           product_id_param: number
           batch_id_param: string
           batch_quantity_param: number
+        }
+        Returns: undefined
+      }
+      insert_log_entry: {
+        Args: {
+          p_action?: string
+          p_resource?: string
+          p_data?: Json
+          p_previous_data?: Json
+          p_meta?: Json
+          p_meta_data?: Json
+          p_author?: string
         }
         Returns: undefined
       }

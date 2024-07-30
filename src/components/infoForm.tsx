@@ -3,7 +3,7 @@ import { Database } from "@/utilities";
 import { banUser, getUserSupabase } from "@/utilities/functions";
 import { ShopOutlined } from "@ant-design/icons";
 import { DateField, useModal } from "@refinedev/antd";
-import { useGo, useOne } from "@refinedev/core";
+import { useGo, useList, useOne } from "@refinedev/core";
 import {
   Alert,
   Button,
@@ -14,7 +14,6 @@ import {
   Skeleton,
   Space,
 } from "antd";
-import useNotification from "antd/es/notification/useNotification";
 import dayjs from "dayjs";
 import React from "react";
 
@@ -48,14 +47,36 @@ export const UserInfoForm = (props: Props) => {
     id: props.userDetails.id,
   });
 
+  const { data: targets, isLoading: targetsLoading } = useList<
+    Database["public"]["Tables"]["targets"]["Row"]
+  >({
+    resource: "targets",
+    filters: [
+      {
+        field: "user_id",
+        operator: "eq",
+        value: props.userDetails.id,
+      },
+      {
+        field: "month",
+        operator: "eq",
+        value: dayjs().month() + 1,
+      },
+      {
+        field: "year",
+        operator: "eq",
+        value: dayjs().year(),
+      },
+    ],
+  });
   const gridStylee: React.CSSProperties = {
     width: "50%",
     textAlign: "center",
-  };  
+  };
   const [bannedStatus, setBannedStatus] = React.useState("");
   React.useEffect(() => {
     async function banned() {
-      const user:any = await getUserSupabase(props.userDetails.id);
+      const user: any = await getUserSupabase(props.userDetails.id);
       setBannedStatus(user?.data.user?.banned_until ?? "");
     }
     banned();
@@ -117,10 +138,28 @@ export const UserInfoForm = (props: Props) => {
         </Card.Grid>
         <Card.Grid style={gridStyle}>
           <Space size="middle">
+            <Text strong>Target: </Text>
+            <Text>
+              {targetsLoading || !targets?.data[0]?.target ? (
+                <Skeleton.Button active />
+              ) : (
+               <Space size="middle">
+                <Text size="md">{targets?.data[0]?.total}</Text>
+                <Text>/</Text>
+                <Text size="md">{targets?.data[0]?.target}</Text>
+                <Text>=</Text>
+                <Text size="md" color={targets?.data[0]?.total/targets?.data[0]?.target*100 > 100 ? "green" : "red"}>{(targets?.data[0]?.total/targets?.data[0]?.target*100).toFixed(2)}</Text>
+               </Space>
+              )}
+            </Text>
+          </Space>
+        </Card.Grid>
+        <Card.Grid style={gridStyle}>
+          <Space size="middle">
             <Text strong>Funds: </Text>
             <Text>
               {fundLoading ? (
-                <Skeleton active />
+                <Skeleton.Button active />
               ) : (
                 "₹ " + (fundDetails?.data?.total ?? 0)
               )}
@@ -167,13 +206,13 @@ export const UserInfoForm = (props: Props) => {
       </Card>
       <Modal
         {...modalProps}
-        onClose={()=>setBannedStatus("")} 
+        onClose={() => setBannedStatus("")}
         footer={[
           <Button onClick={close}>Cancel</Button>,
           <Button
             type="primary"
             onClick={async () => {
-              const result:any = await banUser(props.userDetails.id, "1s");
+              const result: any = await banUser(props.userDetails.id, "1s");
               if (result.data.user) {
                 notification.success({
                   message: "User Banned",
@@ -183,7 +222,7 @@ export const UserInfoForm = (props: Props) => {
                     result.data.user?.banned_until ?? ""
                   ).format("DD-MM-YYYY hh:mm A")}`,
                 });
-                close(); // Call the close function to close the modal
+                close();
               }
             }}
           >
@@ -202,7 +241,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result:any = await banUser(props.userDetails.id, "1h");
+                const result: any = await banUser(props.userDetails.id, "1h");
                 if (result.data.user) {
                   notification.success({
                     message: "User Banned",
@@ -222,7 +261,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result:any = await banUser(props.userDetails.id, "24h");
+                const result: any = await banUser(props.userDetails.id, "24h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -242,7 +281,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result:any = await banUser(props.userDetails.id, "168h");
+                const result: any = await banUser(props.userDetails.id, "168h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -262,7 +301,7 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result:any = await banUser(props.userDetails.id, "730h");
+                const result: any = await banUser(props.userDetails.id, "730h");
                 if (result) {
                   notification.success({
                     message: "User Banned",
@@ -282,7 +321,10 @@ export const UserInfoForm = (props: Props) => {
           <Card.Grid style={gridStylee}>
             <Button
               onClick={async () => {
-                const result:any = await banUser(props.userDetails.id, "999999h");
+                const result: any = await banUser(
+                  props.userDetails.id,
+                  "999999h"
+                );
                 if (result) {
                   notification.success({
                     message: "User Banned",

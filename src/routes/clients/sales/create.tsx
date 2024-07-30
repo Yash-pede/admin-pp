@@ -10,7 +10,7 @@ import {
   useUpdate,
 } from "@refinedev/core";
 import { Create } from "@refinedev/antd";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const SalesCreate = () => {
   const { open, close } = useNotification();
