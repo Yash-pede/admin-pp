@@ -151,6 +151,22 @@ export const SalesTable = ({
             ...tableProps.pagination,
             showSizeChanger: false,
           }}
+          onRow={(record) => {
+            return {
+              onClick: () => {
+                go({
+                  to: {
+                    action: "show",
+                    resource: "sales",
+                    id: record.id,
+                  },
+                  query: {
+                    distributorId: distributorDetails.id,
+                  },
+                }); 
+              },
+            };
+          }}
         >
           <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
             title="ID"
