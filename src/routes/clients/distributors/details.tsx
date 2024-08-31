@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Database } from "@/utilities";
 import {
   DateField,
@@ -13,7 +13,8 @@ import { useLocation } from "react-router-dom";
 
 export const InventoryDetails = () => {
   const user = useLocation().pathname.split("/").pop();
-  const { tableProps, tableQueryResult,sorters } = useTable<
+  const [productWiseArrange, setProductWiseArrange] = useState<any>([]);
+  const { tableProps, tableQueryResult, sorters } = useTable<
     Database["public"]["Tables"]["inventory"]["Row"]
   >({
     resource: "inventory",
@@ -59,12 +60,78 @@ export const InventoryDetails = () => {
     defaultValue: tableQueryResult.data?.data.map((item) => item.product_id),
   });
 
+  useEffect(() => {
+    const productWiseData: { [productId: string]: { productId: number; batches: { batchId: string; quantity: number }[]; quantity: number } } = {};
+  
+    tableQueryResult?.data?.data.forEach((item) => {
+      const productId = item.product_id;
+      const batchId = item.batch_id;
+      const quantity = item.quantity;
+  
+      if (productId in productWiseData) {
+        productWiseData[productId].batches.push({
+          batchId,
+          quantity,
+        });
+        productWiseData[productId].quantity += quantity;
+      } else {
+        productWiseData[productId] = {
+          productId,
+          batches: [
+            {
+              batchId,
+              quantity,
+            },
+          ],
+          quantity,
+        };
+      }
+    });
+  
+    const arrangedProducts = Object.values(productWiseData);
+  
+    setProductWiseArrange(arrangedProducts);
+  }, [isLoadingProducts, tableQueryResult]);
+
+  console.log(productWiseArrange);
+  const expandedRowRender = (record: any) => {
+    const columns = [
+      {
+        title: "Batch ID",
+        dataIndex: "batchId",
+        key: "batchId",
+      },
+      {
+        title: "Quantity",
+        dataIndex: "quantity",
+        key: "quantity",
+      },
+    ];
+
+    return (
+      <Table
+        columns={columns}
+        dataSource={record.batches}
+        pagination={false}
+        bordered
+        showHeader
+      />
+    );
+
+    return null;
+  };
+
   return (
     <List header={<h1>Inventory Details</h1>}>
-      <Table {...tableProps} rowKey={"id"}>
+      <Table
+        {...tableProps}
+        rowKey={"productId"}
+        dataSource={productWiseArrange}
+        expandable={{ expandedRowRender, defaultExpandedRowKeys: ["0"] }}
+      >
         <Table.Column dataIndex="id" title="ID" hidden />
         <Table.Column
-          dataIndex="product_id"
+          dataIndex="productId"
           title="Product ID"
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
@@ -92,7 +159,6 @@ export const InventoryDetails = () => {
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorters)}
         />
-        <Table.Column dataIndex="batch_id" title="Batch ID" />
         <Table.Column
           dataIndex="created_at"
           title="Created"
