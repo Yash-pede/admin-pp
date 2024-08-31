@@ -43,6 +43,14 @@ export const TransactionList = (props: Props) => {
         },
       ],
     },
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ],
+    },
     queryOptions: {
       enabled: !!props.userId,
     },
@@ -161,7 +169,7 @@ export const TransactionList = (props: Props) => {
           dataIndex: "status",
           filterDropdown: (props) => (
             <FilterDropdown {...props}>
-               <Radio.Group>
+              <Radio.Group>
                 <Radio value="Credit">Credit</Radio>
                 <Radio value="Debit">Debit</Radio>
                 <Radio value="Approved">Approved</Radio>

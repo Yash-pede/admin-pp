@@ -109,29 +109,29 @@ export const CustomerTable = ({
           </Text>
         </>
       }
-      actions={[
-        <Button
-          key={1}
-          size="middle"
-          type="dashed"
-          onClick={() => {
-            go({
-              to: {
-                action: "create",
-                resource: "customer",
-              },
-              query: {
-                salesId: salesDetails.id,
-              },
-            });
-          }}
-        >
-          <Space size={"middle"}>
-            <PlusCircleOutlined />
-            <Text size="md">Add new customer</Text>
-          </Space>
-        </Button>,
-      ]}
+      // actions={[
+      //   <Button
+      //     key={1}
+      //     size="middle"
+      //     type="dashed"
+      //     onClick={() => {
+      //       go({
+      //         to: {
+      //           action: "create",
+      //           resource: "customer",
+      //         },
+      //         query: {
+      //           salesId: salesDetails.id,
+      //         },
+      //       });
+      //     }}
+      //   >
+      //     <Space size={"middle"}>
+      //       <PlusCircleOutlined />
+      //       <Text size="md">Add new customer</Text>
+      //     </Space>
+      //   </Button>,
+      // ]}
     >
       {!hasData && (
         <div

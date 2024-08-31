@@ -13,7 +13,7 @@ import {
 import { useList, useUpdate } from "@refinedev/core";
 import { SearchOutlined } from "@ant-design/icons";
 import { Database } from "@/utilities";
-import { Text } from "@/components";
+import { PaginationTotal, Text } from "@/components";
 
 export const ChallanList = ({ sales }: { sales?: boolean }) => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
@@ -123,7 +123,13 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           {tableQueryResult.data?.data.reduce((a, b) => a + b.received_amt, 0)}
         </Text>
       </Flex>
-      <Table {...tableProps} rowKey="id" bordered>
+      <Table {...tableProps} rowKey="id" bordered  pagination={{
+              ...tableProps.pagination,
+              pageSizeOptions: ["12", "24", "48", "96"],
+              showTotal: (total) => (
+                <PaginationTotal total={total} entityName="challans" />
+              ),
+            }}>
         <Table.Column
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}

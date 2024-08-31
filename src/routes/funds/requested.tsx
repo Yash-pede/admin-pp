@@ -1,5 +1,7 @@
 import { Database } from "@/utilities";
-import { getTransferColor, transactionStatusColor } from "@/utilities/functions";
+import {
+  transactionStatusColor,
+} from "@/utilities/functions";
 import {
   DateField,
   EditButton,
@@ -7,7 +9,7 @@ import {
   useEditableTable,
 } from "@refinedev/antd";
 import { useGetIdentity, useList } from "@refinedev/core";
-import { Button, Form, Select, Space, Table, Tag } from "antd";
+import { Button, Form, Select, Skeleton, Space, Table, Tag } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import React from "react";
 
@@ -47,6 +49,7 @@ export const FundsRequested = () => {
       enabled: !!user?.id,
     },
   });
+
   const { data: profiles, isLoading: isProfileLoading } = useList<
     Database["public"]["Tables"]["profiles"]["Row"]
   >({
@@ -56,8 +59,8 @@ export const FundsRequested = () => {
         field: "id",
         operator: "in",
         value: tableQueryResult.data?.data
-          .filter((item) => item.to_user_id)
-          .map((item) => item.to_user_id),
+          .filter((item) => item.from_user_id)
+          .map((item) => item.from_user_id),
       },
     ],
     queryOptions: {
@@ -82,25 +85,15 @@ export const FundsRequested = () => {
           {
             title: "From",
             dataIndex: "from_user_id",
-            hidden: true,
-            render: (value) => <div>{value}</div>,
-          },
-          {
-            title: "Customer",
-            dataIndex: "customer_id",
-            render: (value) => <div>{value || "-    "}</div>,
-          },
-          {
-            title: "To",
-            dataIndex: "to_user_id",
-            render: (value) => (
-              <div>
-                {
-                  profiles?.data.find((profile) => profile.id === value)
-                    ?.username
-                }
-              </div>
-            ),
+            render: (value) => {
+              return isProfileLoading ? (
+                <Skeleton.Button active />
+              ) : (
+                <div>
+                  {profiles?.data.find((item) => item.id === value)?.username}
+                </div>
+              );
+            },
           },
           {
             title: "Amount",
@@ -130,7 +123,7 @@ export const FundsRequested = () => {
               if (isEditing(record.id)) {
                 return (
                   <Form.Item name="status" style={{ margin: 0 }}>
-                    <Select         
+                    <Select
                       style={{ width: "100%" }}
                       options={[
                         {
