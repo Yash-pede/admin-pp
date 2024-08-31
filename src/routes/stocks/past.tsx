@@ -1,11 +1,18 @@
 import { Database } from "@/utilities";
-import { DateField, FilterDropdown, getDefaultSortOrder, List, useSelect, useTable } from "@refinedev/antd";
+import {
+  DateField,
+  FilterDropdown,
+  getDefaultSortOrder,
+  List,
+  useSelect,
+  useTable,
+} from "@refinedev/antd";
 import { useGo, useList } from "@refinedev/core";
-import { Select, Table } from "antd";
+import { Input, Select, Table } from "antd";
 import React from "react";
 
 export const StocksPast = () => {
-  const { tableProps, tableQueryResult,sorter } = useTable<
+  const { tableProps, tableQueryResult, sorter } = useTable<
     Database["public"]["Tables"]["stocks"]["Row"]
   >({
     resource: "stocks",
@@ -46,7 +53,9 @@ export const StocksPast = () => {
     },
   });
 
-  const { selectProps } = useSelect<Database["public"]["Tables"]["products"]["Row"]>({
+  const { selectProps } = useSelect<
+    Database["public"]["Tables"]["products"]["Row"]
+  >({
     resource: "products",
     optionLabel: "name",
     optionValue: "id",
@@ -63,7 +72,8 @@ export const StocksPast = () => {
           title="Product"
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
-              <Select style={{ minWidth: 200 }}
+              <Select
+                style={{ minWidth: 200 }}
                 mode="multiple"
                 placeholder="Filter products"
                 {...selectProps}
@@ -75,10 +85,15 @@ export const StocksPast = () => {
           )}
         />
         <Table.Column
-          dataIndex="available_quantity"
-          title="Available Quantity"
+          dataIndex="id"
+          title="Batch Id"
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Input />
+            </FilterDropdown>
+          )}
           render={(value) => <div>{value}</div>}
         />
         <Table.Column
