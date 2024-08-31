@@ -141,7 +141,7 @@ export const UserInfoForm = (props: Props) => {
             <Text strong>Target: </Text>
             <Text>
               {targetsLoading || !targets?.data[0]?.target ? (
-                <Skeleton.Button active />
+                <Button type="dashed" onClick={() => go({ to: `/administration/reports/targets/create/${props.userDetails.id}` })}>Set target </Button>
               ) : (
                <Space size="middle">
                 <Text size="md">{targets?.data[0]?.total}</Text>

@@ -1,17 +1,17 @@
-import React from "react";
-import Targets from "./Targets";
 import { Drawer, Form, Input, InputNumber } from "antd";
 import { Create, useDrawerForm } from "@refinedev/antd";
 import dayjs from "dayjs";
 import { useGo } from "@refinedev/core";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export const TargetCreate = () => {
   const go = useGo();
-  const [searchParams] = useSearchParams();
+  const { pathname } = useLocation();
+  const userId = pathname.split("/").pop();
   const { drawerProps, saveButtonProps, formProps } = useDrawerForm({
     action: "create",
     resource: "targets",
+    redirect: "list",
     onMutationSuccess: () => go({ to: `/administration/reports/targets` }),
   });
   return (
@@ -24,15 +24,16 @@ export const TargetCreate = () => {
         <Form {...formProps} layout="vertical">
           <Form.Item
             label="user_id"
-            name="user_id" hidden
+            name="user_id"
+            hidden
             rules={[
               {
                 required: true,
               },
             ]}
-            initialValue={searchParams.get("user_id")}
+            initialValue={userId}
           >
-            <Input defaultValue={searchParams.get("user_id") ?? ""} />
+            <Input defaultValue={userId} />
           </Form.Item>
           <Form.Item
             label="Target"

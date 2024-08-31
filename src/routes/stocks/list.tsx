@@ -58,7 +58,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
       initial: [
         {
           field: "created_at",
-          order: "asc",
+          order: "desc",
         },
       ],
     },

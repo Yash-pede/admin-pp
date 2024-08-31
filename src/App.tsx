@@ -119,6 +119,7 @@ function App() {
                           path="inventory/:id"
                           element={<InventoryDetails />}
                         />
+                        <Route path="target/:id" element={<TargetCreate />} />
                       </Route>
                       <Route path="customers">
                         <Route index element={<CustomersList />} />
@@ -171,7 +172,7 @@ function App() {
                         <Route path="targets">
                           <Route index element={<UserSelect />} />
                           <Route path=":id" element={<Targets />} />
-                          <Route path="create" element={<TargetCreate />} />
+                          <Route path="create/:id" element={<TargetCreate />} />
                         </Route>
                       </Route>
                     </Route>
