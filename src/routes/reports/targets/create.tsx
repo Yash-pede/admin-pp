@@ -54,9 +54,9 @@ export const TargetCreate = () => {
                 required: true,
               },
             ]}
-            initialValue={dayjs().month() + 1}
+            initialValue={dayjs().month()}
           >
-            <InputNumber defaultValue={dayjs().month() + 1} />
+            <InputNumber defaultValue={dayjs().month()} />
           </Form.Item>
           <Form.Item
             name="year"
