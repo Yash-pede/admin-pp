@@ -31,6 +31,21 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     },
   });
 
+  const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
+    Database["public"]["Tables"]["challan"]["Row"]
+  >({
+    resource: "challan",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
+    queryOptions: {
+      meta: {
+        select: "id, total_amt, received_amt, pending_amt",
+      },
+    },
+  });
+
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
     Database["public"]["Tables"]["customers"]["Row"]
   >({
@@ -112,24 +127,29 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
       <Flex justify="space-between" align="center" gap={2}>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Total:{" "}
-          {tableQueryResult.data?.data.reduce((a, b) => a + b.total_amt, 0)}
+          {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Pending:{" "}
-          {tableQueryResult.data?.data.reduce((a, b) => a + b.pending_amt, 0)}
+          {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Received:{" "}
-          {tableQueryResult.data?.data.reduce((a, b) => a + b.received_amt, 0)}
+          {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0)}
         </Text>
       </Flex>
-      <Table {...tableProps} rowKey="id" bordered  pagination={{
-              ...tableProps.pagination,
-              pageSizeOptions: ["12", "24", "48", "96"],
-              showTotal: (total) => (
-                <PaginationTotal total={total} entityName="challans" />
-              ),
-            }}>
+      <Table
+        {...tableProps}
+        rowKey="id"
+        bordered
+        pagination={{
+          ...tableProps.pagination,
+          pageSizeOptions: ["12", "24", "48", "96"],
+          showTotal: (total) => (
+            <PaginationTotal total={total} entityName="challans" />
+          ),
+        }}
+      >
         <Table.Column
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("id", sorter)}
