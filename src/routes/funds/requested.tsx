@@ -1,12 +1,14 @@
 import { Database } from "@/utilities";
-import {
-  transactionStatusColor,
-} from "@/utilities/functions";
+import { transactionStatusColor } from "@/utilities/functions";
+import { SearchOutlined } from "@ant-design/icons";
 import {
   DateField,
   EditButton,
+  FilterDropdown,
+  getDefaultFilter,
   SaveButton,
   useEditableTable,
+  useSelect,
 } from "@refinedev/antd";
 import { useGetIdentity, useList } from "@refinedev/core";
 import { Button, Form, Select, Skeleton, Space, Table, Tag } from "antd";
@@ -20,6 +22,7 @@ export const FundsRequested = () => {
     tableProps,
     formProps,
     isEditing,
+    filters,
     setId: setEditId,
     saveButtonProps,
     cancelButtonProps,
@@ -67,6 +70,21 @@ export const FundsRequested = () => {
       enabled: !!tableQueryResult.data,
     },
   });
+
+  const { selectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    defaultValue: getDefaultFilter("profiles.username", filters, "in"),
+  });
+
   return (
     <Form {...formProps}>
       <Table
@@ -85,6 +103,16 @@ export const FundsRequested = () => {
           {
             title: "From",
             dataIndex: "from_user_id",
+            filterIcon: <SearchOutlined />,
+            filterDropdown: (props) => (
+              <FilterDropdown {...props} mapValue={(value) => value}>
+                <Select
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  {...selectProps}
+                />
+              </FilterDropdown>
+            ),
             render: (value) => {
               return isProfileLoading ? (
                 <Skeleton.Button active />

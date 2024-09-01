@@ -47,7 +47,13 @@ import { FundsList, FundsRequested } from "./routes/funds";
 import { ChallanList, ChallanShow } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
 import { CustomersList } from "./routes/clients/customers";
-import { ReportsList, TargetCreate, Targets, UserSelect } from "./routes/reports";
+import {
+  MoneyList,
+  ReportsList,
+  TargetCreate,
+  Targets,
+  UserSelect,
+} from "./routes/reports";
 
 function App() {
   return (
@@ -173,6 +179,9 @@ function App() {
                           <Route index element={<UserSelect />} />
                           <Route path=":id" element={<Targets />} />
                           <Route path="create/:id" element={<TargetCreate />} />
+                        </Route>
+                        <Route path="money">
+                          <Route index element={<MoneyList />} />
                         </Route>
                       </Route>
                     </Route>
