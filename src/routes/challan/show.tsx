@@ -56,6 +56,10 @@ const go = useGo();
     Database["public"]["Tables"]["products"]["Row"]
   >({
     resource: "products",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
     filters: [
       {
         field: "id",

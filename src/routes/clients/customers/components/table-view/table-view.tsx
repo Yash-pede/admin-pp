@@ -175,7 +175,7 @@ export const CustomersTableView: FC<Props> = ({
             <Select
               style={{ minWidth: 200 }}
               mode="multiple"
-              placeholder="Filter products"
+              placeholder="Filter Distributors"
               {...distributorSelectProps}
             />
           </FilterDropdown>
@@ -193,7 +193,7 @@ export const CustomersTableView: FC<Props> = ({
             <Select
               style={{ minWidth: 200 }}
               mode="multiple"
-              placeholder="Filter products"
+              placeholder="Filter sales"
               {...salesSelectProps}
             />
           </FilterDropdown>

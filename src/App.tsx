@@ -49,6 +49,7 @@ import { ChallanPdf } from "./routes/challan/components/challanPdf";
 import { CustomersList } from "./routes/clients/customers";
 import {
   MoneyList,
+  ReportProducts,
   ReportsList,
   TargetCreate,
   Targets,
@@ -173,7 +174,7 @@ function App() {
                         <Route index element={<AuditLogList />} />
                       </Route>
                       <Route path="reports">
-                        <Route index element={<ReportsList />} />
+                        <Route index element={<ReportsList />} /> 
                         <Route path="challans" element={<ReportsList />} />
                         <Route path="targets">
                           <Route index element={<UserSelect />} />
@@ -182,6 +183,9 @@ function App() {
                         </Route>
                         <Route path="money">
                           <Route index element={<MoneyList />} />
+                        </Route>
+                        <Route path="products">
+                          <Route index element={<ReportProducts />} />
                         </Route>
                       </Route>
                     </Route>

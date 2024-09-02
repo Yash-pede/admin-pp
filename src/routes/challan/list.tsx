@@ -50,6 +50,10 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     Database["public"]["Tables"]["customers"]["Row"]
   >({
     resource: "customers",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
     filters: [
       {
         field: "id",
@@ -88,6 +92,10 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     Database["public"]["Tables"]["profiles"]["Row"]
   >({
     resource: "profiles",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
     filters: [
       {
         field: "id",
