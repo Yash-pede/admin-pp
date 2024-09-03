@@ -30,6 +30,28 @@ export const InventoryDetails = () => {
     },
   });
 
+  const { data: BatchDetails, isLoading: isLoadingBatch } = useList<
+    Database["public"]["Tables"]["stocks"]["Row"]
+  >({
+    resource: "stocks",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data.map((item) => item.batch_id),
+      },
+    ],
+    queryOptions: {
+      meta: {
+        select: "id, expiry_date",
+      },
+    },
+  });
+
   const { data: products, isLoading: isLoadingProducts } = useList<
     Database["public"]["Tables"]["products"]["Row"]
   >({
@@ -61,13 +83,19 @@ export const InventoryDetails = () => {
   });
 
   useEffect(() => {
-    const productWiseData: { [productId: string]: { productId: number; batches: { batchId: string; quantity: number }[]; quantity: number } } = {};
-  
+    const productWiseData: {
+      [productId: string]: {
+        productId: number;
+        batches: { batchId: string; quantity: number }[];
+        quantity: number;
+      };
+    } = {};
+
     tableQueryResult?.data?.data.forEach((item) => {
       const productId = item.product_id;
       const batchId = item.batch_id;
       const quantity = item.quantity;
-  
+
       if (productId in productWiseData) {
         productWiseData[productId].batches.push({
           batchId,
@@ -87,13 +115,12 @@ export const InventoryDetails = () => {
         };
       }
     });
-  
+
     const arrangedProducts = Object.values(productWiseData);
-  
+
     setProductWiseArrange(arrangedProducts);
   }, [isLoadingProducts, tableQueryResult]);
 
-  console.log(productWiseArrange);
   const expandedRowRender = (record: any) => {
     const columns = [
       {
@@ -106,6 +133,21 @@ export const InventoryDetails = () => {
         dataIndex: "quantity",
         key: "quantity",
       },
+      {
+        title: "Expiry date",
+        dataIndex: "batchId",
+        key: "batchId",
+        render: (value: any) => {
+          return (
+            <DateField
+              value={
+                BatchDetails?.data?.find((item) => item.id === value)
+                  ?.expiry_date
+              }
+            />
+          );
+        },
+      },
     ];
 
     return (
@@ -117,8 +159,6 @@ export const InventoryDetails = () => {
         showHeader
       />
     );
-
-    return null;
   };
 
   return (

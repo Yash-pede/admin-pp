@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, Suspense } from "react";
+import { Suspense } from "react";
 import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { ShopOutlined } from "@ant-design/icons";
@@ -18,6 +18,11 @@ export const ChallanCurrentMonth = () => {
         field: "created_at",
         operator: "gte",
         value: dayjs().startOf("month").toISOString(),
+      },
+      {
+        field: "created_at",
+        operator: "lte",
+        value: dayjs().endOf("month").toISOString(),
       },
     ],
     meta: {

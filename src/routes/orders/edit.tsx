@@ -51,6 +51,30 @@ export const OrdersEdit = () => {
       ],
     },
   });
+
+  const { data: BatchDetails, isLoading: isLoadingBatch } = useList<
+  Database["public"]["Tables"]["stocks"]["Row"]
+>({
+  resource: "stocks",
+  pagination: {
+    current: 1,
+    pageSize: 1000,
+  },
+  filters: [
+    {
+      field: "id",
+      operator: "in",
+      value: order.data?.data.map((item) => item.batch_id),
+    },
+  ],
+  queryOptions: {
+    meta: {
+      select: "id, expiry_date",
+    },
+  },
+});
+
+
   const expandedRowRender = (record: any) => {
     if (order.data?.data[0].status === OrderStatus.Fulfilled) {
       const columns = [
@@ -63,6 +87,21 @@ export const OrdersEdit = () => {
           title: "Quantity",
           dataIndex: "quantity",
           key: "quantity",
+        },
+        {
+          title: "Expiry date",
+          dataIndex: "batchId",
+          key: "batchId",
+          render: (value: any) => {
+            return (
+              <DateField
+                value={
+                  BatchDetails?.data?.find((item) => item.id === value)
+                    ?.expiry_date
+                }
+              />
+            );
+          },
         },
       ];
 

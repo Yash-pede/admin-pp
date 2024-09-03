@@ -24,6 +24,7 @@ export const ReportProducts: React.FC = () => {
 
   const [year, setYear] = useState(dayjs().year());
   const [distributorId, setDistributorId] = useState<string | null>(null);
+  const [salesId, setSalesId] = useState<string | null>(null);
   const months = [
     "January",
     "February",
@@ -77,6 +78,24 @@ export const ReportProducts: React.FC = () => {
             value: distributorId,
           },
         ]
+      : salesId
+      ? [
+          {
+            field: "created_at",
+            operator: "gte",
+            value: `${year}-01-01 00:00:00`,
+          },
+          {
+            field: "created_at",
+            operator: "lt",
+            value: `${year + 1}-01-01 00:00:00`,
+          },
+          {
+            field: "sales_id",
+            operator: "in",
+            value: salesId,
+          },
+        ]
       : [
           {
             field: "created_at",
@@ -94,10 +113,7 @@ export const ReportProducts: React.FC = () => {
     },
   });
 
-  const {
-    selectProps: distributorSelectProps,
-    defaultValueQueryResult: distributors,
-  } = useSelect({
+  const { selectProps: distributorSelectProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
     optionValue: "id",
@@ -106,6 +122,19 @@ export const ReportProducts: React.FC = () => {
         field: "role",
         operator: "eq",
         value: "distributor",
+      },
+    ],
+    debounce: 500,
+  });
+  const { selectProps: salesSelectProps } = useSelect({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
       },
     ],
     debounce: 500,
@@ -124,6 +153,14 @@ export const ReportProducts: React.FC = () => {
       label: year,
     })
   );
+  const handlesalesChange = (value: any) => {
+    if (value.length === 0) {
+      setSalesId(null);
+    } else {
+      setSalesId(value);
+      refetchChallanProducts();
+    }
+  };
   const handleDistributorChange = (value: any) => {
     if (value.length === 0) {
       setDistributorId(null);
@@ -143,16 +180,18 @@ export const ReportProducts: React.FC = () => {
             }}
           >
             <Form layout="inline">
-              <Form.Item
-                name="year"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a year!",
-                  },
-                ]}
-              >
+              <Form.Item name="sales" noStyle>
+                <Select
+                  {...salesSelectProps}
+                  style={{ minWidth: 200 }}
+                  mode="multiple"
+                  placeholder="Filter sales"
+                  onChange={handlesalesChange}
+                />
+              </Form.Item>
+            </Form>
+            <Form layout="inline">
+              <Form.Item name="distributor" noStyle>
                 <Select
                   {...distributorSelectProps}
                   style={{ minWidth: 200 }}

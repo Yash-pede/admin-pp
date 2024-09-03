@@ -1,6 +1,5 @@
 import { Text } from "@/components";
 import { Database } from "@/utilities";
-import { MoneyCollectFilled } from "@ant-design/icons";
 import { useList } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import React, { Suspense } from "react";

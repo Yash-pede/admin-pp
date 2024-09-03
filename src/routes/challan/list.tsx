@@ -43,7 +43,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
       meta: {
         select: "id, total_amt, received_amt, pending_amt",
       },
-    },
+    },  
   });
 
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
