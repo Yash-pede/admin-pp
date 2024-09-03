@@ -68,6 +68,42 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     },
   });
 
+  const { selectProps: distributorSelectProps } = useSelect<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
+    },
+  });
+
+  const { selectProps: saleSelectProps } = useSelect<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    optionLabel: "username",
+    optionValue: "id",
+    filters: [
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
+    },
+  });
+
   const { selectProps: customerSelectProps } = useSelect<
     Database["public"]["Tables"]["customers"]["Row"]
   >({
@@ -216,6 +252,12 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("sales_id", sorter)}
           dataIndex="sales_id"
           title="sales"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select {...saleSelectProps} style={{ width: 200 }} />
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isProfileLoading) return <Skeleton.Button />;
             return (
@@ -233,6 +275,12 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("distributor_id", sorter)}
           dataIndex="distributor_id"
           title="Distributor"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select {...distributorSelectProps} style={{ width: 200 }} />
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isProfileLoading) return <Skeleton.Button />;
             return (
