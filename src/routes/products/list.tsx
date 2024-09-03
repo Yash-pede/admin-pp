@@ -1,7 +1,7 @@
 import { type FC, type PropsWithChildren, useState } from "react";
 
-import { List, useTable } from "@refinedev/antd";
-import type { HttpError } from "@refinedev/core";
+import { ExportButton, List, useTable } from "@refinedev/antd";
+import { useExport, type HttpError } from "@refinedev/core";
 
 import {
   AppstoreOutlined,
@@ -15,6 +15,7 @@ import { ListTitleButton } from "@/components";
 import { Database } from "@/utilities";
 import { ProductsTableView } from "./components/table-view/table-view";
 import { ProductsCardView } from "./components/card-view";
+import dayjs from "dayjs";
 
 type View = "card" | "table";
 
@@ -65,6 +66,28 @@ export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
   };
   const debouncedOnChange = debounce(onSearch, 500);
 
+  const { isLoading: exportLoading, triggerExport } = useExport({
+    resource: "products",
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        Name: record.name,
+        MRP: record.mrp,
+        Selling_Price: record.selling_price,
+        Description: record.description,
+        Base_Quantity: record.base_q,
+        Free_Quantity: record.free_q,
+        Created_At: dayjs (record.created_at).format("DD-MM-YYYY"),
+      };
+    },
+    exportOptions: {
+      filename: "products",
+    },
+  });
+
   return (
     <div className="page-container">
       <List
@@ -106,6 +129,7 @@ export const ProductsList: FC<PropsWithChildren> = ({ children }) => {
                   </Radio.Button>
                 </Radio.Group>
               ) : null}
+              <ExportButton onClick={triggerExport} loading={exportLoading} />
             </Space>
           );
         }}
