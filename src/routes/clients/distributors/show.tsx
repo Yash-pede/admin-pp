@@ -8,6 +8,7 @@ import { UserActivitesTable } from "@/components/UserActivitesTable";
 import { UserInventory } from "./components/UserInventory";
 import { UserInfoForm } from "@/components/infoForm";
 import { UserTitleForm } from "@/components/UserTitleForm";
+import { UserFundsTable } from "@/components";
 
 export const DistributorShow = ({
   children,
@@ -50,7 +51,7 @@ export const DistributorShow = ({
             }}
           >
             <SalesTable distributorDetails={distributorDetails.data} />
-            <UserActivitesTable
+            <UserFundsTable
               isMobile={isMobile}
               userId={distributorDetails.data.id}
               style={{
@@ -61,7 +62,7 @@ export const DistributorShow = ({
         ) : (
           <Col span={16}>
             <SalesTable distributorDetails={distributorDetails.data} />
-            <UserActivitesTable
+            <UserFundsTable
               isMobile={isMobile}
               userId={distributorDetails.data.id}
               style={{
@@ -101,6 +102,16 @@ export const DistributorShow = ({
               }}
             />
           </Col>
+        )}
+        {!isMobile && (
+          <UserActivitesTable
+            isMobile={isMobile}
+            userId={distributorDetails.data.id}
+            style={{
+              marginTop: 32,
+              width: "100%",
+            }}
+          />
         )}
       </Row>
       {children}

@@ -7,12 +7,9 @@ import { Database } from "@/utilities";
 import { UserActivitesTable } from "@/components/UserActivitesTable";
 import { UserInfoForm } from "@/components/infoForm";
 import { UserTitleForm } from "@/components/UserTitleForm";
+import { UserFundsTable } from "@/components";
 
-export const SalesShow = ({
-  children,
-}: {
-  children?: React.ReactNode;
-}) => {
+export const SalesShow = ({ children }: { children?: React.ReactNode }) => {
   const pathname = useLocation().pathname;
   const salesId = pathname.split("/").pop();
 
@@ -41,7 +38,7 @@ export const SalesShow = ({
       >
         <Col span={16}>
           <CustomerTable salesDetails={salesDetails.data} />
-          <UserActivitesTable
+          <UserFundsTable
             userId={salesDetails.data.id}
             style={{
               marginTop: 32,
@@ -51,6 +48,12 @@ export const SalesShow = ({
         <Col span={8}>
           <UserInfoForm sales userDetails={salesDetails.data} />
         </Col>
+        <UserActivitesTable
+          userId={salesDetails.data.id}
+          style={{
+            width: "100%",
+          }}
+        />
       </Row>
       {children}
     </div>
