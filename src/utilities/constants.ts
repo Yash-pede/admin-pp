@@ -7,4 +7,4 @@ export type challanProductAddingType = {
   discount: number;
 };
 
-export const reportTypes = ["money", "targets", "products"];
+export const reportTypes = ["₹ Money", "Targets", "Products"];
