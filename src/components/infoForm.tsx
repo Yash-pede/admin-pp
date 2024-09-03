@@ -96,7 +96,7 @@ export const UserInfoForm = (props: Props) => {
               <Text>User info</Text>
             </Space>
             <Button type="dashed" onClick={show}>
-              Ban User
+              Block User
             </Button>
             <Button
               type="primary"
@@ -226,7 +226,7 @@ export const UserInfoForm = (props: Props) => {
               }
             }}
           >
-            Unban User
+            UnBlock User
           </Button>,
         ]}
       >
