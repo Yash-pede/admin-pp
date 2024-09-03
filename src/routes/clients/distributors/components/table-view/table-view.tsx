@@ -77,16 +77,34 @@ export const DistributorsTableView: FC<Props> = ({ tableProps, filters }) => {
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="email"
         title="email"
+        filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input placeholder="Enter email" />
+            </FilterDropdown>
+          )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="full_name"
         title="Full Name"
+        filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input placeholder="Enter Full Name" />
+            </FilterDropdown>
+          )}
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
         dataIndex="phone"
         title="phone"
+        filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Input placeholder="Enter Phone" />
+            </FilterDropdown>
+          )}
         render={(value) => <TextField value={"+91 " + value} />}
       />
       <Table.Column<Database["public"]["Tables"]["profiles"]["Row"]>
