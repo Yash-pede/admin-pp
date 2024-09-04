@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Flex, Form, Input, Select, Skeleton, Table, Typography } from "antd";
 import {
   DateField,
@@ -17,8 +17,8 @@ import { PaginationTotal, Text } from "@/components";
 
 export const ChallanList = ({ sales }: { sales?: boolean }) => {
   const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
-
-  const { tableProps, tableQueryResult, sorter } = useTable<
+  const [userFilters, setUserFilters] = React.useState<any>(null);
+  const { tableProps, tableQueryResult, sorter, filters } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
     sorters: {
@@ -30,6 +30,22 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
       ],
     },
   });
+  useEffect(() => {
+    if (tableQueryResult.data?.data) {
+      filters.map((item: any) => {
+        if (
+          item.field === "customer_id" ||
+          item.field === "sales_id" ||
+          item.field === "distributor_id"
+        ) {
+          setUserFilters({
+            userType: item.field,
+            userId: item.value,
+          });
+        }
+      });
+    }
+  }, [tableQueryResult.data?.data]);
 
   const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
     Database["public"]["Tables"]["challan"]["Row"]
@@ -39,11 +55,16 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
       current: 1,
       pageSize: 1000,
     },
+    filters: userFilters ? [{
+      field: userFilters.userType,
+      operator: "eq",
+      value: userFilters.userId,
+    }] : [],
     queryOptions: {
       meta: {
         select: "id, total_amt, received_amt, pending_amt",
       },
-    },  
+    },
   });
 
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
@@ -134,16 +155,13 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     <List canCreate={false}>
       <Flex justify="space-between" align="center" gap={2}>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Total:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0)}
+          Total: {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Pending:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0)}
+          Pending: {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Received:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0)}
+          Received: {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0)}
         </Text>
       </Flex>
       <Table
