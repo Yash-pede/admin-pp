@@ -39,7 +39,10 @@ export const OrdersEdit = () => {
     saveButtonProps,
     cancelButtonProps,
     editButtonProps,
-  } = useEditableTable<any, HttpError>({
+  } = useEditableTable<
+    Database["public"]["Tables"]["orders"]["Row"],
+    HttpError
+  >({
     resource: "orders",
     filters: {
       permanent: [
@@ -53,27 +56,33 @@ export const OrdersEdit = () => {
   });
 
   const { data: BatchDetails, isLoading: isLoadingBatch } = useList<
-  Database["public"]["Tables"]["stocks"]["Row"]
->({
-  resource: "stocks",
-  pagination: {
-    current: 1,
-    pageSize: 1000,
-  },
-  filters: [
-    {
-      field: "id",
-      operator: "in",
-      value: order.data?.data.map((item) => item.batch_id),
+    Database["public"]["Tables"]["stocks"]["Row"]
+  >({
+    resource: "stocks",
+    pagination: {
+      current: 1,
+      pageSize: 1000,
     },
-  ],
-  queryOptions: {
-    meta: {
-      select: "id, expiry_date",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: order.data?.data.map((item) => {
+          const orderValue = item?.order;
+          if (typeof orderValue === "string") {
+            return JSON.parse(orderValue).map((item: any) => item.product_id);
+          } else {
+            return [];
+          }
+        }),
+      },
+    ],
+    queryOptions: {
+      meta: {
+        select: "id, expiry_date",
+      },
     },
-  },
-});
-
+  });
 
   const expandedRowRender = (record: any) => {
     if (order.data?.data[0].status === OrderStatus.Fulfilled) {
