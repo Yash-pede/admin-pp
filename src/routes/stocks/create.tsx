@@ -26,7 +26,7 @@ export const StocksCreate = () => {
 
   const { data: productById, isLoading: isLoadingProductById } = useOne({
     resource: "products",
-    id: productIdFromUrl ? productIdFromUrl[0] : "",
+    id: productIdFromUrl ? productIdFromUrl : "",
     queryOptions: {
       enabled: !!productIdFromUrl,
     },
@@ -56,7 +56,7 @@ export const StocksCreate = () => {
             name="product_id"
             hidden
             label="Product"
-            initialValue={productIdFromUrl?.[0]}
+            initialValue={productIdFromUrl}
           >
             <Input style={{ width: "100%" }} readOnly />
           </Form.Item>

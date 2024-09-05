@@ -10,7 +10,6 @@ import TopPerformers from "./components/top-performers";
 
 const DashboardHome = () => {
   const { data } = useGetIdentity();
-  console.log(data);
   return (
     <div className="page-container">
       <Row gutter={[32, 32]}>
