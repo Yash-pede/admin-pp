@@ -40,7 +40,7 @@ export const OrdersEdit = () => {
     cancelButtonProps,
     editButtonProps,
   } = useEditableTable<
-    Database["public"]["Tables"]["orders"]["Row"],
+    any,
     HttpError
   >({
     resource: "orders",
