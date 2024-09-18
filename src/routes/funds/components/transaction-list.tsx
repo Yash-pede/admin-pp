@@ -184,7 +184,7 @@ export const TransactionList = (props: Props) => {
           dataIndex: "created_at",
           sorter: { multiple: 2 },
           defaultSortOrder: getDefaultSortOrder("id", sorters),
-          render: (value) => <DateField value={value} />,
+          render: (value) => <DateField value={value} format="DD/MM/YYYY" />,
         },
       ]}
     />
