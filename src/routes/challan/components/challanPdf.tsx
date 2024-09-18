@@ -49,10 +49,11 @@ export const ChallanPdf = () => {
   useEffect(() => {
     if (challanData) {
       const fetchCustomer = async () => {
-        const { data: Customer, error: CustomerError } = await supabaseServiceRoleClient
-          .from("customers")
-          .select("*")
-          .eq("id", challanData?.data.customer_id);
+        const { data: Customer, error: CustomerError } =
+          await supabaseServiceRoleClient
+            .from("customers")
+            .select("*")
+            .eq("id", challanData?.data.customer_id);
         // console.log(Customer[0]);
         setCustomer(Customer?.[0]);
       };
@@ -65,18 +66,19 @@ export const ChallanPdf = () => {
         setDistributor(data?.[0]);
       };
       const fetchProducts = async () => {
-        const { data: products, error: productsError } = await supabaseServiceRoleClient
-          .from("products")
-          .select("*")
-          .in(
-            "id",
-            challanData?.data?.product_info &&
-              Array.isArray(challanData?.data?.product_info)
-              ? challanData?.data?.product_info.map(
-                  (item: any) => item.product_id
-                )
-              : []
-          );
+        const { data: products, error: productsError } =
+          await supabaseServiceRoleClient
+            .from("products")
+            .select("*")
+            .in(
+              "id",
+              challanData?.data?.product_info &&
+                Array.isArray(challanData?.data?.product_info)
+                ? challanData?.data?.product_info.map(
+                    (item: any) => item.product_id
+                  )
+                : []
+            );
         setProducts(products);
       };
       fetchCustomer();
@@ -127,7 +129,7 @@ export const ChallanPdf = () => {
             <Image style={styles.logo} src={PurePrideInvoiceLogo} />
           </View>
           <View style={styles.invoiceBody}>
-            <Text style={styles.invoiceText}>CHALLAN</Text>
+            <Text style={[styles.invoiceText, styles.bold]}>INVOICE</Text>
           </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -152,7 +154,7 @@ export const ChallanPdf = () => {
           </View>
           <View style={styles.table}>
             <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderItem}>S NO.</Text>
+              <Text style={[styles.tableHeaderItem, { flex: 0.3 }]}>#</Text>
               <Text style={styles.tableHeaderItem}>Item Name</Text>
               <Text style={styles.tableHeaderItem}>Quantity</Text>
               <Text style={styles.tableHeaderItem}>Price/Unit</Text>
@@ -162,7 +164,9 @@ export const ChallanPdf = () => {
             </View>
             {billInfo?.map((item, index) => (
               <View key={index} style={styles.tableRow}>
-                <Text style={styles.tableCol}>{index + 1}</Text>
+                <Text style={[styles.tableCol, { flex: 0.23 }]}>
+                  {index + 1}
+                </Text>
                 <Text style={styles.tableCol}>
                   {
                     products.find(
@@ -225,7 +229,16 @@ export const ChallanPdf = () => {
             ))}
           </View>
           <View style={styles.subtotalTable}>
-            <View style={styles.subtotalTableRow}>
+            <View
+              style={[
+                styles.subtotalTableRow,
+                {
+                  backgroundColor: "#a01c9a",
+                  textAlign: "center",
+                  color: "#ffff",
+                },
+              ]}
+            >
               <Text style={styles.subtotalTableCol}>TOTAL:</Text>
               <Text style={styles.subtotalTableCol}>
                 {totalAmount?.toFixed(2)}
@@ -281,6 +294,9 @@ export const ChallanPdf = () => {
 };
 
 const styles = StyleSheet.create({
+  bold: {
+    fontFamily: "Times-Bold",
+  },
   viewer: {
     paddingTop: 32,
     width: "100%",
@@ -304,10 +320,9 @@ const styles = StyleSheet.create({
     marginRight: 20, // Adjust as needed
   },
   invoiceHeadingText: {
-    fontSize: 24,
+    fontSize: 15,
     fontWeight: "bold",
     textAlign: "center",
-    marginVertical: 12,
   },
   invoiceLineSpacing: {
     marginVertical: 1,
@@ -324,7 +339,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   invoiceText: {
-    fontWeight: "bold",
+    fontWeight: "extrabold",
     fontSize: 20,
     marginBottom: 16,
   },
@@ -344,8 +359,9 @@ const styles = StyleSheet.create({
   tableHeader: {
     display: "flex",
     flexDirection: "row",
-    backgroundColor: "#e5e5e5",
+    backgroundColor: "#a01c9a",
     textAlign: "center",
+    color: "#ffff",
   },
   tableHeaderItem: {
     flex: 1,
