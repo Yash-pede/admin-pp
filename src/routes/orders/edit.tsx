@@ -275,7 +275,7 @@ export const OrdersEdit = () => {
               onRow={(record: any) => ({
                 // eslint-disable-next-line
                 onClick: (event: any) => {
-                  if (event.target.nodeName === "TD") {
+                  if (event.target.nodeName === "TD" && order.data?.data[0].status !== OrderStatus.Fulfilled) {
                     setEditId && setEditId(record.key);
                   }
                 },
