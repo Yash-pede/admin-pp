@@ -40,6 +40,10 @@ export const StocksProductWise = () => {
         value: tableQueryResult?.data?.data?.map((item) => item.product_id),
       },
     ],
+    pagination: {
+      mode:'off',
+      pageSize: 1000,
+    },
   });
 
   useEffect(() => {

@@ -72,6 +72,10 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
         value: tableQueryResult?.data?.data?.map((item) => item.product_id),
       },
     ],
+    pagination: {
+      mode:'off',
+      pageSize: 1000,
+    },
   });
 
   const { triggerExport, isLoading: exportLoading } = useExport({
@@ -104,7 +108,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
     },
     exportOptions: {
       filename: "inventory",
-    },
+    },pageSize: 1000
   });
   const { selectProps } = useSelect({
     resource: "stocks",

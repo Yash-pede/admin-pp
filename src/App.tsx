@@ -55,6 +55,7 @@ import {
   Targets,
   UserSelect,
 } from "./routes/reports";
+import { UserCredintials } from "./routes/administration";
 
 function App() {
   return (
@@ -163,18 +164,14 @@ function App() {
                         <Route index element={<>Settings</>} />
                         <Route
                           path="user-credentials/:id"
-                          element={
-                            <>
-                              Editing the users details is temporaryly disabled
-                            </>
-                          }
+                          element={<UserCredintials />}
                         />
                       </Route>
                       <Route path="audit-log">
                         <Route index element={<AuditLogList />} />
                       </Route>
                       <Route path="reports">
-                        <Route index element={<ReportsList />} /> 
+                        <Route index element={<ReportsList />} />
                         <Route path="challans" element={<ReportsList />} />
                         <Route path="targets">
                           <Route index element={<UserSelect />} />

@@ -51,6 +51,10 @@ export const StocksPast = () => {
     queryOptions: {
       enabled: !!tableQueryResult?.data?.data,
     },
+    pagination: {
+      mode:'off',
+      pageSize: 1000,
+    },
   });
 
   const { selectProps } = useSelect<
