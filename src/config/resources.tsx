@@ -28,7 +28,8 @@ export const resources: IResourceItem[] = [
       label: "Products",
       icon: <IconPackage />,
     },
-    edit: "/products/:id",
+    show: "/products/:id",
+    edit: "/products/edit/:id",
     create: "/products/create",
   },
   {

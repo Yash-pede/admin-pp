@@ -22,7 +22,7 @@ import { supabaseServiceRoleClient } from "./utilities";
 import { resources } from "./config";
 import { Layout } from "./components/layout";
 import DashboardHome from "./routes/dashboard/show";
-import { ProductsCreate, ProductsList, ProductsEdit } from "./routes/products";
+import { ProductsCreate, ProductsList, ProductsEdit, ProductsShow } from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
 import {
   StocksList,
@@ -104,7 +104,8 @@ function App() {
                     <Route path="/products">
                       <Route index element={<ProductsList />} />
                       <Route path="create" element={<ProductsCreate />} />
-                      <Route path=":id" element={<ProductsEdit />} />
+                      <Route path=":id" element={<ProductsShow />} />
+                      <Route path="edit/:id" element={<ProductsEdit />} />
                     </Route>
 
                     <Route path="/stocks">
