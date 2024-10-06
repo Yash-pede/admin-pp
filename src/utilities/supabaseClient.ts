@@ -1,9 +1,9 @@
 import { createClient } from "@refinedev/supabase";
 
-const SUPABASE_URL = "https://dznfhiyfjniapdbzdjpt.supabase.co";
-export const SUPABASE_PROJECT_ID = "dznfhiyfjniapdbzdjpt";
-const SUPABASE_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6bmZoaXlmam5pYXBkYnpkanB0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxODY5NDE5MiwiZXhwIjoyMDM0MjcwMTkyfQ.H1LQieqWyYbOj_KjqQVkJLdDNk1e6YH5iqspe-X8REY";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+export const SUPABASE_PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const SUPABASE_SERVICE_ROLE_KEY = import.meta.env
+  .VITE_SUPABASE_SERVICE_ROLE_KEY;
 
 export const supabaseServiceRoleClient = createClient(
   SUPABASE_URL,
@@ -15,5 +15,5 @@ export const supabaseServiceRoleClient = createClient(
     auth: {
       persistSession: true,
     },
-  },
+  }
 );
