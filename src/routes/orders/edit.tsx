@@ -167,42 +167,6 @@ export const OrdersEdit = () => {
     });
   };
 
-  const handleProductIncrement = (recordKey: any) => {
-    formProps.form?.setFieldValue(
-      "quantity",
-      formProps.form.getFieldValue("quantity") +
-        ((products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-        )?.base_q ?? 0) +
-          (products?.data.find(
-            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-          )?.free_q ?? 0))
-    );
-  };
-  const handleProductDecrement = (recordKey: any) => {
-    if (
-      (products?.data.find(
-        (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-      )?.base_q ?? 0) +
-        (products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-        )?.free_q ?? 0) ===
-      formProps.form?.getFieldValue("quantity")
-    ) {
-      return;
-    }
-    formProps.form?.setFieldValue(
-      "quantity",
-      formProps.form.getFieldValue("quantity") -
-        ((products?.data.find(
-          (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-        )?.base_q ?? 0) +
-          (products?.data.find(
-            (d) => d.id === order.data?.data[0].order[recordKey - 1].product_id
-          )?.free_q ?? 0))
-    );
-  };
-
   return (
     <Edit saveButtonProps={{ hidden: true }}>
       <Flex justify="space-between">
@@ -345,59 +309,6 @@ export const OrdersEdit = () => {
                     );
                   }
                   return <NumberField value={value} />;
-                }}
-              />
-              <Table.Column
-                title="Scheme"
-                dataIndex={"quantity"}
-                render={(value, record: any) => {
-                  if (isEditing(record.key)) {
-                    return (
-                      <Flex align="center" gap="10px">
-                        <Button
-                          onClick={() => handleProductDecrement(record.key)}
-                        >
-                          <MinusOutlined />
-                        </Button>
-                        <Form.Item name="quantity" style={{ margin: 0 }}>
-                          <InputNumber readOnly />
-                        </Form.Item>
-                        <Button
-                          onClick={() => handleProductIncrement(record.key)}
-                        >
-                          <PlusOutlined />
-                        </Button>
-                      </Flex>
-                    );
-                  }
-                  return (
-                    <TextField
-                      value={
-                        value -
-                        (products?.data.find(
-                          (product) => product.id === record.product_id
-                        )?.free_q ?? 0) *
-                          (value /
-                            ((products?.data.find(
-                              (product) => product.id === record.product_id
-                            )?.free_q ?? 0) +
-                              (products?.data.find(
-                                (product) => product.id === record.product_id
-                              )?.base_q ?? 0))) +
-                        "  +  " +
-                        (value /
-                          ((products?.data.find(
-                            (product) => product.id === record.product_id
-                          )?.free_q ?? 0) +
-                            (products?.data.find(
-                              (product) => product.id === record.product_id
-                            )?.base_q ?? 0))) *
-                          (products?.data.find(
-                            (product) => product.id === record.product_id
-                          )?.free_q ?? 0)
-                      }
-                    />
-                  );
                 }}
               />
               <Table.Column

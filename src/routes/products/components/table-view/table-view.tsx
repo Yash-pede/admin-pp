@@ -71,13 +71,8 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
         render={(value) => <TextField value={value} />}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
-        dataIndex="base_q"
-        title="Base Quantity"
-        render={(value) => <div>{value}</div>}
-      />
-      <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
-        dataIndex="free_q"
-        title="Free Quantity"
+        dataIndex="minimum_q"
+        title="Min Quantity"
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>

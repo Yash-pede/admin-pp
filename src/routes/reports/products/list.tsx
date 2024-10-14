@@ -45,7 +45,7 @@ export const ReportProducts: React.FC = () => {
   >({
     resource: "products",
     meta: {
-      select: "id, name, base_q, free_q",
+      select: "id, name, minimum_q",
     },
   });
 

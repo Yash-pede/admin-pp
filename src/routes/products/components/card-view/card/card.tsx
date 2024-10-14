@@ -100,18 +100,6 @@ export const ProductCard: FC<Props> = ({ product }) => {
               alignItems: "center",
             }}
           >
-            <Text>Base: {product.base_q}</Text>+
-            <Text>Free: {product.free_q}</Text>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              width: "100%",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
             <Text> ₹ {product.selling_price}</Text>
             <Text> MRP: {product.mrp}</Text>
           </div>

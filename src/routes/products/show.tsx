@@ -43,9 +43,6 @@ export const ProductsShow = ({children}:{children?:React.ReactNode}) => {
                   <Descriptions.Item label="Selling price">
                     {Product?.data[0]?.selling_price}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Scheme">
-                    {Product?.data[0]?.base_q + " + " + Product?.data[0]?.free_q}
-                  </Descriptions.Item>
                   <Descriptions.Item label="Price">
                     {Product?.data[0]?.mrp}
                   </Descriptions.Item>

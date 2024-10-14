@@ -7,6 +7,31 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       challan: {
@@ -16,6 +41,7 @@ export type Database = {
           customer_id: number
           distributor_id: string
           id: number
+          is_deleted: boolean
           pending_amt: number
           product_info: Json
           received_amt: number
@@ -28,6 +54,7 @@ export type Database = {
           customer_id: number
           distributor_id: string
           id?: number
+          is_deleted?: boolean
           pending_amt: number
           product_info: Json
           received_amt: number
@@ -40,6 +67,7 @@ export type Database = {
           customer_id?: number
           distributor_id?: string
           id?: number
+          is_deleted?: boolean
           pending_amt?: number
           product_info?: Json
           received_amt?: number
@@ -328,34 +356,31 @@ export type Database = {
       }
       products: {
         Row: {
-          base_q: number
           created_at: string
           description: string
-          free_q: number
           id: number
           imageURL: string
+          minimum_q: number
           mrp: number
           name: string
           selling_price: number
         }
         Insert: {
-          base_q: number
           created_at?: string
           description: string
-          free_q: number
           id?: number
           imageURL: string
+          minimum_q?: number
           mrp: number
           name: string
           selling_price: number
         }
         Update: {
-          base_q?: number
           created_at?: string
           description?: string
-          free_q?: number
           id?: number
           imageURL?: string
+          minimum_q?: number
           mrp?: number
           name?: string
           selling_price?: number
@@ -665,3 +690,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+

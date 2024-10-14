@@ -111,7 +111,7 @@ export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
               <InputNumber style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
-              label="selling_price"
+              label="Selling Price"
               name="selling_price"
               rules={[
                 {
@@ -133,19 +133,8 @@ export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Base Quantity"
-              name="base_q"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <InputNumber style={{ width: "100%" }} />
-            </Form.Item>
-            <Form.Item
-              label="Free Quantity"
-              name="free_q"
+              label="Minimum Quantity"
+              name="minimum_q"
               rules={[
                 {
                   required: true,

@@ -175,28 +175,7 @@ export const ChallanPdf = () => {
                   }
                 </Text>
                 <Text style={styles.tableCol}>
-                  {item.quantity -
-                    (products.find(
-                      (product: any) => product.id === item.product_id
-                    )?.free_q ?? 0) *
-                      (item.quantity /
-                        ((products.find(
-                          (product: any) => product.id === item.product_id
-                        )?.base_q ?? 0) +
-                          (products.find(
-                            (product: any) => product.id === item.product_id
-                          )?.free_q ?? 0))) +
-                    "  +  " +
-                    (item.quantity /
-                      ((products.find(
-                        (product: any) => product.id === item.product_id
-                      )?.base_q ?? 0) +
-                        (products.find(
-                          (product: any) => product.id === item.product_id
-                        )?.free_q ?? 0))) *
-                      (products.find(
-                        (product: any) => product.id === item.product_id
-                      )?.free_q ?? 0)}
+                 {item.quantity}
                 </Text>
                 <Text style={styles.tableCol}>
                   {
