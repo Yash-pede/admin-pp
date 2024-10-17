@@ -149,6 +149,10 @@ export const OrdersEdit = () => {
         value: order?.data?.data[0]?.order.map((item: any) => item.product_id),
       },
     ],
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
   });
 
   const { mutate, isLoading: updateLoading } = useUpdate();
@@ -304,7 +308,7 @@ export const OrdersEdit = () => {
                         style={{ margin: 0 }}
                         initialValue={record.quantity}
                       >
-                        <InputNumber readOnly />
+                        <InputNumber />
                       </Form.Item>
                     );
                   }
