@@ -173,6 +173,8 @@ const go = useGo();
                     challan?.data.product_info as Array<{
                       discount: number;
                       quantity: number;
+                      actual_q: number;
+                      free_q: number; 
                       product_id: number;
                     }>
                   }
@@ -189,7 +191,11 @@ const go = useGo();
                     },
                     {
                       title: "Quantity",
-                      dataIndex: "quantity",
+                      dataIndex: "actual_q",
+                    },
+                    {
+                      title: "Free Quantity",
+                      dataIndex: "free_q",
                     },
                     {
                       title: "Discount",
