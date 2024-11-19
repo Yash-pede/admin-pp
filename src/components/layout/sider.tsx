@@ -1,4 +1,4 @@
-import React, { type CSSProperties } from "react";
+import React from "react";
 
 import { useThemedLayoutContext } from "@refinedev/antd";
 import {
@@ -10,7 +10,6 @@ import {
 } from "@refinedev/core";
 
 import {
-  BarsOutlined,
   LeftOutlined,
   RightOutlined,
   UnorderedListOutlined,
@@ -18,14 +17,6 @@ import {
 import { Button, Drawer, Grid, Layout, Menu, theme } from "antd";
 
 import { Title } from "./title";
-
-const drawerButtonStyles: CSSProperties = {
-  borderTopLeftRadius: 0,
-  borderBottomLeftRadius: 0,
-  position: "fixed",
-  top: 64,
-  zIndex: 1001,
-};
 
 const { SubMenu } = Menu;
 const { useToken } = theme;
@@ -148,21 +139,23 @@ export const Sider: React.FC = () => {
           width={256}
           bodyStyle={{
             padding: 0,
+            overflowX: "hidden",
           }}
           maskClosable={true}
         >
           <Layout>
             <Layout.Sider
-              width={500}
+              width={256}
               style={{
                 height: "100vh",
                 backgroundColor: token.colorBgContainer,
                 borderRight: `1px solid ${token.colorBorderBg}`,
+                overflowX: "hidden",
               }}
             >
               <div
                 style={{
-                  width: "256px",
+                  width: "100%",
                   padding: "0 16px",
                   display: "flex",
                   justifyContent: "flex-start",
@@ -170,6 +163,7 @@ export const Sider: React.FC = () => {
                   height: "64px",
                   backgroundColor: token.colorBgElevated,
                   borderBottom: "none",
+                  overflow: "hidden",
                 }}
               >
                 <Title collapsed={false} />
@@ -178,12 +172,6 @@ export const Sider: React.FC = () => {
             </Layout.Sider>
           </Layout>
         </Drawer>
-        <Button
-          style={drawerButtonStyles}
-          size="large"
-          onClick={() => setMobileSiderOpen(true)}
-          icon={<BarsOutlined />}
-        />
       </>
     );
   };
