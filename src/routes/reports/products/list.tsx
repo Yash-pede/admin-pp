@@ -47,6 +47,18 @@ export const ReportProducts: React.FC = () => {
     meta: {
       select: "id, name, minimum_q",
     },
+    sorters: {
+      initial: [
+        {
+          field: "id",
+          order: "asc",
+        }
+      ]
+    },
+    pagination: {
+      pageSize: 1000,
+      mode: "off",
+    },
   });
 
   const {

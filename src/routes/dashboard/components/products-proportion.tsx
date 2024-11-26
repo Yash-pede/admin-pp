@@ -8,6 +8,7 @@ import { IconCurrencyRupee } from "@tabler/icons-react";
 import { Text } from "@/components";
 import { RightCircleOutlined } from "@ant-design/icons";
 import PieChartTiny from "@/components/charts/pie-chart";
+import BarChartTiny from "@/components/charts/tiny-barChart";
 
 const ProductsChart = () => {
   const { list } = useNavigation();
@@ -107,7 +108,7 @@ const ProductsChart = () => {
         }}
       >
         <Suspense>
-          <PieChartTiny data={productsData} />
+          <BarChartTiny data={productsData} />
         </Suspense>
       </div>
     </Card>
