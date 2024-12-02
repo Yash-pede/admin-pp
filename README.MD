@@ -1,48 +1,123 @@
-# admin-pp
+# Shrewit: AI-Powered Supply Chain Management Platform
 
-<div align="center" style="margin: 30px;">
-    <a href="https://refine.dev">
-    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
-    </a>
-</div>
-<br/>
+## 🚀 Overview
 
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
+Shrewit is a cutting-edge SaaS platform revolutionizing supply chain management for local manufacturers across diverse industries. By leveraging advanced AI technologies, Shrewit addresses critical challenges in inventory tracking, demand forecasting, and logistics optimization.
 
-## Getting Started
+## 🌟 Key Problem Solved
 
-A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
+Many manufacturers struggle with:
+- Inefficient inventory management
+- Inaccurate demand predictions
+- Fragmented logistics operations
+- Lack of real-time business insights
 
-Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
+Shrewit provides a comprehensive solution that streamlines operations, reduces waste, and boosts profitability across textiles, FMCG, pharmaceuticals, and electronics sectors.
 
-## Available Scripts
+## 💡 Core Features
 
-### Running the development server.
+- **Intelligent Inventory Management**
+  - Real-time stock tracking across multiple locations
+  - Automated low-stock alerts
+  - Multi-location inventory synchronization
 
+- **AI-Powered Demand Forecasting**
+  - Predictive analytics for precise stock level optimization
+  - Machine learning algorithms that adapt to market trends
+  - Reduction of overstocking and stockout risks
+
+- **Real-Time Analytics Dashboard**
+  - Comprehensive performance metrics
+  - Customizable reporting
+  - Actionable insights for strategic decision-making
+
+- **Advanced Logistics Tracking**
+  - End-to-end shipment monitoring
+  - Real-time delivery status updates
+  - Carrier and route performance analysis
+
+## 🌐 Live Demo
+
+Explore Shrewit's capabilities through our live demo environments:
+
+### Admin Login
+- **URL:** https://admin.demo.shrewit.com
+- **Username:** `admin@demo.com`
+- **Password:** `123456`
+
+### Distributor Login
+- **URL:** https://admin.demo.shrewit.com
+- **Username:** `distributor@demo.com`
+- **Password:** `123456`
+
+*We recommend exploring both interfaces to fully understand Shrewit's comprehensive functionality.*
+
+## 🛠 Getting Started
+
+### Prerequisites
+- pnpm installed
+- Git
+- Supabase account
+
+### Installation Steps
+
+1. Clone the repository:
 ```bash
-    pnpm dev
+git clone https://github.com/Yash-pede/admin-pp.git
 ```
 
-### Building for production.
-
+2. Navigate to project directory:
 ```bash
-    pnpm build
+cd admin-pp
 ```
 
-### Running the production server.
-
+3. Install dependencies:
 ```bash
-    pnpm start
+pnpm install
 ```
 
-## Learn More
+4. Configure Environment Variables
 
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
+Create a `.env` file in the project root with the following variables:
+```
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_PROJECT_ID=your_project_id
+VITE_SUPABASE_ANON_KEY=your_anonymous_key
+VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+VITE_SUPABASE_BUCKET=your_storage_bucket_url
+VITE_ADMIN_ID=your_admin_identification
+```
 
-- **Supabase Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
-- **Ant Design** [Docs](https://refine.dev/docs/ui-frameworks/antd/tutorial/)
-- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
+5. Start the development server:
+```bash
+pnpm run dev
+```
 
-## License
+## 🤝 Contributing
 
-MIT
+We welcome contributions to Shrewit! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch:
+```bash
+git checkout -b feature/AmazingFeature
+```
+3. Commit your changes:
+```bash
+git commit -m 'Add some AmazingFeature'
+```
+4. Push to the branch:
+```bash
+git push origin feature/AmazingFeature
+```
+5. Open a Pull Request
+
+## 📞 Contact & Support
+
+- **Email:** team@shrewit.com
+- **Website:** [www.shrewit.com](https://www.shrewit.com)
+- **Creator:** [Yash Pede](https://yashpede.in)
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
