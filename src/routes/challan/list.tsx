@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
-import { Flex, Form, Input, Select, Skeleton, Table, Typography } from "antd";
+import { Button, Flex, Input, Select, Skeleton, Table } from "antd";
 import {
   DateField,
   FilterDropdown,
   List,
   ShowButton,
   getDefaultSortOrder,
-  useModal,
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import { useList, useUpdate } from "@refinedev/core";
-import { SearchOutlined } from "@ant-design/icons";
+import { useList } from "@refinedev/core";
+import { FilePdfFilled, SearchOutlined } from "@ant-design/icons";
 import { Database } from "@/utilities";
 import { PaginationTotal, Text } from "@/components";
+import { useGo } from "@refinedev/core";
 
 export const ChallanList = ({ sales }: { sales?: boolean }) => {
-  const [IdToUpdateReceived, setIdToUpdateReceived] = React.useState<any>(null);
+  const go = useGo();
   const [userFilters, setUserFilters] = React.useState<any>(null);
   const { tableProps, tableQueryResult, sorter, filters } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
@@ -133,24 +133,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
       enabled: !!tableQueryResult.data,
     },
   });
-  const [form] = Form.useForm();
-  const { close, modalProps, show } = useModal();
-  const { mutate, isLoading } = useUpdate<any>();
-  form.submit = async () => {
-    mutate({
-      resource: "challan",
-      id: IdToUpdateReceived,
-      values: {
-        received_amt:
-          tableQueryResult.data?.data.find(
-            (item) => item.id === IdToUpdateReceived
-          )?.received_amt + form.getFieldValue("received_amt"),
-      },
-    });
-    close();
-    form.resetFields();
-    setIdToUpdateReceived(null);
-  };
+
   return (
     <List canCreate={false}>
       <Flex justify="space-between" align="center" gap={2}>
@@ -272,9 +255,10 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
         />
         <Table.Column
           title="Action"
-          render={(row) => (
+          render={(row,record) => (
             <div style={{ display: "flex", gap: "10px" }}>
-              <ShowButton recordItemId={row.id} />
+              <ShowButton recordItemId={row.id} hideText />
+              <Button type="primary" onClick={() => go({ to: `/challan/pdf/${record.id}`})} variant="link" color="default" icon><FilePdfFilled/> </Button>
             </div>
           )}
         />
