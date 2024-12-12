@@ -138,13 +138,13 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     <List canCreate={false}>
       <Flex justify="space-between" align="center" gap={2}>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Total: {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0)}
+          Total: {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0).toFixed(2)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Pending: {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0)}
+          Pending: {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0).toFixed(2)}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
-          Received: {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0)}
+          Received: {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0).toFixed(2)}
         </Text>
       </Flex>
       <Table
