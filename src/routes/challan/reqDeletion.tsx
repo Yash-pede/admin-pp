@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
-import { Button, Flex, Input, Select, Skeleton, Table } from "antd";
 import {
-  CreateButton,
+  Button,
+  Flex,
+  Input,
+  Select,
+  Skeleton,
+  Space,
+  Table,
+  Tooltip,
+} from "antd";
+import {
   DateField,
   FilterDropdown,
   List,
@@ -10,21 +17,20 @@ import {
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import { useList } from "@refinedev/core";
+import { useList, useUpdate } from "@refinedev/core";
 import {
+  CheckOutlined,
+  CloseOutlined,
   FilePdfFilled,
-  PullRequestOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Database } from "@/utilities";
 import { PaginationTotal, Text } from "@/components";
 import { useGo } from "@refinedev/core";
-import { IconTrash } from "@tabler/icons-react";
 
-export const ChallanList = ({ sales }: { sales?: boolean }) => {
+export const ReqDeletionChallan = ({ sales }: { sales?: boolean }) => {
   const go = useGo();
-  const [userFilters, setUserFilters] = React.useState<any>(null);
-  const { tableProps, tableQueryResult, sorter, filters } = useTable<
+  const { tableProps, tableQueryResult, sorter } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
     filters: {
@@ -32,7 +38,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
         {
           field: "status",
           operator: "eq",
-          value: "BILLED",
+          value: "DELETED",
         },
       ],
     },
@@ -43,46 +49,6 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           order: "desc",
         },
       ],
-    },
-  });
-  useEffect(() => {
-    if (tableQueryResult.data?.data) {
-      filters.map((item: any) => {
-        if (
-          item.field === "customer_id" ||
-          item.field === "sales_id" ||
-          item.field === "distributor_id"
-        ) {
-          setUserFilters({
-            userType: item.field,
-            userId: item.value,
-          });
-        }
-      });
-    }
-  }, [tableQueryResult.data?.data]);
-
-  const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
-    Database["public"]["Tables"]["challan"]["Row"]
-  >({
-    resource: "challan",
-    pagination: {
-      current: 1,
-      pageSize: 1000,
-    },
-    filters: userFilters
-      ? [
-          {
-            field: userFilters.userType,
-            operator: "eq",
-            value: userFilters.userId,
-          },
-        ]
-      : [],
-    queryOptions: {
-      meta: {
-        select: "id, total_amt, received_amt, pending_amt",
-      },
     },
   });
 
@@ -154,32 +120,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
   });
 
   return (
-    <List
-      canCreate={false}
-      headerButtons={[
-        <CreateButton />,
-        <Button onClick={() => go({ to: "/challan/req-deletion" })}>
-          <PullRequestOutlined /> Req Deletion
-        </Button>,
-        <Button onClick={() => go({ to: "/challan/deleted" })}>
-          <IconTrash /> Deleted
-        </Button>,
-      ]}
-    >
-      <Flex justify="space-between" align="center" gap={2}>
-        <Text size="xl" style={{ marginBottom: 10 }}>
-          Total:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0).toFixed(2)}
-        </Text>
-        <Text size="xl" style={{ marginBottom: 10 }}>
-          Pending:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0).toFixed(2)}
-        </Text>
-        <Text size="xl" style={{ marginBottom: 10 }}>
-          Received:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0).toFixed(2)}
-        </Text>
-      </Flex>
+    <List canCreate={false} breadcrumb={false} title="Deleted Challans">
       <Table
         {...tableProps}
         rowKey="id"
@@ -286,6 +227,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           title="Created At"
           render={(value) => <DateField value={value} />}
         />
+
         <Table.Column
           title="Action"
           render={(row, record) => (

@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       challan: {
@@ -41,11 +16,11 @@ export type Database = {
           customer_id: number
           distributor_id: string
           id: number
-          is_deleted: boolean
           pending_amt: number
           product_info: Json
           received_amt: number
           sales_id: string | null
+          status: Database["public"]["Enums"]["challan_status"]
           total_amt: number
         }
         Insert: {
@@ -54,11 +29,11 @@ export type Database = {
           customer_id: number
           distributor_id: string
           id?: number
-          is_deleted?: boolean
           pending_amt: number
           product_info: Json
           received_amt: number
           sales_id?: string | null
+          status?: Database["public"]["Enums"]["challan_status"]
           total_amt: number
         }
         Update: {
@@ -67,11 +42,11 @@ export type Database = {
           customer_id?: number
           distributor_id?: string
           id?: number
-          is_deleted?: boolean
           pending_amt?: number
           product_info?: Json
           received_amt?: number
           sales_id?: string | null
+          status?: Database["public"]["Enums"]["challan_status"]
           total_amt?: number
         }
         Relationships: [
@@ -80,20 +55,6 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "challan_distributor_id_fkey"
-            columns: ["distributor_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "challan_sales_id_fkey"
-            columns: ["sales_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -164,22 +125,7 @@ export type Database = {
           sales_id?: string
           specialization?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "customers_distributor_id_fkey"
-            columns: ["distributor_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "customers_sales_id_fkey"
-            columns: ["sales_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       funds: {
         Row: {
@@ -194,15 +140,7 @@ export type Database = {
           id?: string
           total?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "funds_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       inventory: {
         Row: {
@@ -233,13 +171,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "inventory_distributor_id_fkey"
-            columns: ["distributor_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "inventory_product_id_fkey"
             columns: ["product_id"]
@@ -283,15 +214,7 @@ export type Database = {
           previousData?: Json | null
           resource?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "logs_author_fkey"
-            columns: ["author"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       orders: {
         Row: {
@@ -315,15 +238,7 @@ export type Database = {
           order?: Json
           status?: Database["public"]["Enums"]["order_status"]
         }
-        Relationships: [
-          {
-            foreignKeyName: "orders_distributor_id_fkey"
-            columns: ["distributor_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       passwords: {
         Row: {
@@ -532,20 +447,6 @@ export type Database = {
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "transfers_from_user_id_fkey"
-            columns: ["from_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transfers_to_user_id_fkey"
-            columns: ["to_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
@@ -594,6 +495,7 @@ export type Database = {
       }
     }
     Enums: {
+      challan_status: "BILLED" | "REQ_DELETION" | "DELETED"
       order_status:
         | "Pending"
         | "Fulfilled"
@@ -691,3 +593,17 @@ export type Enums<
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
 
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
