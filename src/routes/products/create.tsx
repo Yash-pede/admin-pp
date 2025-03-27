@@ -15,7 +15,8 @@ import { InboxOutlined } from "@ant-design/icons";
 import { Create, useDrawerForm } from "@refinedev/antd";
 import { Database, supabaseServiceRoleClient } from "@/utilities";
 import { HttpError, useGo } from "@refinedev/core";
-
+const SUPABASE_PRODUCT_BUCKET_NAME = import.meta.env
+  .VITE_SUPABASE_PRODUCT_BUCKET_NAME;
 export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
   type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
   const { formProps, drawerProps, saveButtonProps } = useDrawerForm<
@@ -48,7 +49,7 @@ export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
         const fileName = `images/${timestamp}-${filename}`;
 
         const { data, error }: any = await supabaseServiceRoleClient.storage
-          .from("Products")
+          .from(SUPABASE_PRODUCT_BUCKET_NAME)
           .upload(fileName, file);
 
         if (error) {
