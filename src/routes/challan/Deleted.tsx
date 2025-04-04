@@ -28,7 +28,7 @@ import {
   import { PaginationTotal, Text } from "@/components";
   import { useGo } from "@refinedev/core";
   
-  export const ChallanDeleted = ({ sales }: { sales?: boolean }) => {
+  export const ReqDeletionChallan = ({ sales }: { sales?: boolean }) => {
     const go = useGo();
     const { tableProps, tableQueryResult, sorter } = useTable<
       Database["public"]["Tables"]["challan"]["Row"]
