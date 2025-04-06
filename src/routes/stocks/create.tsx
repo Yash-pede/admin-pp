@@ -11,6 +11,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { useGo, useOne } from "@refinedev/core";
 import { StocksList } from "./list";
+import dayjs from "dayjs";
 
 export const StocksCreate = () => {
   const go = useGo();
@@ -109,6 +110,12 @@ export const StocksCreate = () => {
                 required: true,
               },
             ]}
+            getValueProps={(value) => ({
+              value: value ? dayjs(value) : null,
+            })}
+            getValueFromEvent={(date) => {
+              return date ? date.startOf("day").toISOString() : null;
+            }}
           >
             <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
           </Form.Item>
