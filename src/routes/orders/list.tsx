@@ -18,7 +18,7 @@ import { Select, Space, Table, Input, Skeleton } from "antd";
 import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import { SearchOutlined } from "@ant-design/icons";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Database } from "@/utilities";
 import { OrderStatus } from "@/utilities/functions";
 import { PaginationTotal } from "@/components";
@@ -239,7 +239,7 @@ export const OrdersList = () => {
           sorter={{ multiple: 2 }}
           defaultSortOrder={getDefaultSortOrder("created_at", sorter)}
           render={(_, record) => (
-            <DateField value={record.created_at} format="DD/MM//YYYY" />
+            <DateField value={record.created_at} format="DD/MM/YYYY" />
           )}
         />
         <Table.Column<Database["public"]["Tables"]["orders"]["Row"]>

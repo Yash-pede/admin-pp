@@ -22,7 +22,12 @@ import { supabaseServiceRoleClient } from "./utilities";
 import { resources } from "./config";
 import { Layout } from "./components/layout";
 import DashboardHome from "./routes/dashboard/show";
-import { ProductsCreate, ProductsList, ProductsEdit, ProductsShow } from "./routes/products";
+import {
+  ProductsCreate,
+  ProductsList,
+  ProductsEdit,
+  ProductsShow,
+} from "./routes/products";
 import { auditLogProvider } from "./utilities/providers/auditlogProvider";
 import {
   StocksList,
@@ -44,7 +49,12 @@ import { SalesEdit } from "./routes/clients/sales/edit";
 import { OrdersEdit, OrdersList } from "./routes/orders";
 import { AuthorizeUserRole } from "./components/layout/authorize";
 import { FundsList, FundsRequested } from "./routes/funds";
-import { ChallanDeleted, ChallanList, ChallanShow, ReqDeletionChallan } from "./routes/challan";
+import {
+  ChallanDeleted,
+  ChallanList,
+  ChallanShow,
+  ReqDeletionChallan,
+} from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
 import { CustomersList } from "./routes/clients/customers";
 import {
@@ -78,6 +88,9 @@ function App() {
                 liveMode: "auto",
               }}
             >
+              <DocumentTitleHandler
+                handler={(title) => `${title.resource?.name} | Admin Purepride`}
+              />
               <Routes>
                 <Route
                   element={
@@ -157,7 +170,10 @@ function App() {
                     <Route path="/challan">
                       <Route index element={<ChallanList />} />
                       <Route path=":id" element={<ChallanShow />} />
-                      <Route path="req-deletion" element={<ReqDeletionChallan />} />
+                      <Route
+                        path="req-deletion"
+                        element={<ReqDeletionChallan />}
+                      />
                       <Route path="deleted" element={<ChallanDeleted />} />
                       <Route path="pdf/:id" element={<ChallanPdf />} />
                     </Route>
@@ -230,7 +246,6 @@ function App() {
               </Routes>
 
               <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
             </Refine>
             <DevtoolsPanel />
           </DevtoolsProvider>
