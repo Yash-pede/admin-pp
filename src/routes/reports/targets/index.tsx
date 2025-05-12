@@ -2,12 +2,21 @@ import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
 import { SearchOutlined } from "@ant-design/icons";
 import { List, useTable } from "@refinedev/antd";
-import { useGo } from "@refinedev/core";
+import { useGo, useOne } from "@refinedev/core";
 import { Form, Grid, Input, Space, Spin, Table } from "antd";
 import { debounce } from "lodash";
 
 export const UserSelect = () => {
-    const go = useGo();
+  const go = useGo();
+
+  const { data: AdminUser, isLoading: isAdminLoading } = useOne({
+    resource: "profiles",
+    id: process.env.VITE_ADMIN_ID,
+    meta: {
+      fields: ["email"],
+    },
+  });
+
   const { tableProps, searchFormProps, tableQueryResult } = useTable<
     Database["public"]["Tables"]["profiles"]["Row"]
   >({
@@ -17,9 +26,12 @@ export const UserSelect = () => {
         {
           field: "email",
           operator: "ne",
-          value: "admin@pp.com",
+          value: AdminUser,
         },
       ],
+    },
+    queryOptions: {
+      enabled: !isAdminLoading && !!AdminUser?.data?.email,
     },
   });
 
@@ -69,11 +81,11 @@ export const UserSelect = () => {
           ),
         }}
         onRow={(row) => {
-         return {
-           onClick: () => {
-            go({to:`/administration/reports/targets/${row.id}`})
-           },
-         }
+          return {
+            onClick: () => {
+              go({ to: `/administration/reports/targets/${row.id}` });
+            },
+          };
         }}
       >
         <Table.Column
