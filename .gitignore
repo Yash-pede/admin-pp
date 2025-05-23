@@ -26,3 +26,4 @@ _.sln
 \*.sw?
 
 .env*
+dev-dist

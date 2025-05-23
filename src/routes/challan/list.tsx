@@ -128,6 +128,56 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     },
   });
 
+  const { selectProps: distributorSelectProps } = useSelect<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "id",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data
+          .filter((item) => item.distributor_id)
+          .map((item) => item.distributor_id),
+      },
+      {
+        field: "role",
+        operator: "eq",
+        value: "distributor",
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
+    },
+  });
+
+  const { selectProps: salesSelectProps } = useSelect<
+    Database["public"]["Tables"]["profiles"]["Row"]
+  >({
+    resource: "profiles",
+    optionLabel: "full_name",
+    optionValue: "id",
+    filters: [
+      {
+        field: "id",
+        operator: "in",
+        value: tableQueryResult.data?.data
+          .filter((item) => item.sales_id)
+          .map((item) => item.sales_id),
+      },
+      {
+        field: "role",
+        operator: "eq",
+        value: "sales",
+      },
+    ],
+    queryOptions: {
+      enabled: !!tableQueryResult.data,
+    },
+  });
+
   const { data: profiles, isLoading: isProfileLoading } = useList<
     Database["public"]["Tables"]["profiles"]["Row"]
   >({
@@ -250,6 +300,12 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("sales_id", sorter)}
           dataIndex="sales_id"
           title="sales"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select {...salesSelectProps} style={{ width: 200 }} />
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isProfileLoading) return <Skeleton.Button />;
             return (
@@ -267,6 +323,12 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
           defaultSortOrder={getDefaultSortOrder("distributor_id", sorter)}
           dataIndex="distributor_id"
           title="Distributor"
+          filterIcon={<SearchOutlined />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props} mapValue={(value) => value}>
+              <Select {...distributorSelectProps} style={{ width: 200 }} />
+            </FilterDropdown>
+          )}
           render={(value) => {
             if (isProfileLoading) return <Skeleton.Button />;
             return (

@@ -19,6 +19,8 @@ import { useLocation } from "react-router-dom";
 import { challanProductAddingType } from "@/utilities/constants";
 import { PurePrideInvoiceLogo, PurePrideSignature } from "@/images";
 import dayjs from "dayjs";
+import { Button } from "antd";
+import { IconShare } from "@tabler/icons-react";
 
 export const ChallanPdf = () => {
   const challanId = useLocation().pathname.split("/").pop();
@@ -44,10 +46,11 @@ export const ChallanPdf = () => {
   useEffect(() => {
     if (challanData) {
       const fetchCustomer = async () => {
-        const { data: Customer, error: CustomerError } = await supabaseServiceRoleClient
-          .from("customers")
-          .select("*")
-          .eq("id", challanData?.data.customer_id);
+        const { data: Customer, error: CustomerError } =
+          await supabaseServiceRoleClient
+            .from("customers")
+            .select("*")
+            .eq("id", challanData?.data.customer_id);
         // console.log(Customer[0]);
         setCustomer(Customer?.[0]);
       };
@@ -60,18 +63,19 @@ export const ChallanPdf = () => {
         setDistributor(data?.[0]);
       };
       const fetchProducts = async () => {
-        const { data: products, error: productsError } = await supabaseServiceRoleClient
-          .from("products")
-          .select("id, name")
-          .in(
-            "id",
-            challanData?.data?.product_info &&
-              Array.isArray(challanData?.data?.product_info)
-              ? challanData?.data?.product_info.map(
-                  (item: any) => item.product_id
-                )
-              : []
-          );
+        const { data: products, error: productsError } =
+          await supabaseServiceRoleClient
+            .from("products")
+            .select("id, name")
+            .in(
+              "id",
+              challanData?.data?.product_info &&
+                Array.isArray(challanData?.data?.product_info)
+                ? challanData?.data?.product_info.map(
+                    (item: any) => item.product_id
+                  )
+                : []
+            );
         setProducts(products);
       };
       fetchCustomer();
@@ -251,8 +255,54 @@ export const ChallanPdf = () => {
     return <div>Loading...</div>;
   }
 
+  const handleShare = async () => {
+    if (!instance.url) return alert("PDF not ready yet");
+
+    try {
+      const response = await fetch(instance.url);
+      const blob = await response.blob();
+
+      const file = new File([blob], `challan-${challanId}.pdf`, {
+        type: "application/pdf",
+      });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `Challan ${challanId}`,
+          text: `Here's the challan PDF for customer: ${customer.full_name}`,
+          files: [file],
+        });
+      } else {
+        alert("Sharing not supported on this device/browser.");
+      }
+    } catch (error) {
+      console.error("Sharing failed", error);
+      alert("Something went wrong while sharing.");
+    }
+  };
+
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        gap: "1rem",
+        flexDirection: "column",
+      }}
+    >
+      {/* 🟣 Share Button */}
+      <Button
+        type="primary"
+        color="primary"
+        variant="filled"
+        style={{ marginLeft: "auto" }}
+        onClick={handleShare}
+      >
+        <IconShare /> Share
+      </Button>
+
+      {/* 🟢 PDF Viewer */}
       {instance.loading || !instance.url ? (
         "Loading"
       ) : (
