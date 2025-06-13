@@ -125,15 +125,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     resource: "customers",
     optionLabel: "full_name",
     optionValue: "id",
-    filters: [
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult.data?.data
-          .filter((item) => item.customer_id)
-          .map((item) => item.customer_id),
-      },
-    ],
+    filters: [],
     queryOptions: {
       enabled: !!tableQueryResult.data,
     },
@@ -146,13 +138,6 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     optionLabel: "full_name",
     optionValue: "id",
     filters: [
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult.data?.data
-          .filter((item) => item.distributor_id)
-          .map((item) => item.distributor_id),
-      },
       {
         field: "role",
         operator: "eq",
@@ -171,13 +156,6 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     optionLabel: "full_name",
     optionValue: "id",
     filters: [
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult.data?.data
-          .filter((item) => item.sales_id)
-          .map((item) => item.sales_id),
-      },
       {
         field: "role",
         operator: "eq",
