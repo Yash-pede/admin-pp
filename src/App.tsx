@@ -56,7 +56,7 @@ import {
   ReqDeletionChallan,
 } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
-import { CustomersList } from "./routes/clients/customers";
+import { CustomersEdit, CustomersList } from "./routes/clients/customers";
 import {
   MoneyList,
   ReportProducts,
@@ -150,7 +150,7 @@ function App() {
                       <Route path="customers">
                         <Route index element={<CustomersList />} />
                         <Route path="create" element={<SalesCreate />} />
-                        <Route path="edit/:id" element={<SalesEdit />} />
+                        <Route path="edit/:id" element={<CustomersEdit />} />
                         <Route path=":id" element={<SalesShow />} />
                       </Route>
                       <Route path="sales">

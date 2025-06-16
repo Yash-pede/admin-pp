@@ -5,20 +5,19 @@ import { Drawer, Form, Input, InputNumber } from "antd";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { SalesShow } from "./show";
+import ChangeEmailAndPasswordComponent from "@/components/changePassword";
 
 export const SalesEdit = () => {
   const pathname = useLocation().pathname;
   const salesId = pathname.split("/").pop();
   const go = useGo();
 
-  const { formProps, drawerProps, saveButtonProps, id } = useDrawerForm<
-    Database["public"]["Tables"]["profiles"]["Row"],
-    HttpError
-  >({
-    action: "edit",
-    resource: "profiles",
-    id: salesId,
-  });
+  const { formProps, drawerProps, saveButtonProps, id, queryResult } =
+    useDrawerForm<Database["public"]["Tables"]["profiles"]["Row"], HttpError>({
+      action: "edit",
+      resource: "profiles",
+      id: salesId,
+    });
   return (
     <SalesShow>
       <Drawer
@@ -58,8 +57,16 @@ export const SalesEdit = () => {
             <Form.Item label="Full Name" name={"full_name"}>
               <Input placeholder="Enter Full Name" />
             </Form.Item>
+            <Form.Item label="Email" name={"email"}>
+              <Input placeholder="Email" />
+            </Form.Item>
           </Form>
         </Edit>
+        <ChangeEmailAndPasswordComponent
+          email={queryResult?.data?.data.email ?? ""}
+          userId={salesId ?? ""}
+          userType={"sales"}
+        />
       </Drawer>
     </SalesShow>
   );

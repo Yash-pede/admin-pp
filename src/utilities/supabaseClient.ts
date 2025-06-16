@@ -17,3 +17,17 @@ export const supabaseServiceRoleClient = createClient(
     },
   }
 );
+
+export const adminAuthClient = supabaseServiceRoleClient.auth.admin;
+
+export const changeSupabaseEmailAndPassword = async (
+  userId: string,
+  email: string,
+  password: string
+) => {
+  const result = await adminAuthClient.updateUserById(userId, {
+    email,
+    password,
+  });
+  return result;
+};

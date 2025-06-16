@@ -1,6 +1,7 @@
 import { type FC } from "react";
 
 import {
+  EditButton,
   FilterDropdown,
   getDefaultSortOrder,
   TextField,
@@ -226,6 +227,7 @@ export const CustomersTableView: FC<Props> = ({
           </Button>
         )}
       />
+      <Table.Column dataIndex="action" render={(_, record) => <EditButton hideText resource="customers" recordItemId={record.id} />} />
     </Table>
   );
 };

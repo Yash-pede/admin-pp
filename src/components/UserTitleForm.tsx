@@ -40,7 +40,7 @@ export const UserTitleForm = ({
         >
           Edit Details
         </Button>
-        <Button onClick={() => go({ to: `/administration/settings/user-credentials/${userDetails?.id}` })}> Edit Credentials</Button>
+        {/* <Button onClick={() => go({ to: `/administration/settings/user-credentials/${userDetails?.id}` })}> Edit Credentials</Button> */}
       </Space>
     </Flex>
   );

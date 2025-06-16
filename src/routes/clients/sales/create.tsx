@@ -46,13 +46,13 @@ export const SalesCreate = () => {
       console.log("Setting user Role was successful");
     } else {
       close && close("assign-user");
-      open &&
-        open({
-          key: "assign-user",
-          type: "error",
-          message: "Failed to set user role",
-          description: "Failed to set user role",
-        });
+      // open &&
+      //   open({
+      //     key: "assign-user",
+      //     type: "error",
+      //     message: "Failed to set user role",
+      //     description: "Failed to set user role",
+      //   });
       console.error("Failed to set user role");
     }
   };
