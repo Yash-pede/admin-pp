@@ -25,9 +25,8 @@ export const CustomersEdit = (props: any) => {
         onClose={() =>
           go({
             to: {
-              action: "show",
-              id: customerId || "",
-              resource: "sales",
+              action: "list",
+              resource: "customers",
             },
           })
         }
@@ -46,6 +45,12 @@ export const CustomersEdit = (props: any) => {
             </Form.Item>
             <Form.Item label="Full Name" name={"full_name"}>
               <Input placeholder="Enter Full Name" />
+            </Form.Item>
+            <Form.Item label="specialization" name={"specialization"}>
+              <Input placeholder="specialization" />
+            </Form.Item>
+            <Form.Item label="address" name={"address"}>
+              <Input placeholder="Enter address" />
             </Form.Item>
           </Form>
         </Edit>

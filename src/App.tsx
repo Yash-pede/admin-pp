@@ -91,7 +91,7 @@ function App() {
               <DocumentTitleHandler
                 handler={(title) =>
                   `${
-                    title.resource?.name ? title.resource?.name + "| " : ""
+                    title.resource?.name ? title.resource?.name + " | " : ""
                   } Admin Purepride`
                 }
               />
