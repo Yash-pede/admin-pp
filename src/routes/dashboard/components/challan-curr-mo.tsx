@@ -31,10 +31,14 @@ export const ChallanCurrentMonth = () => {
     queryOptions: {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
   });
   const totalAmount = totalChallansCount?.data
     .map((d) => d.bill_amt)
-    .reduce((a, b) => a + b, 0);  
+    .reduce((a, b) => a + b, 0);
 
   const textSize = totalAmount
     ? totalAmount.toString().length > 2

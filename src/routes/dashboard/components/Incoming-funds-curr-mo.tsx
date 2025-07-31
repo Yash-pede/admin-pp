@@ -32,16 +32,20 @@ const IncomingFundsCurrentMonth = () => {
     queryOptions: {
       refetchInterval: 1 * 60 * 60 * 1000,
     },
+    pagination: {
+      current: 1,
+      pageSize: 1000,
+    },
   });
-    const totalAmount = totalTransfersCount?.data
-      ?.map((d) => d.amount)
-      ?.reduce((a, b) => a + b, 0);
+  const totalAmount = totalTransfersCount?.data
+    ?.map((d) => d.amount)
+    ?.reduce((a, b) => a + b, 0);
 
-    const textSize = totalAmount
-      ? totalAmount.toString().length > 2
-        ? "lg"  
-        : "md"
-      : "xl";
+  const textSize = totalAmount
+    ? totalAmount.toString().length > 2
+      ? "lg"
+      : "md"
+    : "xl";
 
   return (
     <Card
