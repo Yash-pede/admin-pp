@@ -8,7 +8,7 @@ Shrewit is a cutting-edge SaaS platform revolutionizing supply chain management 
 
 ## 🎥 Demo Video
 
-[![Vercel Lite Demo](https://img.youtube.com/vi/8EqbOZa5QOE/0.jpg)](https://www.youtube.com/watch?v=8EqbOZa5QOE)
+[![Vercel Lite Demo](https://img.youtube.com/vi/KrOePSQGdfE/0.jpg)](https://www.youtube.com/watch?v=KrOePSQGdfE)
 
 FUll Long explanation here [watch it on YouTube](https://www.youtube.com/watch?v=WN91JBAxFZ0).
 
