@@ -4,6 +4,16 @@
 
 Shrewit is a cutting-edge SaaS platform revolutionizing supply chain management for local manufacturers across diverse industries. By leveraging advanced AI technologies, Shrewit addresses critical challenges in inventory tracking, demand forecasting, and logistics optimization.
 
+---
+
+## 🎥 Demo Video
+
+[![Vercel Lite Demo](https://img.youtube.com/vi/8EqbOZa5QOE/0.jpg)](https://www.youtube.com/watch?v=8EqbOZa5QOE)
+
+FUll Long explanation here [watch it on YouTube](https://www.youtube.com/watch?v=WN91JBAxFZ0).
+
+---
+
 ## 🌟 Key Problem Solved
 
 Many manufacturers struggle with:
