@@ -21,7 +21,7 @@ import { PaginationTotal, Text } from "@/components";
 import { useGo } from "@refinedev/core";
 import { IconTrash } from "@tabler/icons-react";
 
-export const ChallanList = ({ sales }: { sales?: boolean }) => {
+export const ChallanList = () => {
   const go = useGo();
   const [userFilters, setUserFilters] = React.useState<any>(null);
   const { tableProps, tableQueryResult, sorter, filters } = useTable<
@@ -68,7 +68,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     resource: "challan",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: userFilters
       ? [
@@ -103,7 +103,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     resource: "customers",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {
@@ -173,7 +173,7 @@ export const ChallanList = ({ sales }: { sales?: boolean }) => {
     resource: "profiles",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {

@@ -1,7 +1,7 @@
 import { type FC, type PropsWithChildren } from "react";
 
-import { List, useTable } from "@refinedev/antd";
-import type { HttpError } from "@refinedev/core";
+import { ExportButton, List, useTable } from "@refinedev/antd";
+import { useExport, type HttpError } from "@refinedev/core";
 
 import { SearchOutlined } from "@ant-design/icons";
 import { Form, Grid, Input, Space, Spin } from "antd";
@@ -9,6 +9,7 @@ import debounce from "lodash/debounce";
 
 import { Database } from "@/utilities";
 import { CustomersTableView } from "./components/table-view/table-view";
+import dayjs from "dayjs";
 
 type View = "card" | "table";
 
@@ -51,6 +52,26 @@ export const CustomersList: FC<PropsWithChildren> = ({ children }) => {
   };
   const debouncedOnChange = debounce(onSearch, 500);
 
+  const { triggerExport, isLoading: exportLoading } = useExport({
+    resource: "customers",
+    download: true,
+    onError(error) {
+      console.error(error);
+    },
+    mapData: (record) => {
+      return {
+        id: record.id,
+        full_name: record.full_name,
+        phone: record.phone,
+        created_at: dayjs(record.created_at).format("DD-MM-YYYY"),
+      };
+    },
+    exportOptions: {
+      filename: "CUstomers",
+    },
+    pageSize: 100000,
+  });
+
   return (
     <div className="page-container">
       <List
@@ -62,6 +83,8 @@ export const CustomersList: FC<PropsWithChildren> = ({ children }) => {
                 marginTop: screens.xs ? "1.6rem" : undefined,
               }}
             >
+              <ExportButton onClick={triggerExport} loading={exportLoading} size="large" type="dashed" />
+
               <Form {...searchFormProps} layout="inline">
                 <Form.Item name="full_name" noStyle>
                   <Input

@@ -1,61 +1,55 @@
 import { type FC, type PropsWithChildren } from "react";
 
-import { List, useTable } from "@refinedev/antd";
-import type { HttpError } from "@refinedev/core";
+import { ExportButton, List, useTable } from "@refinedev/antd";
+import { useExport, useGo, type HttpError } from "@refinedev/core";
 
-import {
-  SearchOutlined,
-} from "@ant-design/icons";
-import { Form, Grid, Input, Space, Spin } from "antd";
+import { ExportOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Form, Grid, Input, Space, Spin } from "antd";
 import debounce from "lodash/debounce";
 
 import { ListTitleButton } from "@/components";
 import { Database } from "@/utilities";
 import { DistributorsTableView } from "./components/table-view/table-view";
+import dayjs from "dayjs";
 
 export const DistributorList: FC<PropsWithChildren> = ({ children }) => {
   const screens = Grid.useBreakpoint();
-
-  const {
-    tableProps,
-    tableQueryResult,
-    searchFormProps,
-    filters,
-    sorters,
-  } = useTable<
-    Database["public"]["Tables"]["profiles"]["Row"],
-    HttpError,
-    { name: string }
-  >({
-    resource: "profiles",
-    filters: {
-      mode:"server",
-      permanent:[
-        {
-          field: "role",
-          operator: "eq",
-          value: "distributor",
-        }
-      ]
-    },
-    onSearch: (values) => {
-      return [
-        {
-          field: "username",
-          operator: "contains",
-          value: values.name,
-        },
-        {
-          field: "full_name",
-          operator: "contains",
-          value: values.name,
-        }
-      ];
-    },
-    pagination: {
-      pageSize: 12,
-    },
-  });
+  const go = useGo();
+  const { tableProps, tableQueryResult, searchFormProps, filters, sorters } =
+    useTable<
+      Database["public"]["Tables"]["profiles"]["Row"],
+      HttpError,
+      { name: string }
+    >({
+      resource: "profiles",
+      filters: {
+        mode: "server",
+        permanent: [
+          {
+            field: "role",
+            operator: "eq",
+            value: "distributor",
+          },
+        ],
+      },
+      onSearch: (values) => {
+        return [
+          {
+            field: "username",
+            operator: "contains",
+            value: values.name,
+          },
+          {
+            field: "full_name",
+            operator: "contains",
+            value: values.name,
+          },
+        ];
+      },
+      pagination: {
+        pageSize: 12,
+      },
+    });
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     searchFormProps?.onFinish?.({
@@ -100,14 +94,17 @@ export const DistributorList: FC<PropsWithChildren> = ({ children }) => {
           },
         }}
         title={
-          <ListTitleButton toPath="distributors" buttonText="Add new Distributor" />
+          <ListTitleButton
+            toPath="distributors"
+            buttonText="Add new Distributor"
+          />
         }
       >
         <DistributorsTableView
-            tableProps={tableProps}
-            filters={filters}
-            sorters={sorters}
-          />
+          tableProps={tableProps}
+          filters={filters}
+          sorters={sorters}
+        />
       </List>
       {children}
     </div>
