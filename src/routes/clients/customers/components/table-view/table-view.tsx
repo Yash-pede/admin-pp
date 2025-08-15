@@ -16,7 +16,7 @@ import {
 } from "@refinedev/core";
 
 import { Button, Input, Select, Table, type TableProps } from "antd";
-import { PaginationTotal } from "@/components";
+import { PaginationTotal, Text } from "@/components";
 import { Database } from "@/utilities";
 
 type Props = {
@@ -52,6 +52,9 @@ export const CustomersTableView: FC<Props> = ({
       ],
       queryOptions: {
         enabled: !!tableQueryResult,
+        meta: {
+          select: "username",
+        },
       },
     });
   const { data: salesProfile, isLoading: isLoadingSalesProfile } = useList<
@@ -178,6 +181,11 @@ export const CustomersTableView: FC<Props> = ({
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
+        dataIndex="full_name"
+        title="Full Name"
+        render={(value) => <div>{value}</div>}
+      />
+      <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
         dataIndex="phone"
         title="phone"
         defaultFilteredValue={getDefaultFilter("phone", filters)}
@@ -223,6 +231,23 @@ export const CustomersTableView: FC<Props> = ({
           salesProfile?.data.find((item) => item.id === value)?.username || "-"
         }
       />
+
+      <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
+        dataIndex="total_amt"
+        title="Total"
+        render={(value) => <div>{value}</div>}
+      />
+      <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
+        dataIndex="pending_amt"
+        title="Pending"
+        render={(value) => <div>{value}</div>}
+      />
+      <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
+        dataIndex="received_amt"
+        title="Received"
+        render={(value) => <div>{value}</div>}
+      />
+
       <Table.Column
         title="Pending Amt"
         render={(value: Database["public"]["Tables"]["customers"]["Row"]) => {

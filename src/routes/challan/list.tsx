@@ -10,7 +10,7 @@ import {
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import { useList } from "@refinedev/core";
+import { useList, useOne } from "@refinedev/core";
 import {
   FilePdfFilled,
   PullRequestOutlined,
@@ -23,7 +23,7 @@ import { IconTrash } from "@tabler/icons-react";
 
 export const ChallanList = () => {
   const go = useGo();
-  const [userFilters, setUserFilters] = React.useState<any>(null);
+  const [userFilters, setUserFilters] = React.useState<{ userType?: string; userId?: string } | null>(null);
   const { tableProps, tableQueryResult, sorter, filters } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
@@ -62,40 +62,51 @@ export const ChallanList = () => {
     }
   }, [tableQueryResult.data?.data]);
 
-  const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
-    Database["public"]["Tables"]["challan"]["Row"]
-  >({
-    resource: "challan",
-    pagination: {
-      current: 1,
-      pageSize: 100000,
-    },
-    filters: userFilters
-      ? [
-          {
-            field: userFilters.userType,
-            operator: "eq",
-            value: userFilters.userId,
-          },
-          {
-            field: "status",
-            operator: "eq",
-            value: "BILLED",
-          },
-        ]
-      : [
-          {
-            field: "status",
-            operator: "eq",
-            value: "BILLED",
-          },
-        ],
-    queryOptions: {
-      meta: {
-        select: "id, total_amt, received_amt, pending_amt",
-      },
-    },
-  });
+  // const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
+  //   Database["public"]["Tables"]["challan"]["Row"]
+  // >({
+  //   resource: "challan",
+  //   pagination: {
+  //     current: 1,
+  //     pageSize: 1000,
+  //   },
+  //   filters: userFilters
+  //     ? [
+  //         {
+  //           field: userFilters.userType,
+  //           operator: "eq",
+  //           value: userFilters.userId,
+  //         },
+  //         {
+  //           field: "status",
+  //           operator: "eq",
+  //           value: "BILLED",
+  //         },
+  //       ]
+  //     : [
+  //         {
+  //           field: "status",
+  //           operator: "eq",
+  //           value: "BILLED",
+  //         },
+  //       ],
+  //   queryOptions: {
+  //     meta: {
+  //       select: "id, total_amt, received_amt, pending_amt",
+  //     },
+  //   },
+  // });
+
+// console.log(JSON.stringify(userFilters+"userfilterrrr"));
+const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne<
+  Database["public"]["Tables"]["funds"]["Row"]
+>({
+  resource: "funds",
+  id: userFilters ? userFilters.userId : import.meta.env.VITE_ADMIN_ID,
+  queryOptions: {
+    enabled: !!tableQueryResult.data,
+  },
+});
 
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
     Database["public"]["Tables"]["customers"]["Row"]
@@ -208,15 +219,15 @@ export const ChallanList = () => {
       <Flex justify="space-between" align="center" gap={2}>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Total:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.total_amt, 0).toFixed(2)}
+          {ChallansAmt?.data.total_amt}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Pending:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.pending_amt, 0).toFixed(2)}
+          {ChallansAmt?.data.pending_amt}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Received:{" "}
-          {ChallansAmt?.data.reduce((a, b) => a + b.received_amt, 0).toFixed(2)}
+          {ChallansAmt?.data.received_amt}
         </Text>
       </Flex>
       <Table
