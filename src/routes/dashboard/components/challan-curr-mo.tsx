@@ -33,7 +33,7 @@ export const ChallanCurrentMonth = () => {
     },
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
   });
   const totalAmount = totalChallansCount?.data

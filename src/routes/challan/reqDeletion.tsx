@@ -58,7 +58,7 @@ export const ChallanDeleted = ({ sales }: { sales?: boolean }) => {
     resource: "customers",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {
@@ -100,7 +100,7 @@ export const ChallanDeleted = ({ sales }: { sales?: boolean }) => {
     resource: "profiles",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {

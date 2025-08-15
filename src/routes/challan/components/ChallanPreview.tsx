@@ -32,7 +32,7 @@ export const PdfLayout: React.FC<PdfProps> = ({
     resource: "products",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {

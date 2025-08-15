@@ -74,7 +74,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
     ],
     pagination: {
       mode:'off',
-      pageSize: 1000,
+      pageSize: 100000,
     },
   });
 
@@ -108,7 +108,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
     },
     exportOptions: {
       filename: "inventory",
-    },pageSize: 1000
+    },pageSize: 100000
   });
   const { selectProps } = useSelect({
     resource: "stocks",

@@ -58,7 +58,7 @@ const go = useGo();
     resource: "products",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: [
       {

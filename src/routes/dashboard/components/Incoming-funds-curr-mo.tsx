@@ -34,7 +34,7 @@ const IncomingFundsCurrentMonth = () => {
     },
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
   });
   const totalAmount = totalTransfersCount?.data

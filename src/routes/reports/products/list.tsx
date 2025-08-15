@@ -56,7 +56,7 @@ export const ReportProducts: React.FC = () => {
       ]
     },
     pagination: {
-      pageSize: 1000,
+      pageSize: 100000,
       mode: "off",
     },
   });
@@ -70,7 +70,7 @@ export const ReportProducts: React.FC = () => {
     resource: "challan",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     filters: distributorId
       ? [
