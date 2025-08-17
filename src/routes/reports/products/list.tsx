@@ -56,7 +56,7 @@ export const ReportProducts: React.FC = () => {
       ]
     },
     pagination: {
-      pageSize: 100000,
+      pageSize: 1000,
       mode: "off",
     },
   });

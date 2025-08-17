@@ -20,7 +20,7 @@ const ExportDistroSalesData = () => {
   const ExportData = () => {
     const [form] = Form.useForm();
     const { triggerExport, isLoading: exportLoading } = useExport({
-      resource: "challans",
+      resource: "challan",
       filters: [
         {
           field: pathname.includes("distributors")

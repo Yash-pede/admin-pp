@@ -106,9 +106,10 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
         created_at: dayjs(record.created_at).format("DD-MM-YYYY"),
       };
     },
+    pageSize: 100000,
     exportOptions: {
       filename: "inventory",
-    },pageSize: 100000
+    },
   });
   const { selectProps } = useSelect({
     resource: "stocks",

@@ -143,16 +143,14 @@ export const CustomersTableView: FC<Props> = ({
       {
         field: "customer_id",
         operator: "in",
-        value: tableQueryResult?.data
-          ?.filter((item: any) => !!item.customer_id)
-          .map((item: any) => item.customer_id),
+        value: tableQueryResult?.data?.map((item: any) => item.id),
       },
     ],
     queryOptions: {
       meta: {
         select: "id, total_amt, received_amt, pending_amt, customer_id",
       },
-      enabled: !!tableQueryResult,
+      enabled: !!tableQueryResult?.data?.length,
     },
   });
 
