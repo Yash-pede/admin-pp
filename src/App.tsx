@@ -66,6 +66,7 @@ import {
   UserSelect,
 } from "./routes/reports";
 import { UserCredintials } from "./routes/administration";
+import ExportDistroSalesData from "./routes/clients/export";
 
 function App() {
   return (
@@ -142,6 +143,10 @@ function App() {
                         <Route path="edit/:id" element={<DistributorEdit />} />
                         <Route path=":id" element={<DistributorShow />} />
                         <Route
+                          path="export/:id"
+                          element={<ExportDistroSalesData />}
+                        />
+                        <Route
                           path="inventory/:id"
                           element={<InventoryDetails />}
                         />
@@ -158,6 +163,10 @@ function App() {
                         <Route path="create" element={<SalesCreate />} />
                         <Route path="edit/:id" element={<SalesEdit />} />
                         <Route path=":id" element={<SalesShow />} />
+                        <Route
+                          path="export/:id"
+                          element={<ExportDistroSalesData />}
+                        />
                       </Route>
                     </Route>
 

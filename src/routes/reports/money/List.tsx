@@ -12,7 +12,7 @@ export const MoneyList = () => {
     resource: "challan",
     pagination: {
       current: 1,
-      pageSize: 1000,
+      pageSize: 100000,
     },
     queryOptions: {
       meta: {
@@ -64,7 +64,7 @@ export const MoneyList = () => {
       resource: "funds",
       pagination: {
         current: 1,
-        pageSize: 1000,
+        pageSize: 100000,
       },
       filters: [
         {

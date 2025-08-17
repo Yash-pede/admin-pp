@@ -1,11 +1,12 @@
 import { Text } from "@/components";
 import { Database } from "@/utilities";
+import { ExportOutlined } from "@ant-design/icons";
 import { useGo } from "@refinedev/core";
 import { Button, Flex, Skeleton, Space } from "antd";
 
 export const UserTitleForm = ({
   userDetails,
-  sales
+  sales,
 }: {
   userDetails: Database["public"]["Tables"]["profiles"]["Row"];
   sales?: boolean;
@@ -26,6 +27,20 @@ export const UserTitleForm = ({
         </Space>
       </Space>
       <Space>
+        <Button
+          onClick={() =>
+            go({
+              to: `/clients/${sales ? "sales" : "distributors"}/export/${
+                userDetails?.id
+              }`,
+            })
+          }
+          // loading={exportLoading}
+          size="large"
+          icon={<ExportOutlined />}
+        >
+          Export
+        </Button>
         <Button
           type="primary"
           onClick={() =>

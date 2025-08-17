@@ -108,7 +108,7 @@ export const UserFundsTable = (props: Props) => {
 
   return (
     <Card
-      style={props.style}
+      style={props.style} className="page-container"
       headStyle={{
         borderBottom: "1px solid #D9D9D9",
         marginBottom: "1px",

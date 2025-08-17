@@ -53,7 +53,7 @@ export const StocksPast = () => {
     },
     pagination: {
       mode:'off',
-      pageSize: 1000,
+      pageSize: 100000,
     },
   });
 
