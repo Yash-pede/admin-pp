@@ -98,10 +98,8 @@ export const ChallanList = () => {
   // });
 
 // console.log(JSON.stringify(userFilters+"userfilterrrr"));
-const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne<
-  Database["public"]["Tables"]["funds"]["Row"]
->({
-  resource: "funds",
+const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne({
+  resource: userFilters?.userType === "customer_id" ? "customers" : "funds",
   id: userFilters ? userFilters.userId : import.meta.env.VITE_ADMIN_ID,
   queryOptions: {
     enabled: !!tableQueryResult.data,
