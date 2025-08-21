@@ -1,65 +1,176 @@
-import React from "react";
+// path: src/components/ExportDistroSalesData.tsx
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { DistributorShow } from "./distributors";
 import { SalesShow } from "./sales";
-import { DatePicker, Drawer, Form, Input } from "antd";
-import { useExport, useGo, useOne } from "@refinedev/core";
+import { DatePicker, Drawer, Form } from "antd";
+import { CrudFilters, useExport, useGo, useList, useOne } from "@refinedev/core";
 import { Edit } from "@refinedev/antd";
 import dayjs from "dayjs";
+import { Database } from "@/utilities";
 
-const ExportDistroSalesData = () => {
+const ExportDistroSalesData: React.FC = () => {
   const { pathname } = useLocation();
   const go = useGo();
+  const recordId = pathname.split("/").pop() || "";
+  const isDistributor = pathname.includes("distributors");
+
+  // Fetch profile (either distributor or sales depending on route)
   const { data: profileData, isLoading: profileLoading } = useOne({
     resource: "profiles",
-    id: pathname.split("/").pop(),
-    queryOptions: {
-      enabled: !!pathname.split("/").pop(),
-    },
+    id: recordId,
+    queryOptions: { enabled: !!recordId },
   });
-  const ExportData = () => {
+
+  const ExportData: React.FC = () => {
     const [form] = Form.useForm();
+    const [month, setMonth] = useState<dayjs.Dayjs | null>(null);
+
+    // Build shared filters for challans (month + status + current entity)
+    const challanFilters: CrudFilters = month
+      ? [
+          {
+            field: "created_at",
+            operator: "gte",
+            value: dayjs(month).startOf("month").toISOString(),
+          },
+          {
+            field: "created_at",
+            operator: "lte",
+            value: dayjs(month).endOf("month").toISOString(),
+          },
+          { field: "status", operator: "eq", value: "BILLED" },
+          {
+            field: isDistributor ? "distributor_id" : "sales_id",
+            operator: "eq",
+            value: recordId,
+          },
+        ]
+      : [];
+
+    // Fetch challans based on month and current entity (distributor/sales)
+    const { data: challansData } = useList<
+      Database["public"]["Tables"]["challan"]["Row"]
+    >({
+      resource: "challan",
+      filters: challanFilters,
+      meta: {
+        fields: [
+          "id",
+          "distributor_id",
+          "sales_id",
+          "customer_id",
+          "status",
+          "total_amt",
+          "pending_amt",
+          "received_amt",
+          "bill_amt",
+          "created_at",
+        ],
+      },
+      queryOptions: { enabled: !!month && !profileLoading },
+      pagination: { pageSize: 1000 },
+    });
+
+    // ---- Lookups ----
+    // Sales lookup (only when viewing a distributor)
+    const salesIds = challansData?.data
+      ?.map((c) => c.sales_id)
+      .filter((id) => typeof id === "string" && id !== null);
+
+    const { data: salesData } = useList<
+      Database["public"]["Tables"]["profiles"]["Row"]
+    >({
+      resource: "profiles",
+      filters: isDistributor && salesIds?.length
+        ? [
+            { field: "id", operator: "in", value: salesIds },
+            { field: "role", operator: "eq", value: "sales" },
+          ]
+        : [],
+      meta: { fields: ["id", "full_name"] },
+      queryOptions: { enabled: isDistributor && !!salesIds?.length },
+      pagination: { pageSize: 1000 },
+    });
+
+    // Distributor lookup (only when viewing a sales profile)
+    const distributorIds = challansData?.data
+      ?.map((c) => c.distributor_id)
+      .filter((id): id is string => id !== null);
+
+    const { data: distributorsData } = useList<
+      Database["public"]["Tables"]["profiles"]["Row"]
+    >({
+      resource: "profiles",
+      filters: !isDistributor && distributorIds?.length
+        ? [
+            { field: "id", operator: "in", value: distributorIds },
+            { field: "role", operator: "eq", value: "distributor" },
+          ]
+        : [],
+      meta: { fields: ["id", "full_name"] },
+      queryOptions: { enabled: !isDistributor && !!distributorIds?.length },
+      pagination: { pageSize: 1000 },
+    });
+
+    // Customers lookup (common)
+    const customerIds = challansData?.data
+      ?.map((c) => c.customer_id)
+      .filter((id): id is string => id !== null);
+
+    const { data: customersData } = useList({
+      resource: "customers",
+      filters: customerIds?.length
+        ? [{ field: "id", operator: "in", value: customerIds }]
+        : [],
+      meta: { fields: ["id", "full_name"] },
+      queryOptions: { enabled: !!customerIds?.length },
+      pagination: { pageSize: 1000 },
+    });
+
+    // Export logic
     const { triggerExport, isLoading: exportLoading } = useExport({
       resource: "challan",
-      filters: [
-        {
-          field: pathname.includes("distributors")
-            ? "distributor_id"
-            : "sales_id",
-          operator: "eq",
-          value: pathname.split("/").pop(),
-        },
-        {
-          field: "created_at",
-          operator: "gte",
-          value: dayjs(form.getFieldValue("month"))
-            .startOf("month")
-            .toISOString(),
-        },
-      ],
       download: true,
       onError(error) {
-        console.error(error);
+        console.error("Export error:", error);
       },
-      mapData: (record) => {
-        return {
-          product_id: record.product_id,
-          id: record.id,
-          available_quantity: record.available_quantity,
-          ordered_quantity: record.ordered_quantity,
-          expiry_date: dayjs(record.expiry_date).format("DD-MM-YYYY"),
-          created_at: dayjs(record.created_at).format("DD-MM-YYYY"),
-        };
-      },
+      filters: challanFilters,
+      mapData: (record: Database["public"]["Tables"]["challan"]["Row"]) => ({
+        id: record.id,
+        distributor_name: isDistributor
+          ? profileData?.data?.full_name
+          : distributorsData?.data.find((d) => d.id === record.distributor_id)
+              ?.full_name,
+        sales_name: isDistributor
+          ? salesData?.data.find((s) => s.id === record.sales_id)?.full_name
+          : profileData?.data?.full_name,
+        customer_name: customersData?.data.find(
+          (c) => c.id === record.customer_id
+        )?.full_name,
+        total: record.total_amt,
+        pending: record.pending_amt,
+        received: record.received_amt,
+        billed: record.bill_amt,
+        date: dayjs(record.created_at).format("DD-MM-YYYY"),
+      }),
+      sorters: [
+        { field: "created_at", order: "desc" },
+      ],
       exportOptions: {
-        filename: profileData?.data?.full_name,
+        filename: `${
+          profileData?.data?.full_name || (isDistributor ? "Distributor" : "Sales")
+        }_${month ? dayjs(month).format("YYYY_MM") : "Report"}`,
       },
-      pageSize: 100000,
     });
-    form.submit = async () => {
-      const month: dayjs.Dayjs = form.getFieldValue("month");
-      console.log("Exporting data with month:", month.format("YYYY-MM"));
-      triggerExport();
+
+    const handleExport = async () => {
+      try {
+        await form.validateFields();
+        await triggerExport();
+      } catch (err) {
+        console.error("Validation failed:", err);
+      }
     };
 
     return (
@@ -70,17 +181,16 @@ const ExportDistroSalesData = () => {
           go({
             to: {
               action: "show",
-              id: pathname.split("/").pop() || "",
-              resource: pathname.includes("distributors")
-                ? "distributors"
-                : "sales",
+              id: recordId,
+              resource: isDistributor ? "distributors" : "sales",
             },
           })
         }
       >
         <Edit
+          isLoading={exportLoading || profileLoading}
           title="Export Data Month Wise"
-          saveButtonProps={{ onClick: () => form.submit(), htmlType: "submit" }}
+          saveButtonProps={{ onClick: handleExport }}
         >
           <Form form={form} layout="vertical">
             <Form.Item
@@ -92,6 +202,7 @@ const ExportDistroSalesData = () => {
                 picker="month"
                 minDate={dayjs("2025-01-01")}
                 maxDate={dayjs("2030-12-31")}
+                onChange={(val) => setMonth(val)}
               />
             </Form.Item>
           </Form>
@@ -99,7 +210,8 @@ const ExportDistroSalesData = () => {
       </Drawer>
     );
   };
-  if (pathname.includes("distributors")) {
+
+  if (isDistributor) {
     return (
       <DistributorShow>
         <ExportData />
@@ -112,6 +224,7 @@ const ExportDistroSalesData = () => {
       </SalesShow>
     );
   }
+
   return null;
 };
 
