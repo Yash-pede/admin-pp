@@ -126,34 +126,6 @@ export const CustomersTableView: FC<Props> = ({
     },
   });
 
-  const { data: ChallansAmt, isFetching: isFetchingChallansAmt } = useList<
-    Database["public"]["Tables"]["challan"]["Row"]
-  >({
-    resource: "challan",
-    pagination: {
-      current: 1,
-      pageSize: 100000,
-    },
-    filters: [
-      {
-        field: "status",
-        operator: "eq",
-        value: "BILLED",
-      },
-      {
-        field: "customer_id",
-        operator: "in",
-        value: tableQueryResult?.data?.map((item: any) => item.id),
-      },
-    ],
-    queryOptions: {
-      meta: {
-        select: "id, total_amt, received_amt, pending_amt, customer_id",
-      },
-      enabled: !!tableQueryResult?.data?.length,
-    },
-  });
-
   return (
     <Table
       {...tableProps}
@@ -246,13 +218,6 @@ export const CustomersTableView: FC<Props> = ({
         render={(value) => <div>{value}</div>}
       />
 
-      <Table.Column
-        title="Pending Amt"
-        render={(value: Database["public"]["Tables"]["customers"]["Row"]) => {
-          console.log("VALLLL",ChallansAmt?.data.find((item) => item.customer_id === value.id)?.pending_amt);
-          return <TextField value={ChallansAmt?.data.find((item) => item.customer_id === value.id)?.pending_amt} />;
-        }}
-      />
       <Table.Column
         dataIndex="action"
         render={(_, record) => (
