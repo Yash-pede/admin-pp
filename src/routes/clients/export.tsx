@@ -96,7 +96,7 @@ const ExportDistroSalesData: React.FC = () => {
     // Distributor lookup (only when viewing a sales profile)
     const distributorIds = challansData?.data
       ?.map((c) => c.distributor_id)
-      .filter((id): id is string => id !== null);
+      .filter((id) => typeof id === "string" && id !== null);
 
     const { data: distributorsData } = useList<
       Database["public"]["Tables"]["profiles"]["Row"]
@@ -116,7 +116,7 @@ const ExportDistroSalesData: React.FC = () => {
     // Customers lookup (common)
     const customerIds = challansData?.data
       ?.map((c) => c.customer_id)
-      .filter((id): id is string => id !== null);
+      .filter((id) => typeof id === "string" && id !== null);
 
     const { data: customersData } = useList({
       resource: "customers",
