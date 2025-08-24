@@ -4,7 +4,13 @@ import { useLocation } from "react-router-dom";
 import { DistributorShow } from "./distributors";
 import { SalesShow } from "./sales";
 import { DatePicker, Drawer, Form } from "antd";
-import { CrudFilters, useExport, useGo, useList, useOne } from "@refinedev/core";
+import {
+  CrudFilters,
+  useExport,
+  useGo,
+  useList,
+  useOne,
+} from "@refinedev/core";
 import { Edit } from "@refinedev/antd";
 import dayjs from "dayjs";
 import { Database } from "@/utilities";
@@ -74,49 +80,45 @@ const ExportDistroSalesData: React.FC = () => {
 
     // ---- Lookups ----
     // Sales lookup (only when viewing a distributor)
-    const salesIds = challansData?.data
-      ?.map((c) => c.sales_id)
-      .filter((id) => typeof id === "string" && id !== null);
+    const salesIds = challansData?.data?.map((c) => c.sales_id);
 
     const { data: salesData } = useList<
       Database["public"]["Tables"]["profiles"]["Row"]
     >({
       resource: "profiles",
-      filters: isDistributor && salesIds?.length
-        ? [
-            { field: "id", operator: "in", value: salesIds },
-            { field: "role", operator: "eq", value: "sales" },
-          ]
-        : [],
+      filters:
+        isDistributor && salesIds?.length
+          ? [
+              { field: "id", operator: "in", value: salesIds },
+              { field: "role", operator: "eq", value: "sales" },
+            ]
+          : [],
       meta: { fields: ["id", "full_name"] },
       queryOptions: { enabled: isDistributor && !!salesIds?.length },
       pagination: { pageSize: 1000 },
     });
 
     // Distributor lookup (only when viewing a sales profile)
-    const distributorIds = challansData?.data
-      ?.map((c) => c.distributor_id)
-      .filter((id) => typeof id === "string" && id !== null);
+    const distributorIds = challansData?.data?.map((c) => c.distributor_id);
 
     const { data: distributorsData } = useList<
       Database["public"]["Tables"]["profiles"]["Row"]
     >({
       resource: "profiles",
-      filters: !isDistributor && distributorIds?.length
-        ? [
-            { field: "id", operator: "in", value: distributorIds },
-            { field: "role", operator: "eq", value: "distributor" },
-          ]
-        : [],
+      filters:
+        !isDistributor && distributorIds?.length
+          ? [
+              { field: "id", operator: "in", value: distributorIds },
+              { field: "role", operator: "eq", value: "distributor" },
+            ]
+          : [],
       meta: { fields: ["id", "full_name"] },
       queryOptions: { enabled: !isDistributor && !!distributorIds?.length },
       pagination: { pageSize: 1000 },
     });
 
     // Customers lookup (common)
-    const customerIds = challansData?.data
-      ?.map((c) => c.customer_id)
-      .filter((id) => typeof id === "string" && id !== null);
+    const customerIds = challansData?.data?.map((c) => c.customer_id);
 
     const { data: customersData } = useList({
       resource: "customers",
@@ -127,6 +129,14 @@ const ExportDistroSalesData: React.FC = () => {
       queryOptions: { enabled: !!customerIds?.length },
       pagination: { pageSize: 1000 },
     });
+    // console.log("CUSTOMER KA DATA",JSON.stringify(customersData,null,2));
+    const customerMap = new Map(
+      customersData?.data?.map((c) => [c.id, c.full_name])
+    );
+    const salesMap = new Map(salesData?.data?.map((s) => [s.id, s.full_name]));
+    const distributorMap = new Map(
+      distributorsData?.data?.map((d) => [d.id, d.full_name])
+    );
 
     // Export logic
     const { triggerExport, isLoading: exportLoading } = useExport({
@@ -140,26 +150,22 @@ const ExportDistroSalesData: React.FC = () => {
         id: record.id,
         distributor_name: isDistributor
           ? profileData?.data?.full_name
-          : distributorsData?.data.find((d) => d.id === record.distributor_id)
-              ?.full_name,
+          : distributorMap.get(record.distributor_id) || "",
         sales_name: isDistributor
-          ? salesData?.data.find((s) => s.id === record.sales_id)?.full_name
+          ? salesMap.get(record.sales_id ?? "") || ""
           : profileData?.data?.full_name,
-        customer_name: customersData?.data.find(
-          (c) => c.id === record.customer_id
-        )?.full_name,
+        customer_name: customerMap.get(record.customer_id) || "",
         total: record.total_amt,
-        pending: record.pending_amt,
         received: record.received_amt,
-        billed: record.bill_amt,
+        pending: record.pending_amt,
+        // billed: record.bill_amt,
         date: dayjs(record.created_at).format("DD-MM-YYYY"),
       }),
-      sorters: [
-        { field: "created_at", order: "desc" },
-      ],
+      sorters: [{ field: "created_at", order: "desc" }],
       exportOptions: {
         filename: `${
-          profileData?.data?.full_name || (isDistributor ? "Distributor" : "Sales")
+          profileData?.data?.full_name ||
+          (isDistributor ? "Distributor" : "Sales")
         }_${month ? dayjs(month).format("YYYY_MM") : "Report"}`,
       },
     });
