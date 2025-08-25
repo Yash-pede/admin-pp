@@ -39,6 +39,7 @@ import {
   DistributorCreate,
   DistributorEdit,
   DistributorList,
+  DistributorsChallans,
   DistributorShow,
   InventoryDetails,
 } from "./routes/clients/distributors";
@@ -56,7 +57,7 @@ import {
   ReqDeletionChallan,
 } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
-import { CustomersEdit, CustomersList } from "./routes/clients/customers";
+import { CustomersChallans, CustomersEdit, CustomersList } from "./routes/clients/customers";
 import {
   MoneyList,
   ReportProducts,
@@ -67,6 +68,7 @@ import {
 } from "./routes/reports";
 import { UserCredintials } from "./routes/administration";
 import ExportDistroSalesData from "./routes/clients/export";
+import { SalesChallans } from "./routes/clients/sales/challans";
 
 function App() {
   return (
@@ -143,6 +145,10 @@ function App() {
                         <Route path="edit/:id" element={<DistributorEdit />} />
                         <Route path=":id" element={<DistributorShow />} />
                         <Route
+                          path="challans/:id"
+                          element={<DistributorsChallans />}
+                        />
+                        <Route
                           path="export/:id"
                           element={<ExportDistroSalesData />}
                         />
@@ -155,12 +161,20 @@ function App() {
                       <Route path="customers">
                         <Route index element={<CustomersList />} />
                         <Route path="create" element={<SalesCreate />} />
+                        <Route
+                          path="challans/:id"
+                          element={<CustomersChallans />}
+                        />
                         <Route path="edit/:id" element={<CustomersEdit />} />
                         <Route path=":id" element={<SalesShow />} />
                       </Route>
                       <Route path="sales">
                         <Route index element={<SalesList />} />
                         <Route path="create" element={<SalesCreate />} />
+                        <Route
+                          path="challans/:id"
+                          element={<SalesChallans />}
+                        />
                         <Route path="edit/:id" element={<SalesEdit />} />
                         <Route path=":id" element={<SalesShow />} />
                         <Route

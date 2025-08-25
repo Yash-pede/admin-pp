@@ -102,16 +102,9 @@ export const UserInfoForm = (props: Props) => {
               type="primary"
               onClick={() =>
                 go({
-                  to: `/challan`,
-                  query: {
-                    filters: [
-                      {
-                        field: props.sales ? "sales_id" : "distributor_id",
-                        operator: "eq",
-                        value: props.userDetails.id,
-                      },
-                    ],
-                  },
+                  to: `/clients/${
+                    props.sales ? "sales" : "distributors"
+                  }/challans/${props.userDetails.id}`,
                 })
               }
             >
@@ -206,7 +199,7 @@ export const UserInfoForm = (props: Props) => {
       </Card>
       <Modal
         {...modalProps}
-        onClose={() => setBannedStatus("")}
+        afterClose={() => setBannedStatus("")}
         footer={[
           <Button onClick={close}>Cancel</Button>,
           <Button

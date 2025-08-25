@@ -225,16 +225,7 @@ export const CustomersTableView: FC<Props> = ({
             type="primary"
             onClick={() =>
               go({
-                to: `/challan`,
-                query: {
-                  filters: [
-                    {
-                      field: "customer_id",
-                      operator: "eq",
-                      value: JSON.parse(JSON.stringify(record)).id,
-                    },
-                  ],
-                },
+                to: `/clients/customers/challans/${record.id}`,
               })
             }
           >
