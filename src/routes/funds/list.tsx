@@ -20,13 +20,13 @@ const go = useGo();
   return (
     <List
       headerProps={{
-        title: `Total : ${funds?.data?.total ? funds?.data?.total : "-"}`,
+        title: `In Hand : ${funds?.data?.total ? funds?.data?.total : "-"}`,
       }}
       headerButtons={[
         <Button type="primary" onClick={() => go({ to: "requested" })}>Requested</Button>
       ]} canCreate={false}
     >
-      <TransactionList userId={user.id} />
+      <TransactionList userId={user.id} statusNeq="Requested" />
       {children}
     </List>
   );

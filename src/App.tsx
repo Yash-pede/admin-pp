@@ -21,7 +21,6 @@ import { ColorModeContextProvider } from "./contexts/color-mode";
 import { supabaseServiceRoleClient } from "./utilities";
 import { resources } from "./config";
 import { Layout } from "./components/layout";
-import DashboardHome from "./routes/dashboard/show";
 import {
   ProductsCreate,
   ProductsList,
@@ -49,7 +48,7 @@ import { SalesShow } from "./routes/clients/sales/show";
 import { SalesEdit } from "./routes/clients/sales/edit";
 import { OrdersEdit, OrdersList } from "./routes/orders";
 import { AuthorizeUserRole } from "./components/layout/authorize";
-import { FundsList, FundsRequested } from "./routes/funds";
+import { AllFunds, FundsList, FundsListById, FundsRequested } from "./routes/funds";
 import {
   ChallanDeleted,
   ChallanList,
@@ -57,7 +56,11 @@ import {
   ReqDeletionChallan,
 } from "./routes/challan";
 import { ChallanPdf } from "./routes/challan/components/challanPdf";
-import { CustomersChallans, CustomersEdit, CustomersList } from "./routes/clients/customers";
+import {
+  CustomersChallans,
+  CustomersEdit,
+  CustomersList,
+} from "./routes/clients/customers";
 import {
   MoneyList,
   ReportProducts,
@@ -69,6 +72,7 @@ import {
 import { UserCredintials } from "./routes/administration";
 import ExportDistroSalesData from "./routes/clients/export";
 import { SalesChallans } from "./routes/clients/sales/challans";
+import { NewDashboard } from "./routes/dashboard";
 
 function App() {
   return (
@@ -118,7 +122,7 @@ function App() {
                     />
 
                     <Route path="/dashboard">
-                      <Route index element={<DashboardHome />} />
+                      <Route index element={<NewDashboard />} />
                     </Route>
 
                     <Route path="/products">
@@ -192,6 +196,8 @@ function App() {
                     <Route path="funds">
                       <Route index element={<FundsList />} />
                       <Route path="requested" element={<FundsRequested />} />
+                      <Route path=":id" element={<FundsListById />} />
+                      <Route path="all" element={<AllFunds />} />
                     </Route>
 
                     <Route path="/challan">

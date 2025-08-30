@@ -1,50 +1,16 @@
-import { Suspense } from "react";
 import { Text } from "@/components";
-import { Database } from "@/utilities";
 import { ShopOutlined } from "@ant-design/icons";
-import { useList } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import dayjs from "dayjs";
-import TinyAreaChart from "../../../components/charts/area-chart";
 import IconWrapper from "./icon-wrapper";
+import { Database } from "@/utilities";
 
 export const ChallanCurrentMonth = () => {
-  const { data: totalChallansCount, isLoading } = useList<
-    Database["public"]["Tables"]["challan"]["Row"]
-  >({
-    resource: "challan",
-    filters: [
-      {
-        field: "created_at",
-        operator: "gte",
-        value: dayjs().startOf("month").toISOString(),
-      },
-      {
-        field: "created_at",
-        operator: "lte",
-        value: dayjs().endOf("month").toISOString(),
-      },
-    ],
-    meta: {
-      select: "id , bill_amt , created_at",
-    },
-    queryOptions: {
-      refetchInterval: 1 * 60 * 60 * 1000,
-    },
-    pagination: {
-      current: 1,
-      pageSize: 100000,
-    },
+  const { data: totalChallansCount, isLoading } = useOne<Database["public"]["Tables"]["funds"]["Row"]>({
+    resource: "funds",
+    id: import.meta.env.VITE_ADMIN_ID as string,
   });
-  const totalAmount = totalChallansCount?.data
-    .map((d) => d.bill_amt)
-    .reduce((a, b) => a + b, 0);
-
-  const textSize = totalAmount
-    ? totalAmount.toString().length > 2
-      ? "lg"
-      : "md"
-    : "xl";
 
   return (
     <Card
@@ -71,7 +37,7 @@ export const ChallanCurrentMonth = () => {
           />
         </IconWrapper>
         <Text size="md" className="secondary" style={{ marginLeft: "8px" }}>
-          Total Bill amt as of {dayjs().format("MMMM YYYY")}
+          Total Bill Amount {dayjs().format("MMMM YYYY")}
         </Text>
       </div>
       <div
@@ -81,7 +47,7 @@ export const ChallanCurrentMonth = () => {
         }}
       >
         <Text
-          size={textSize}
+        size="lg"
           strong
           style={{
             textAlign: "start",
@@ -98,17 +64,9 @@ export const ChallanCurrentMonth = () => {
               }}
             />
           ) : (
-            totalChallansCount?.data
-              .map((d) => d.bill_amt)
-              .reduce((a, b) => a + b, 0)
+            Math.round(totalChallansCount?.data?.total_amt || 0)
           )}
         </Text>
-        <Suspense>
-          <TinyAreaChart
-            data={totalChallansCount?.data ?? []}
-            dataKey="bill_amt"
-          />
-        </Suspense>
       </div>
     </Card>
   );

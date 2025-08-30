@@ -1,8 +1,5 @@
 import { Database } from "@/utilities";
-import {
-  getTransferColor,
-  transactionStatusColor,
-} from "@/utilities/functions";
+import { transactionStatusColor } from "@/utilities/functions";
 import {
   DateField,
   EditButton,
@@ -11,24 +8,102 @@ import {
   SaveButton,
   useEditableTable,
   useSelect,
-  useTable,
 } from "@refinedev/antd";
-import { useList } from "@refinedev/core";
+import { CrudFilters, useGo, useList } from "@refinedev/core";
 import { Button, Form, Radio, Select, Space, Table, Tag } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
 type Props = {
-  userId: string;
+  userId?: string;
+  userIds?: Database["public"]["Tables"]["profiles"]["Row"][];
+  statusNeq?: string;
+  statusEq?: string;
+  range?: {
+    createdAt?: {
+      gte?: string;
+      lte?: string;
+    };
+  };
+  canEdit?: boolean;
 };
 
 export const TransactionList = (props: Props) => {
+  const go = useGo();
+  const TransactionFilters: CrudFilters = [];
+  if (props.userIds) {
+    TransactionFilters.push({
+      operator: "or",
+      value: [
+        {
+          field: "from_user_id",
+          operator: "in",
+          value: props.userIds?.map((user) => user.id),
+        },
+        {
+          field: "to_user_id",
+          operator: "in",
+          value: props.userIds?.map((user) => user.id),
+        },
+      ],
+    });
+  }
+
+  if (props.userId) {
+    TransactionFilters.push({
+      operator: "or",
+      value: [
+        {
+          field: "from_user_id",
+          operator: "eq",
+          value: props.userId,
+        },
+        {
+          field: "to_user_id",
+          operator: "eq",
+          value: props.userId,
+        },
+      ],
+    });
+  }
+  if (props.statusNeq) {
+    TransactionFilters.push({
+      field: "status",
+      operator: "ne",
+      value: props.statusNeq,
+    });
+  }
+  if (props.statusEq) {
+    TransactionFilters.push({
+      field: "status",
+      operator: "eq",
+      value: props.statusEq,
+    });
+  }
+  if (props.range) {
+    if (props.range.createdAt) {
+      if (props.range.createdAt.gte) {
+        TransactionFilters.push({
+          field: "created_at",
+          operator: "gte",
+          value: props.range.createdAt.gte,
+        });
+      }
+      if (props.range.createdAt.lte) {
+        TransactionFilters.push({
+          field: "created_at",
+          operator: "lte",
+          value: props.range.createdAt.lte,
+        });
+      }
+    }
+  }
+
   const {
     tableProps,
     tableQueryResult,
     sorters,
     formProps,
     isEditing,
-    filters,
     setId: setEditId,
     saveButtonProps,
     cancelButtonProps,
@@ -36,28 +111,7 @@ export const TransactionList = (props: Props) => {
   } = useEditableTable<Database["public"]["Tables"]["transfers"]["Row"]>({
     resource: "transfers",
     filters: {
-      permanent: [
-        {
-          operator: "or",
-          value: [
-            {
-              field: "from_user_id",
-              operator: "eq",
-              value: props.userId,
-            },
-            {
-              field: "to_user_id",
-              operator: "eq",
-              value: props.userId,
-            },
-          ],
-        },
-        {
-          field: "status",
-          operator: "ne",
-          value: "Requested",
-        },
-      ],
+      permanent: TransactionFilters,
     },
     sorters: {
       initial: [
@@ -66,9 +120,6 @@ export const TransactionList = (props: Props) => {
           order: "desc",
         },
       ],
-    },
-    queryOptions: {
-      enabled: !!props.userId,
     },
   });
 
@@ -80,9 +131,30 @@ export const TransactionList = (props: Props) => {
       {
         field: "id",
         operator: "in",
-        value: tableQueryResult.data?.data
-          ?.filter((item: any) => !!item.from_user_id)
-          .map((item: any) => item.from_user_id),
+        value: [
+          ...(tableQueryResult.data && tableQueryResult.data.data
+            ? tableQueryResult.data.data
+                .filter(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    !!item.from_user_id
+                )
+                .map(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    item.from_user_id
+                )
+            : []),
+          ...(tableQueryResult.data && tableQueryResult.data.data
+            ? tableQueryResult.data.data
+                .filter(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    !!item.to_user_id
+                )
+                .map(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    item.to_user_id
+                )
+            : []),
+        ],
       },
     ],
     queryOptions: {
@@ -90,19 +162,45 @@ export const TransactionList = (props: Props) => {
     },
   });
 
-  const { data: UserProfile, isLoading: isUserProfileLoading } = useList<
-    Database["public"]["Tables"]["profiles"]["Row"]
+  const { data: customers, isLoading: isCustomerLoading } = useList<
+    Database["public"]["Tables"]["customers"]["Row"]
   >({
-    resource: "profiles",
+    resource: "customers",
     filters: [
       {
         field: "id",
-        operator: "eq",
-        value: props.userId,
+        operator: "in",
+        value: [
+          ...(tableQueryResult.data && tableQueryResult.data.data
+            ? tableQueryResult.data.data
+                .filter(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    !!item.customer_id
+                )
+                .map(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    item.customer_id
+                )
+            : []),
+          ...(tableQueryResult.data && tableQueryResult.data.data
+            ? tableQueryResult.data.data
+                .filter(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    !!item.customer_id
+                )
+                .map(
+                  (item: Database["public"]["Tables"]["transfers"]["Row"]) =>
+                    item.customer_id
+                )
+            : []),
+        ],
       },
     ],
     queryOptions: {
       enabled: !!tableQueryResult.data,
+    },
+    meta: {
+      fields: ["id", "full_name"],
     },
   });
 
@@ -133,7 +231,7 @@ export const TransactionList = (props: Props) => {
         onRow={(record) => ({
           // eslint-disable-next-line
           onClick: (event: any) => {
-            if (event.target.nodeName === "TD") {
+            if (props.canEdit && event.target.nodeName === "TD") {
               setEditId && setEditId(record.id);
             }
           },
@@ -152,7 +250,7 @@ export const TransactionList = (props: Props) => {
             render: (value) => (
               <div>
                 {
-                  UserProfile?.data.find((profile) => profile.id === value)
+                  profiles?.data.find((profile) => profile.id === value)
                     ?.username
                 }
               </div>
@@ -172,12 +270,12 @@ export const TransactionList = (props: Props) => {
               </FilterDropdown>
             ),
             render: (value) => (
-              <div>
+              <Button type="link" style={{ padding: 0 }} onClick={() => go({to:`/funds/${value}`})}>
                 {
                   profiles?.data.find((profile) => profile.id === value)
                     ?.username
                 }
-              </div>
+              </Button>
             ),
           },
           {
@@ -247,6 +345,20 @@ export const TransactionList = (props: Props) => {
               );
             },
           },
+          {
+            title: "Customer",
+            dataIndex: "customer_id",
+            render: (value) => {
+              return (
+                <div>
+                  {
+                    customers?.data.find((customer) => customer.id === value)
+                      ?.full_name
+                  }
+                </div>
+              );
+            },
+          },
 
           {
             title: "Date",
@@ -258,6 +370,7 @@ export const TransactionList = (props: Props) => {
           {
             title: "Actions",
             dataIndex: "actions",
+            hidden: !props.canEdit,
             render: (_, record) => {
               if (isEditing(record.id)) {
                 return (
