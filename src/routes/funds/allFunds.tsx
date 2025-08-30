@@ -40,5 +40,7 @@ export const AllFunds = () => {
       },
     };
   if (!users?.data || isLoading) return <Skeleton active />;
-  return <TransactionList userIds={users?.data} range={range} />;
+  return (
+    <TransactionList userIds={users?.data} range={range} statusEq="Credit" />
+  );
 };
