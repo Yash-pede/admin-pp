@@ -9,7 +9,7 @@ import {
   useEditableTable,
   useSelect,
 } from "@refinedev/antd";
-import { CrudFilters, useGo, useList } from "@refinedev/core";
+import { CrudFilters, useGo, useList, useParsed } from "@refinedev/core";
 import { Button, Form, Radio, Select, Space, Table, Tag } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
@@ -29,6 +29,7 @@ type Props = {
 
 export const TransactionList = (props: Props) => {
   const go = useGo();
+  const { pathname } = useParsed();
   const TransactionFilters: CrudFilters = [];
   if (props.userIds) {
     TransactionFilters.push({
@@ -203,7 +204,6 @@ export const TransactionList = (props: Props) => {
       fields: ["id", "full_name"],
     },
   });
-
   const { selectProps: selectPropsProfile } = useSelect({
     resource: "profiles",
     defaultValue: props.userId,
@@ -248,12 +248,18 @@ export const TransactionList = (props: Props) => {
             title: "To",
             dataIndex: "to_user_id",
             render: (value) => (
-              <div>
+              <Button
+                type={pathname?.includes(`funds/${value}`) ? "text" : "link"}
+                onClick={() => {
+                  if (!pathname?.includes(`funds/${value}`))
+                    go({ to: `/funds/${value}` });
+                }}
+              >
                 {
                   profiles?.data.find((profile) => profile.id === value)
                     ?.username
                 }
-              </div>
+              </Button>
             ),
           },
           {
@@ -270,7 +276,13 @@ export const TransactionList = (props: Props) => {
               </FilterDropdown>
             ),
             render: (value) => (
-              <Button type="link" style={{ padding: 0 }} onClick={() => go({to:`/funds/${value}`})}>
+              <Button
+                type={pathname?.includes(`funds/${value}`) ? "text" : "link"}
+                onClick={() => {
+                  if (!pathname?.includes(`funds/${value}`))
+                    go({ to: `/funds/${value}` });
+                }}
+              >
                 {
                   profiles?.data.find((profile) => profile.id === value)
                     ?.username

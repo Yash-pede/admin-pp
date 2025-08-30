@@ -1,6 +1,5 @@
 import { Text } from "@/components";
 import { Col, Row } from "antd";
-import React from "react";
 import TotalCollection from "./newDashboardComponents/TotalCollection";
 import { ChallanCurrentMonth } from "./components/challan-curr-mo";
 import TotalSales from "./newDashboardComponents/TotalSales";
