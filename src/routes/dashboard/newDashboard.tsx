@@ -1,7 +1,7 @@
 import { Text } from "@/components";
 import { Col, Row } from "antd";
 import TotalCollection from "./newDashboardComponents/TotalCollection";
-import { ChallanCurrentMonth } from "./components/challan-curr-mo";
+import { TotalChallanAmt } from "./components/challan-curr-mo";
 import TotalSales from "./newDashboardComponents/TotalSales";
 
 export const NewDashboard = () => {
@@ -27,10 +27,10 @@ export const NewDashboard = () => {
         span={11}
         style={{ gap: "12px", display: "flex", flexDirection: "column" }}
       >
-        <Text size="xxxl">Sales</Text>
-        <ChallanCurrentMonth />
+        <Text size="xxxl">Sales</Text> 
         <TotalSales filterBy="this-month" />
         <TotalSales filterBy="last-month" />
+        <TotalChallanAmt />
       </Col>
     </Row>
   );

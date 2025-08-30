@@ -48,7 +48,12 @@ import { SalesShow } from "./routes/clients/sales/show";
 import { SalesEdit } from "./routes/clients/sales/edit";
 import { OrdersEdit, OrdersList } from "./routes/orders";
 import { AuthorizeUserRole } from "./components/layout/authorize";
-import { AllFunds, FundsList, FundsListById, FundsRequested } from "./routes/funds";
+import {
+  AllFunds,
+  FundsList,
+  FundsListById,
+  FundsRequested,
+} from "./routes/funds";
 import {
   ChallanDeleted,
   ChallanList,
@@ -202,6 +207,7 @@ function App() {
 
                     <Route path="/challan">
                       <Route index element={<ChallanList />} />
+                      <Route path="all" element={<ChallanList />} />
                       <Route path=":id" element={<ChallanShow />} />
                       <Route
                         path="req-deletion"

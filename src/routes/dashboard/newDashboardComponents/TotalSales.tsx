@@ -1,6 +1,6 @@
-  import { Text } from "@/components";
+import { Text } from "@/components";
 import { Database } from "@/utilities";
-import { useList, CrudFilters } from "@refinedev/core";
+import { useList, CrudFilters, useGo } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import { ShopOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -11,6 +11,7 @@ type TotalSalesProps = {
 };
 
 const TotalSales = ({ filterBy }: TotalSalesProps) => {
+  const go = useGo();
   const filters: CrudFilters = [
     {
       field: "status",
@@ -69,6 +70,14 @@ const TotalSales = ({ filterBy }: TotalSalesProps) => {
         padding: "8px 8px 8px 12px",
       }}
       size="small"
+      onClick={() =>
+        go({
+          to: "/challan/all",
+          query: {
+            filterBy,
+          },
+        })
+      }
     >
       <div
         style={{
@@ -107,7 +116,10 @@ const TotalSales = ({ filterBy }: TotalSalesProps) => {
             }}
           />
         ) : (
-          `${Math.round(data?.data.reduce((acc, curr) => acc + (curr.total_amt || 0), 0) ?? 0)}`
+          `${Math.round(
+            data?.data.reduce((acc, curr) => acc + (curr.total_amt || 0), 0) ??
+              0
+          )}`
         )}
       </Text>
     </Card>

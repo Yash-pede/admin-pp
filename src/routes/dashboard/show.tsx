@@ -3,7 +3,7 @@ import { Col, Row } from "antd";
 import React from "react";
 import IncomingFundsCurrentMonth from "./components/Incoming-funds-curr-mo";
 import { IncomingFundsPastMonth } from "./components/Incoming-funds-past-mo";
-import { ChallanCurrentMonth } from "./components/challan-curr-mo";
+import { TotalChallanAmt } from "./components/challan-curr-mo";
 import ChallanDetails from "./components/challan-details";
 import ProductsChart from "./components/products-proportion";
 import TopPerformers from "./components/top-performers";
@@ -20,7 +20,7 @@ const DashboardHome = () => {
           <IncomingFundsPastMonth />
         </Col>
         <Col xs={24} sm={24} xl={8}>
-          <ChallanCurrentMonth />
+          <TotalChallanAmt />
         </Col>
       </Row>
 

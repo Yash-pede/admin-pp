@@ -1,13 +1,16 @@
 import { Text } from "@/components";
 import { ShopOutlined } from "@ant-design/icons";
-import { useOne } from "@refinedev/core";
+import { useGo, useOne } from "@refinedev/core";
 import { Card, Skeleton } from "antd";
 import dayjs from "dayjs";
 import IconWrapper from "./icon-wrapper";
 import { Database } from "@/utilities";
 
-export const ChallanCurrentMonth = () => {
-  const { data: totalChallansCount, isLoading } = useOne<Database["public"]["Tables"]["funds"]["Row"]>({
+export const TotalChallanAmt = () => {
+  const go = useGo();
+  const { data: totalChallansCount, isLoading } = useOne<
+    Database["public"]["Tables"]["funds"]["Row"]
+  >({
     resource: "funds",
     id: import.meta.env.VITE_ADMIN_ID as string,
   });
@@ -19,6 +22,7 @@ export const ChallanCurrentMonth = () => {
         padding: "8px 8px 8px 12px",
       }}
       size="small"
+      onClick={() => go({ to: "/challan" })}
     >
       <div
         style={{
@@ -47,7 +51,7 @@ export const ChallanCurrentMonth = () => {
         }}
       >
         <Text
-        size="lg"
+          size="lg"
           strong
           style={{
             textAlign: "start",

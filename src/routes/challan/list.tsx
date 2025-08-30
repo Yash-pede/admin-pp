@@ -10,7 +10,7 @@ import {
   useSelect,
   useTable,
 } from "@refinedev/antd";
-import { useList, useOne } from "@refinedev/core";
+import { CrudFilters, useList, useOne, useParsed } from "@refinedev/core";
 import {
   FilePdfFilled,
   PullRequestOutlined,
@@ -20,21 +20,66 @@ import { Database } from "@/utilities";
 import { PaginationTotal, Text } from "@/components";
 import { useGo } from "@refinedev/core";
 import { IconTrash } from "@tabler/icons-react";
+import dayjs from "dayjs";
 
 export const ChallanList = () => {
+  const { params } = useParsed<any>();
+  const challanFilters: CrudFilters = [
+    {
+      field: "status",
+      operator: "eq",
+      value: "BILLED",
+    },
+  ];
+
+  if (params.filterBy === "this-month") {
+    challanFilters.push({
+      field: "created_at",
+      operator: "gte",
+      value: dayjs().startOf("month").toISOString(),
+    });
+  }
+  if (params.filterBy === "last-month") {
+    challanFilters.push({
+      field: "created_at",
+      operator: "gte",
+      value: dayjs().subtract(1, "month").startOf("month").toISOString(),
+    });
+    challanFilters.push({
+      field: "created_at",
+      operator: "lte",
+      value: dayjs().subtract(1, "month").endOf("month").toISOString(),
+    });
+  }
+
+  const { data: challanFullData, isLoading: ChallanFullDataLoading } = useList<
+    Database["public"]["Tables"]["challan"]["Row"]
+  >({
+    resource: "challan",
+    filters: challanFilters,
+    meta: {
+      select: "id , created_at , total_amt , pending_amt , received_amt",
+    },
+    queryOptions: {
+      refetchInterval: 1 * 60 * 60 * 1000,
+      enabled: !!params.filterBy,
+    },
+    pagination: {
+      current: 1,
+      pageSize: 100000,
+    },
+  });
+
   const go = useGo();
-  const [userFilters, setUserFilters] = React.useState<{ userType?: string; userId?: string } | null>(null);
+  const [userFilters, setUserFilters] = React.useState<{
+    userType?: string;
+    userId?: string;
+  } | null>(null);
   const { tableProps, tableQueryResult, sorter, filters } = useTable<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
     filters: {
-      permanent: [
-        {
-          field: "status",
-          operator: "eq",
-          value: "BILLED",
-        },
-      ],
+      permanent: challanFilters,
     },
     sorters: {
       initial: [
@@ -97,14 +142,14 @@ export const ChallanList = () => {
   //   },
   // });
 
-// console.log(JSON.stringify(userFilters+"userfilterrrr"));
-const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne({
-  resource: userFilters?.userType === "customer_id" ? "customers" : "funds",
-  id: userFilters ? userFilters.userId : import.meta.env.VITE_ADMIN_ID,
-  queryOptions: {
-    enabled: !!tableQueryResult.data,
-  },
-});
+  // console.log(JSON.stringify(userFilters+"userfilterrrr"));
+  const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne({
+    resource: userFilters?.userType === "customer_id" ? "customers" : "funds",
+    id: userFilters ? userFilters.userId : import.meta.env.VITE_ADMIN_ID,
+    queryOptions: {
+      enabled: !params.filterBy && !!tableQueryResult.data,
+    },
+  });
 
   const { data: Customers, isLoading: isLoadingCustomers } = useList<
     Database["public"]["Tables"]["customers"]["Row"]
@@ -217,15 +262,36 @@ const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne({
       <Flex justify="space-between" align="center" gap={2}>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Total:{" "}
-          {ChallansAmt?.data.total_amt}
+          {Math.round(
+            params.filterBy
+              ? challanFullData?.data.reduce(
+                  (acc, curr) => acc + (curr.total_amt || 0),
+                  0
+                ) ?? 0
+              : ChallansAmt?.data.total_amt
+          )}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Pending:{" "}
-          {ChallansAmt?.data.pending_amt}
+          {Math.round(
+            params.filterBy
+              ? challanFullData?.data.reduce(
+                  (acc, curr) => acc + (curr.pending_amt || 0),
+                  0
+                ) ?? 0
+              : ChallansAmt?.data.pending_amt
+          )}
         </Text>
         <Text size="xl" style={{ marginBottom: 10 }}>
           Received:{" "}
-          {ChallansAmt?.data.received_amt}
+          {Math.round(
+            params.filterBy
+              ? challanFullData?.data.reduce(
+                  (acc, curr) => acc + (curr.received_amt || 0),
+                  0
+                ) ?? 0
+              : ChallansAmt?.data.received_amt
+          )}
         </Text>
       </Flex>
       <Table
@@ -284,12 +350,17 @@ const { data: ChallansAmt, isLoading: isLoadingChallansAmt } = useOne({
           render={(value) => {
             if (isLoadingCustomers) return <Skeleton.Button />;
             return (
-              <Text>
+              <Button
+                onClick={() =>
+                  go({ to: `/clients/customers/challans/${value}` })
+                }
+                type="link"
+              >
                 {
                   Customers?.data?.find((customer) => customer.id === value)
                     ?.full_name
                 }
-              </Text>
+              </Button>
             );
           }}
         />
