@@ -65,7 +65,7 @@ const TotalSales = ({ filterBy }: TotalSalesProps) => {
 
   return (
     <Card
-      style={{ height: "96px", padding: 0 }}
+      style={{ height: "96px", padding: 0, cursor: "pointer" }}
       bodyStyle={{
         padding: "8px 8px 8px 12px",
       }}
