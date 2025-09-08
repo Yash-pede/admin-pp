@@ -1,22 +1,18 @@
-import { Text } from "@/components";
+// path: src/routes/reports/ReportPayments.tsx
 import { Database } from "@/utilities";
 import { List, useSelect, useTable } from "@refinedev/antd";
 import { useList } from "@refinedev/core";
-import { Form, Grid, Select, Space, Table } from "antd";
+import { Button, Form, Grid, Select, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { debounce } from "lodash";
 import React, { useState } from "react";
 
-interface ProductInfo {
-  discount: number;
-  quantity: number;
-  product_id: number;
-}
-
 interface Challan {
   id: number;
-  product_info: ProductInfo[];
   created_at: string;
+  total_amt: number;
+  received_amt: number;
+  pending_amt: number;
 }
 
 export const SoldProducts: React.FC = () => {
@@ -25,6 +21,7 @@ export const SoldProducts: React.FC = () => {
   const [year, setYear] = useState(dayjs().year());
   const [distributorId, setDistributorId] = useState<string | null>(null);
   const [salesId, setSalesId] = useState<string | null>(null);
+
   const months = [
     "January",
     "February",
@@ -44,21 +41,9 @@ export const SoldProducts: React.FC = () => {
     Database["public"]["Tables"]["products"]["Row"]
   >({
     resource: "products",
-    meta: {
-      select: "id, name, minimum_q",
-    },
-    sorters: {
-      initial: [
-        {
-          field: "id",
-          order: "asc",
-        },
-      ],
-    },
-    pagination: {
-      pageSize: 1000,
-      mode: "off",
-    },
+    meta: { select: "id, name" },
+    sorters: { initial: [{ field: "id", order: "asc" }] },
+    pagination: { pageSize: 1000, mode: "off" },
   });
 
   const {
@@ -68,10 +53,7 @@ export const SoldProducts: React.FC = () => {
     isRefetching: isRefetchingChallanProducts,
   } = useList<Challan>({
     resource: "challan",
-    pagination: {
-      current: 1,
-      pageSize: 100000,
-    },
+    pagination: { current: 1, pageSize: 100000 },
     filters: distributorId
       ? [
           {
@@ -84,16 +66,8 @@ export const SoldProducts: React.FC = () => {
             operator: "lt",
             value: `${year + 1}-01-01 00:00:00`,
           },
-          {
-            field: "distributor_id",
-            operator: "in",
-            value: distributorId,
-          },
-          {
-            field: "status",
-            operator: "eq",
-            value: "BILLED",
-          },
+          { field: "distributor_id", operator: "eq", value: distributorId },
+          { field: "status", operator: "eq", value: "BILLED" },
         ]
       : salesId
       ? [
@@ -107,16 +81,8 @@ export const SoldProducts: React.FC = () => {
             operator: "lt",
             value: `${year + 1}-01-01 00:00:00`,
           },
-          {
-            field: "sales_id",
-            operator: "in",
-            value: salesId,
-          },
-          {
-            field: "status",
-            operator: "eq",
-            value: "BILLED",
-          },
+          { field: "sales_id", operator: "eq", value: salesId },
+          { field: "status", operator: "eq", value: "BILLED" },
         ]
       : [
           {
@@ -129,41 +95,24 @@ export const SoldProducts: React.FC = () => {
             operator: "lt",
             value: `${year + 1}-01-01 00:00:00`,
           },
-          {
-            field: "status",
-            operator: "eq",
-            value: "BILLED",
-          },
+          { field: "status", operator: "eq", value: "BILLED" },
         ],
-    meta: {
-      select: "id, product_info, created_at",
-    },
+    meta: { select: "id, created_at, total_amt, received_amt, pending_amt" },
   });
 
   const { selectProps: distributorSelectProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
     optionValue: "id",
-    filters: [
-      {
-        field: "role",
-        operator: "eq",
-        value: "distributor",
-      },
-    ],
+    filters: [{ field: "role", operator: "eq", value: "distributor" }],
     debounce: 500,
   });
+
   const { selectProps: salesSelectProps } = useSelect({
     resource: "profiles",
     optionLabel: "username",
     optionValue: "id",
-    filters: [
-      {
-        field: "role",
-        operator: "eq",
-        value: "sales",
-      },
-    ],
+    filters: [{ field: "role", operator: "eq", value: "sales" }],
     debounce: 500,
   });
 
@@ -171,90 +120,130 @@ export const SoldProducts: React.FC = () => {
     setYear(newYear);
     refetchChallanProducts();
   };
-
   const debouncedOnChange = debounce(setYearFn, 500);
 
   const yearOptions = Array.from({ length: 5 }, (_, index) => 2023 + index).map(
-    (year) => ({
-      value: year,
-      label: year,
-    })
+    (year) => ({ value: year, label: year })
   );
-  const handlesalesChange = (value: any) => {
-    if (value.length === 0) {
-      setSalesId(null);
-    } else {
+
+  const handleSalesChange = (value: any) => {
+    if (!value) setSalesId(null);
+    else {
       setSalesId(value);
-      refetchChallanProducts();
-    }
-  };
-  const handleDistributorChange = (value: any) => {
-    if (value.length === 0) {
       setDistributorId(null);
-    } else {
-      setDistributorId(value);
       refetchChallanProducts();
     }
   };
 
+  const handleDistributorChange = (value: any) => {
+    if (!value) setDistributorId(null);
+    else {
+      setDistributorId(value);
+      setSalesId(null);
+      refetchChallanProducts();
+    }
+  };
+
+  // helper to render received + pending = total, using AntD Button for better light/dark mode support
+  const renderCell = (received: number, pending: number, total: number) => (
+    <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+      <Button
+        type="default"
+        size="small"
+        style={{
+          backgroundColor: "#e6f7ff",
+          borderColor: "#91d5ff",
+          fontWeight: "500",
+          pointerEvents: "none", // disable click
+        }}
+      >
+        {Math.round(received)}
+      </Button>
+      <div
+        style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}
+      >
+        +
+      </div>
+      <Button
+        type="default"
+        size="small"
+        style={{
+          backgroundColor: "#fffbe6",
+          borderColor: "#ffe58f",
+          fontWeight: "500",
+          pointerEvents: "none",
+        }}
+      >
+        {Math.round(pending)}
+      </Button>
+      <div
+        style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}
+      >
+        =
+      </div>
+      <Button
+        type="default"
+        size="small"
+        style={{
+          backgroundColor: "#f6ffed",
+          borderColor: "#b7eb8f",
+          fontWeight: "bold",
+          pointerEvents: "none",
+        }}
+      >
+        {Math.round(total)}
+      </Button>
+    </div>
+  );
+
   return (
     <List
-      headerButtons={() => {
-        return (
-          <Space
-            style={{
-              marginTop: screens.xs ? "1.6rem" : undefined,
-            }}
-          >
-            <Form layout="inline">
-              <Form.Item name="sales" noStyle>
-                <Select
-                  {...salesSelectProps}
-                  style={{ minWidth: 200 }}
-                  mode="multiple"
-                  placeholder="Filter sales"
-                  onChange={handlesalesChange}
-                />
-              </Form.Item>
-            </Form>
-            <Form layout="inline">
-              <Form.Item name="distributor" noStyle>
-                <Select
-                  {...distributorSelectProps}
-                  style={{ minWidth: 200 }}
-                  mode="multiple"
-                  placeholder="Filter distributors"
-                  onChange={handleDistributorChange}
-                />
-              </Form.Item>
-            </Form>
-            <Form layout="inline">
-              <Form.Item
-                name="year"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a year!",
-                  },
-                ]}
-              >
-                <Select
-                  defaultValue={year}
-                  style={{ width: 120 }}
-                  onChange={debouncedOnChange}
-                  options={yearOptions}
-                  loading={
-                    isLoadingChallanProducts || isRefetchingChallanProducts
-                  }
-                />
-              </Form.Item>
-            </Form>
-          </Space>
-        );
-      }}
+      headerButtons={() => (
+        <Space style={{ marginTop: screens.xs ? "1.6rem" : undefined }}>
+          <Form layout="inline">
+            <Form.Item name="sales" noStyle>
+              <Select
+                {...salesSelectProps}
+                style={{ minWidth: 200 }}
+                placeholder="Filter sales"
+                onChange={handleSalesChange}
+                allowClear
+              />
+            </Form.Item>
+          </Form>
+          <Form layout="inline">
+            <Form.Item name="distributor" noStyle>
+              <Select
+                {...distributorSelectProps}
+                style={{ minWidth: 200 }}
+                placeholder="Filter distributors"
+                onChange={handleDistributorChange}
+                allowClear
+              />
+            </Form.Item>
+          </Form>
+          <Form layout="inline">
+            <Form.Item name="year" noStyle>
+              <Select
+                defaultValue={year}
+                style={{ width: 120 }}
+                onChange={debouncedOnChange}
+                options={yearOptions}
+                loading={
+                  isLoadingChallanProducts || isRefetchingChallanProducts
+                }
+              />
+            </Form.Item>
+          </Form>
+        </Space>
+      )}
     >
-      <Table {...tableProps}>
+      {/* Sub-columns explanation */}
+      <div style={{ marginBottom: 8, fontWeight: "bold" }}>
+        Sub-columns: Received | Pending | Total
+      </div>
+
+      <Table {...tableProps} scroll={{ x: "max-content" }}>
         <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
           dataIndex="id"
           title="ID"
@@ -265,40 +254,46 @@ export const SoldProducts: React.FC = () => {
           title="Name"
           render={(value) => <div>{value}</div>}
         />
+
+        {/* Monthly columns */}
         {months.map((month, index) => (
           <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
             key={index}
             title={month}
             render={(_, record) => {
-              let totalQuantity = 0;
+              let total = 0;
+              let received = 0;
+              let pending = 0;
+
               challanProducts?.data.forEach((challan) => {
                 if (dayjs(challan.created_at).month() === index) {
-                  const productInfo = challan.product_info || [];
-                  productInfo.forEach((item) => {
-                    if (item.product_id === record.id) {
-                      totalQuantity += item.quantity;
-                    }
-                  });
+                  received += challan.received_amt || 0;
+                  pending += challan.pending_amt || 0;
+                  total += challan.total_amt || 0;
                 }
               });
 
-              return <div>{totalQuantity}</div>;
+              return renderCell(received, pending, total);
             }}
           />
         ))}
+
+        {/* Yearly total column */}
         <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
           key="total"
           title="Total"
           render={(_, record) => {
-            let rowTotal = 0;
+            let total = 0;
+            let received = 0;
+            let pending = 0;
+
             challanProducts?.data.forEach((challan) => {
-              challan.product_info?.forEach((item) => {
-                if (item.product_id === record.id) {
-                  rowTotal += item.quantity;
-                }
-              });
+              received += challan.received_amt || 0;
+              pending += challan.pending_amt || 0;
+              total += challan.total_amt || 0;
             });
-            return <strong>{rowTotal}</strong>;
+
+            return renderCell(received, pending, total);
           }}
         />
       </Table>
