@@ -70,6 +70,7 @@ import {
   MoneyList,
   ReportProducts,
   ReportsList,
+  SoldProducts,
   TargetCreate,
   Targets,
   UserSelect,
@@ -231,14 +232,15 @@ function App() {
                       <Route path="reports">
                         <Route index element={<ReportsList />} />
                         <Route path="challans" element={<ReportsList />} />
-                        <Route path="targets">
+                        {/* <Route path="targets">
                           <Route index element={<UserSelect />} />
                           <Route path=":id" element={<Targets />} />
                           <Route path="create/:id" element={<TargetCreate />} />
-                        </Route>
+                        </Route> */}
                         <Route path="money">
                           <Route index element={<MoneyList />} />
                         </Route>
+                        <Route path="sold-products" element={<SoldProducts />} />
                         <Route path="products">
                           <Route index element={<ReportProducts />} />
                         </Route>

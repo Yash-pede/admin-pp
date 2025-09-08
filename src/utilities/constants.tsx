@@ -24,7 +24,7 @@ export const reportTypes = [
   },
   {
     title: "Total Products Sold",
-    link: "/administration/reports/targets",
+    link: "/administration/reports/sold-products",
     icon: <IconHours12 style={{ width: "50px", height: "50px" }} />,
   },
   {
