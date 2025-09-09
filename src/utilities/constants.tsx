@@ -7,14 +7,14 @@ import {
 export const supabaseBucket_Product_images = import.meta.env
   .VITE_SUPABASE_BUCKET;
 
-  export type challanProductAddingType = {
-    product_id: string;
-    quantity: number;
-    discount: number;
-    free_q: number;
-    actual_q: number;
-    selling_price: number;
-  };
+export type challanProductAddingType = {
+  product_id: string;
+  quantity: number;
+  discount: number;
+  free_q: number;
+  actual_q: number;
+  selling_price: number;
+};
 
 export const reportTypes = [
   {
@@ -24,12 +24,12 @@ export const reportTypes = [
   },
   {
     title: "Total Products Sold",
-    link: "/administration/reports/sold-products",
+    link: "/administration/reports/products",
     icon: <IconHours12 style={{ width: "50px", height: "50px" }} />,
   },
   {
     title: "Month wise earning",
-    link: "/administration/reports/products",
+    link: "/administration/reports/sold-products",
     icon: <IconCalendarMonth style={{ width: "50px", height: "50px" }} />,
   },
 ];

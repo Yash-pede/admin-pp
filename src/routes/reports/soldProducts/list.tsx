@@ -13,6 +13,14 @@ interface Challan {
   total_amt: number;
   received_amt: number;
   pending_amt: number;
+  product_info: {
+    product_id: number;
+    actual_q: number;
+    free_q: number;
+    discount: number;
+    quantity: number;
+    selling_price: number;
+  }[];
 }
 
 export const SoldProducts: React.FC = () => {
@@ -56,48 +64,24 @@ export const SoldProducts: React.FC = () => {
     pagination: { current: 1, pageSize: 100000 },
     filters: distributorId
       ? [
-          {
-            field: "created_at",
-            operator: "gte",
-            value: `${year}-01-01 00:00:00`,
-          },
-          {
-            field: "created_at",
-            operator: "lt",
-            value: `${year + 1}-01-01 00:00:00`,
-          },
+          { field: "created_at", operator: "gte", value: `${year}-01-01 00:00:00` },
+          { field: "created_at", operator: "lt", value: `${year + 1}-01-01 00:00:00` },
           { field: "distributor_id", operator: "eq", value: distributorId },
           { field: "status", operator: "eq", value: "BILLED" },
         ]
       : salesId
       ? [
-          {
-            field: "created_at",
-            operator: "gte",
-            value: `${year}-01-01 00:00:00`,
-          },
-          {
-            field: "created_at",
-            operator: "lt",
-            value: `${year + 1}-01-01 00:00:00`,
-          },
+          { field: "created_at", operator: "gte", value: `${year}-01-01 00:00:00` },
+          { field: "created_at", operator: "lt", value: `${year + 1}-01-01 00:00:00` },
           { field: "sales_id", operator: "eq", value: salesId },
           { field: "status", operator: "eq", value: "BILLED" },
         ]
       : [
-          {
-            field: "created_at",
-            operator: "gte",
-            value: `${year}-01-01 00:00:00`,
-          },
-          {
-            field: "created_at",
-            operator: "lt",
-            value: `${year + 1}-01-01 00:00:00`,
-          },
+          { field: "created_at", operator: "gte", value: `${year}-01-01 00:00:00` },
+          { field: "created_at", operator: "lt", value: `${year + 1}-01-01 00:00:00` },
           { field: "status", operator: "eq", value: "BILLED" },
         ],
-    meta: { select: "id, created_at, total_amt, received_amt, pending_amt" },
+    meta: { select: "id, created_at, total_amt, received_amt, pending_amt, product_info" },
   });
 
   const { selectProps: distributorSelectProps } = useSelect({
@@ -144,52 +128,28 @@ export const SoldProducts: React.FC = () => {
     }
   };
 
-  // helper to render received + pending = total, using AntD Button for better light/dark mode support
   const renderCell = (received: number, pending: number, total: number) => (
-    <div style={{ display: "flex", justifyContent: "center", gap: 4 }}>
+    <div style={{ display: "flex", gap: 4 }}>
       <Button
         type="default"
         size="small"
-        style={{
-          backgroundColor: "#e6f7ff",
-          borderColor: "#91d5ff",
-          fontWeight: "500",
-          pointerEvents: "none", // disable click
-        }}
+        style={{ fontWeight: "500", pointerEvents: "none" }}
       >
         {Math.round(received)}
       </Button>
-      <div
-        style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}
-      >
-        +
-      </div>
+      <div style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}>+</div>
       <Button
         type="default"
         size="small"
-        style={{
-          backgroundColor: "#fffbe6",
-          borderColor: "#ffe58f",
-          fontWeight: "500",
-          pointerEvents: "none",
-        }}
+        style={{ fontWeight: "500", pointerEvents: "none" }}
       >
         {Math.round(pending)}
       </Button>
-      <div
-        style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}
-      >
-        =
-      </div>
+      <div style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}>=</div>
       <Button
         type="default"
         size="small"
-        style={{
-          backgroundColor: "#f6ffed",
-          borderColor: "#b7eb8f",
-          fontWeight: "bold",
-          pointerEvents: "none",
-        }}
+        style={{ fontWeight: "bold", pointerEvents: "none" }}
       >
         {Math.round(total)}
       </Button>
@@ -229,33 +189,27 @@ export const SoldProducts: React.FC = () => {
                 style={{ width: 120 }}
                 onChange={debouncedOnChange}
                 options={yearOptions}
-                loading={
-                  isLoadingChallanProducts || isRefetchingChallanProducts
-                }
+                loading={isLoadingChallanProducts || isRefetchingChallanProducts}
               />
             </Form.Item>
           </Form>
         </Space>
       )}
     >
-      {/* Sub-columns explanation */}
       <div style={{ marginBottom: 8, fontWeight: "bold" }}>
-        Sub-columns: Received | Pending | Total
+        Sub-columns: Received + Pending = Total
       </div>
 
       <Table {...tableProps} scroll={{ x: "max-content" }}>
         <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
           dataIndex="id"
           title="ID"
-          render={(value) => <div>{value}</div>}
         />
         <Table.Column
           dataIndex="name"
           title="Name"
-          render={(value) => <div>{value}</div>}
         />
 
-        {/* Monthly columns */}
         {months.map((month, index) => (
           <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
             key={index}
@@ -267,9 +221,13 @@ export const SoldProducts: React.FC = () => {
 
               challanProducts?.data.forEach((challan) => {
                 if (dayjs(challan.created_at).month() === index) {
-                  received += challan.received_amt || 0;
-                  pending += challan.pending_amt || 0;
-                  total += challan.total_amt || 0;
+                  challan.product_info?.forEach((item) => {
+                    if (item.product_id === record.id) {
+                      total += challan.total_amt || 0;
+                      received += challan.received_amt || 0;
+                      pending += challan.pending_amt || 0;
+                    }
+                  });
                 }
               });
 
@@ -278,9 +236,8 @@ export const SoldProducts: React.FC = () => {
           />
         ))}
 
-        {/* Yearly total column */}
         <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
-          key="total"
+          key="yearly-total"
           title="Total"
           render={(_, record) => {
             let total = 0;
@@ -288,9 +245,13 @@ export const SoldProducts: React.FC = () => {
             let pending = 0;
 
             challanProducts?.data.forEach((challan) => {
-              received += challan.received_amt || 0;
-              pending += challan.pending_amt || 0;
-              total += challan.total_amt || 0;
+              challan.product_info?.forEach((item) => {
+                if (item.product_id === record.id) {
+                  total += challan.total_amt || 0;
+                  received += challan.received_amt || 0;
+                  pending += challan.pending_amt || 0;
+                }
+              });
             });
 
             return renderCell(received, pending, total);

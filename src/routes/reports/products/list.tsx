@@ -177,6 +177,9 @@ export const ReportProducts: React.FC = () => {
         </Space>
       )}
     >
+       <div style={{ marginBottom: 8, fontWeight: "bold" }}>
+        Sub-columns: Actual + Free = Total
+      </div>
       <Table {...tableProps} scroll={{ x: "max-content" }}>
         <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
           dataIndex="id"
