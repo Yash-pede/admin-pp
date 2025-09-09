@@ -6,7 +6,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const ReportsList = () => {
-  const go = useGo();
   return (
     <Show>
       <Space size="large">
