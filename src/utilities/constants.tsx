@@ -17,11 +17,11 @@ export type challanProductAddingType = {
 };
 
 export const reportTypes = [
-  {
-    title: "Fund transfer",
-    link: "/administration/reports/money",
-    icon: <IconMoneybag style={{ width: "50px", height: "50px" }} />,
-  },
+  // {
+  //   title: "Fund transfer",
+  //   link: "/administration/reports/money",
+  //   icon: <IconMoneybag style={{ width: "50px", height: "50px" }} />,
+  // },
   {
     title: "Total Products Sold",
     link: "/administration/reports/products",

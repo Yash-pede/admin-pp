@@ -58,11 +58,15 @@ export const CustomersList: FC<PropsWithChildren> = ({ children }) => {
     onError(error) {
       console.error(error);
     },
-    mapData: (record) => {
+    mapData: (record: Database["public"]["Tables"]["customers"]["Row"]) => {
       return {
         id: record.id,
         full_name: record.full_name,
+        address: record.address,
         phone: record.phone,
+        total: record.total_amt,
+        pending: record.pending_amt,
+        received: record.received_amt,
         created_at: dayjs(record.created_at).format("DD-MM-YYYY"),
       };
     },
@@ -83,7 +87,12 @@ export const CustomersList: FC<PropsWithChildren> = ({ children }) => {
                 marginTop: screens.xs ? "1.6rem" : undefined,
               }}
             >
-              <ExportButton onClick={triggerExport} loading={exportLoading} size="large" type="dashed" />
+              <ExportButton
+                onClick={triggerExport}
+                loading={exportLoading}
+                size="large"
+                type="dashed"
+              />
 
               <Form {...searchFormProps} layout="inline">
                 <Form.Item name="full_name" noStyle>

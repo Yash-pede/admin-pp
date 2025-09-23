@@ -48,12 +48,12 @@ export const SalesShow = ({ children }: { children?: React.ReactNode }) => {
         <Col span={8}>
           <UserInfoForm sales userDetails={salesDetails.data} />
         </Col>
-        <UserActivitesTable
+        {/* <UserActivitesTable
           userId={salesDetails.data.id}
           style={{
             width: "100%",
           }}
-        />
+        /> */}
       </Row>
       {children}
     </div>

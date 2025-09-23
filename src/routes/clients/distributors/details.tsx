@@ -45,10 +45,10 @@ export const InventoryDetails = () => {
         value: tableQueryResult.data?.data.map((item) => item.batch_id),
       },
     ],
+    meta: {
+      select: "id, expiry_date",
+    },
     queryOptions: {
-      meta: {
-        select: "id, expiry_date",
-      },
     },
   });
 

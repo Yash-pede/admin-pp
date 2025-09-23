@@ -73,12 +73,12 @@ export const UserFundsTable = (props: Props) => {
         field: "id",
         operator: "in",
         value: [
-          tableQueryResult.data?.data
+          ...(tableQueryResult.data?.data
             .filter((item) => item.from_user_id)
-            .map((item) => item.from_user_id),
-          tableQueryResult.data?.data
+            .map((item) => item.from_user_id) || []),
+          ...(tableQueryResult.data?.data
             .filter((item) => item.to_user_id)
-            .map((item) => item.to_user_id),
+            .map((item) => item.to_user_id) || []),
         ],
       },
     ],
@@ -108,7 +108,8 @@ export const UserFundsTable = (props: Props) => {
 
   return (
     <Card
-      style={props.style} className="page-container"
+      style={props.style}
+      className="page-container"
       headStyle={{
         borderBottom: "1px solid #D9D9D9",
         marginBottom: "1px",
@@ -157,7 +158,7 @@ export const UserFundsTable = (props: Props) => {
             if (isLoadingUsers) return <Skeleton.Button size="small" />;
             return (
               users?.data.find((user) => user.id === record.from_user_id)
-                ?.username ||"-"
+                ?.username || "-"
             );
           }}
           filterDropdown={(props) => (

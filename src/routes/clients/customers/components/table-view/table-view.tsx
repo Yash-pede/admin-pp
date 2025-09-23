@@ -33,77 +33,35 @@ export const CustomersTableView: FC<Props> = ({
   tableQueryResult,
 }) => {
   const go = useGo();
-  const { data: distributorsProfile, isLoading: isLoadingDistributorsProfile } =
-    useList<Database["public"]["Tables"]["profiles"]["Row"]>({
+
+  const { selectProps: distributorSelectProps, query: distributorQueryResult } =
+    useSelect({
       resource: "profiles",
+      optionLabel: "username",
+      optionValue: "id",
       filters: [
         {
           field: "role",
           operator: "eq",
           value: "distributor",
         },
-        {
-          field: "id",
-          operator: "in",
-          value: tableQueryResult?.data
-            ?.filter((item: any) => !!item.distributor_id)
-            .map((item: any) => item.distributor_id),
-        },
+        // {
+        //   field: "id",
+        //   operator: "in",
+        //   value: tableQueryResult?.data
+        //     ?.filter((item: any) => !!item.distributor_id)
+        //     .map((item: any) => item.distributor_id),
+        // },
       ],
+      meta: {
+        select: "id, username",
+      },
       queryOptions: {
         enabled: !!tableQueryResult,
-        meta: {
-          select: "username",
-        },
       },
     });
-  const { data: salesProfile, isLoading: isLoadingSalesProfile } = useList<
-    Database["public"]["Tables"]["profiles"]["Row"]
-  >({
-    resource: "profiles",
-    filters: [
-      {
-        field: "role",
-        operator: "eq",
-        value: "sales",
-      },
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult?.data
-          ?.filter((item: any) => !!item.sales_id)
-          .map((item: any) => item.sales_id),
-      },
-    ],
-    queryOptions: {
-      enabled: !!tableQueryResult,
-    },
-  });
 
-  const { selectProps: distributorSelectProps } = useSelect({
-    resource: "profiles",
-    optionLabel: "username",
-    optionValue: "id",
-    filters: [
-      {
-        field: "role",
-        operator: "eq",
-        value: "distributor",
-      },
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult?.data
-          ?.filter((item: any) => !!item.distributor_id)
-          .map((item: any) => item.distributor_id),
-      },
-    ],
-    queryOptions: {
-      enabled: !!tableQueryResult,
-    },
-  });
-
-  const { selectProps: salesSelectProps } = useSelect({
+  const { selectProps: salesSelectProps, query: salesQueryResult } = useSelect({
     resource: "profiles",
     optionLabel: "username",
     optionValue: "id",
@@ -113,14 +71,17 @@ export const CustomersTableView: FC<Props> = ({
         operator: "eq",
         value: "sales",
       },
-      {
-        field: "id",
-        operator: "in",
-        value: tableQueryResult?.data
-          ?.filter((item: any) => !!item.sales_id)
-          .map((item: any) => item.sales_id),
-      },
+      // {
+      //   field: "id",
+      //   operator: "in",
+      //   value: tableQueryResult?.data
+      //     ?.filter((item: any) => !!item.sales_id)
+      //     .map((item: any) => item.sales_id),
+      // },
     ],
+    meta: {
+      select: "id, username",
+    },
     queryOptions: {
       enabled: !!tableQueryResult,
     },
@@ -180,8 +141,10 @@ export const CustomersTableView: FC<Props> = ({
           </FilterDropdown>
         )}
         render={(value) =>
-          distributorsProfile?.data.find((item) => item.id === value)
-            ?.username || "-"
+          (distributorQueryResult?.data &&
+            distributorQueryResult?.data.data.find((item) => item.id === value)
+              ?.username) ||
+          "-"
         }
       />
       <Table.Column<Database["public"]["Tables"]["customers"]["Row"]>
@@ -198,7 +161,10 @@ export const CustomersTableView: FC<Props> = ({
           </FilterDropdown>
         )}
         render={(value) =>
-          salesProfile?.data.find((item) => item.id === value)?.username || "-"
+          (salesQueryResult?.data &&
+            salesQueryResult?.data.data.find((item) => item.id === value)
+              ?.username) ||
+          "-"
         }
       />
 
