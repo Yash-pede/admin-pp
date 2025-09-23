@@ -103,7 +103,7 @@ export const DistributorShow = ({
             />
           </Col>
         )}
-        {!isMobile && (
+        {/* {!isMobile && (
           <UserActivitesTable
             isMobile={isMobile}
             userId={distributorDetails.data.id}
@@ -112,7 +112,7 @@ export const DistributorShow = ({
               width: "100%",
             }}
           />
-        )}
+        )} */}
       </Row>
       {children}
     </div>

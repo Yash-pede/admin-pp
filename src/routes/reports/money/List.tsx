@@ -14,10 +14,10 @@ export const MoneyList = () => {
       current: 1,
       pageSize: 100000,
     },
+    meta: {
+      select: "id, total_amt, received_amt, pending_amt, distributor_id",
+    },
     queryOptions: {
-      meta: {
-        select: "id, total_amt, received_amt, pending_amt, distributor_id",
-      },
     },
   });
 
@@ -73,10 +73,10 @@ export const MoneyList = () => {
           value: tableQueryResult.data?.data.map((item) => item.id),
         },
       ],
+      meta: {
+        select: "id, total",
+      },
       queryOptions: {
-        meta: {
-          select: "id, total",
-        },
       },
     }
   );

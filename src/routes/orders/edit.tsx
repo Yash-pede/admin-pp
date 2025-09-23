@@ -77,10 +77,10 @@ export const OrdersEdit = () => {
         }),
       },
     ],
+    meta: {
+      select: "id, expiry_date",
+    },
     queryOptions: {
-      meta: {
-        select: "id, expiry_date",
-      },
     },
   });
 
