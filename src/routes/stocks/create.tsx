@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import { useGo, useOne } from "@refinedev/core";
 import { StocksList } from "./list";
 import dayjs from "dayjs";
+import { ProductsList } from "../products";
 
 export const StocksCreate = () => {
   const go = useGo();
@@ -33,7 +34,7 @@ export const StocksCreate = () => {
     },
   });
   return (
-    <StocksList>
+    <ProductsList>
       <Drawer
         {...drawerProps}
         onClose={() =>
@@ -76,6 +77,37 @@ export const StocksCreate = () => {
               />
             )}
           </Form.Item>
+          <Form.Item
+            style={{ width: "100%" }}
+            name="HSN_code"
+            label="HSN Code"
+          >
+            {isLoadingProductById ? (
+              <Skeleton.Input active style={{ width: "100%" }} />
+            ) : (
+              <Input
+                style={{ width: "100%" }}
+                readOnly
+                defaultValue={productById?.data?.HSN_code}
+              />
+            )}
+          </Form.Item>
+           <Form.Item
+            style={{ width: "100%" }}
+            name="gst_slab"
+            label="GST Slab"
+          >
+            {isLoadingProductById ? (
+              <Skeleton.Input active style={{ width: "100%" }} />
+            ) : (
+              <Input
+                style={{ width: "100%" }}
+                readOnly
+                defaultValue={productById?.data?.gst_slab}
+              />
+            )}
+          </Form.Item>
+
           <Form.Item
             style={{ width: "100%" }}
             name="available_quantity"
@@ -121,6 +153,6 @@ export const StocksCreate = () => {
           </Form.Item>
         </Form>
       </Drawer>
-    </StocksList>
+    </ProductsList>
   );
 };

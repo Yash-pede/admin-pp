@@ -113,7 +113,8 @@ const go = useGo();
             <Space size={15}>
               <StarOutlined className="sm" />
               <Text size="xl">Challan: {challanId}</Text>
-              <Button type="primary" onClick={() => go({ to: `/challan/pdf/${challanId}` })}>View Pdf</Button>
+              <Button type="primary" onClick={() => go({ to: `/challan/pdf/${challanId}` })}>Bill</Button>
+              <Button type="dashed" onClick={() => go({ to: `/challan/pdf/simple/${challanId}` })}>Simple Bill</Button>
             </Space>
           }
           headStyle={{

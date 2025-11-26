@@ -14,7 +14,7 @@ import {
 } from "@refinedev/core";
 
 import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
-import { Input, Select, Space, Table, type TableProps } from "antd";
+import { Input, Radio, Select, Space, Table, type TableProps } from "antd";
 import { PaginationTotal } from "@/components";
 import { Database } from "@/utilities";
 
@@ -66,6 +66,32 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
         render={(value) => <div>{value}</div>}
       />
       <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
+        dataIndex="HSN_code"
+        title="HSN Code"
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input />
+          </FilterDropdown>
+        )}
+        filterIcon={<SearchOutlined />}
+        render={(value) => <div>{value}</div>}
+      />
+      <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
+        dataIndex="gst_slab"
+        title="GST Slab"
+        filterDropdown={(props) => (
+          <FilterDropdown {...props} mapValue={(value) => value}>
+            <Radio.Group>
+              <Radio value="5">5%</Radio>
+              <Radio value="12">12%</Radio>
+              <Radio value="18">18%</Radio>
+            </Radio.Group>
+          </FilterDropdown>
+        )}
+        filterIcon={<SearchOutlined />}
+        render={(value) => <div>{value}</div>}
+      />
+      <Table.Column<Database["public"]["Tables"]["products"]["Row"]>
         dataIndex="description"
         title="Description"
         render={(value) => <TextField value={value} />}
@@ -93,7 +119,7 @@ export const ProductsTableView: FC<Props> = ({ tableProps, filters }) => {
               recordItemId={value}
             />
 
-            <DeleteButton hideText size="small" recordItemId={value} />
+            {/* <DeleteButton hideText size="small" recordItemId={value} /> */}
           </Space>
         )}
       />

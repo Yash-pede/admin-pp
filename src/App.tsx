@@ -60,7 +60,7 @@ import {
   ChallanShow,
   ReqDeletionChallan,
 } from "./routes/challan";
-import { ChallanPdf } from "./routes/challan/components/challanPdf";
+import { ChallanSimplePdf } from "./routes/challan/components/challanSimplePdf";
 import {
   CustomersChallans,
   CustomersEdit,
@@ -79,6 +79,7 @@ import { UserCredintials } from "./routes/administration";
 import ExportDistroSalesData from "./routes/clients/export";
 import { SalesChallans } from "./routes/clients/sales/challans";
 import { NewDashboard } from "./routes/dashboard";
+import { ChallanMainPdf } from "./routes/challan/components/challanMainPfd";
 
 function App() {
   return (
@@ -215,7 +216,8 @@ function App() {
                         element={<ReqDeletionChallan />}
                       />
                       <Route path="deleted" element={<ChallanDeleted />} />
-                      <Route path="pdf/:id" element={<ChallanPdf />} />
+                      <Route path="pdf/:id" element={<ChallanMainPdf />} />
+                      <Route path="pdf/simple/:id" element={<ChallanSimplePdf />} />
                     </Route>
 
                     <Route path="/administration">

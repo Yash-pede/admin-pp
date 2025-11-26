@@ -22,7 +22,7 @@ import dayjs from "dayjs";
 import { Button } from "antd";
 import { IconShare } from "@tabler/icons-react";
 
-export const ChallanPdf = () => {
+export const ChallanSimplePdf = () => {
   const challanId = useLocation().pathname.split("/").pop();
 
   const { data: challanData, isLoading: challanLoading } = useOne<

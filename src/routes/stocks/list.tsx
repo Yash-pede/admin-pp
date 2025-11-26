@@ -73,7 +73,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
       },
     ],
     pagination: {
-      mode:'off',
+      mode: "off",
       pageSize: 100000,
     },
   });
@@ -129,10 +129,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
       <Show
         headerButtons={
           <Flex gap={10}>
-            <Button
-              type="primary"
-              onClick={() => go({ to: "/stocks/past" })}
-            >
+            <Button type="primary" onClick={() => go({ to: "/stocks/past" })}>
               Past
             </Button>
             <Button
@@ -305,7 +302,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
                       hideText
                       size="small"
                     />
-                    <DeleteButton
+                    {/* <DeleteButton
                       hideText
                       size="small"
                       recordItemId={record.id}
@@ -317,7 +314,7 @@ export const StocksList = ({ children }: { children?: React.ReactNode }) => {
                           "Please ensure their is no stock in the batch",
                         type: "error",
                       }}
-                    />
+                    /> */}
                   </Space>
                 );
               }}
