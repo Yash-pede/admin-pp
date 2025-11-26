@@ -1,12 +1,12 @@
 import React, { FC, PropsWithChildren } from "react";
 import { ProductsList } from "./list";
 import {
-  Card,
   Drawer,
   Form,
   GetProp,
   Input,
   InputNumber,
+  Select,
   Upload,
   UploadProps,
   message,
@@ -99,6 +99,34 @@ export const ProductsCreate: FC<PropsWithChildren> = ({ children }) => {
               ]}
             >
               <Input />
+            </Form.Item>
+            <Form.Item
+              label="HSN Code"
+              name="HSN_code"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="GST Slab"
+              name="gst_slab"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select
+                options={[
+                  { label: "5%", value: "5" },
+                  { label: "12%", value: "12" },
+                  { label: "18%", value: "18" },
+                ]}
+              />
             </Form.Item>
             <Form.Item
               label="mrp"

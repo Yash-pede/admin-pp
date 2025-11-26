@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { useDelete, useGo } from "@refinedev/core";
+import { Link, useDelete, useGo } from "@refinedev/core";
 
 import { DeleteOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
 import { Button, Card, Dropdown, Flex, Image } from "antd";
@@ -82,9 +82,11 @@ export const ProductCard: FC<Props> = ({ product }) => {
         </Dropdown>
 
         <Flex vertical gap="middle">
-          <Text size="xl" strong>
-            {product.name}
-          </Text>
+          <Link to={`/products/${product.id}`}>
+            <Text size="xl" strong>
+              {product.name}
+            </Text>
+          </Link>
           <Image
             width={"100%"}
             height={"230px"}
@@ -105,7 +107,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
           </div>
         </Flex>
         <Button
-          style={{ width: "100%",margin:"1rem 0" }}
+          style={{ width: "100%", margin: "1rem 0" }}
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             go({

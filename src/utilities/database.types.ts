@@ -296,6 +296,8 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          gst_slab: number | null
+          HSN_code: string | null
           id: number
           imageURL: string
           minimum_q: number
@@ -306,6 +308,8 @@ export type Database = {
         Insert: {
           created_at?: string
           description: string
+          gst_slab?: number | null
+          HSN_code?: string | null
           id?: number
           imageURL: string
           minimum_q?: number
@@ -316,6 +320,8 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          gst_slab?: number | null
+          HSN_code?: string | null
           id?: number
           imageURL?: string
           minimum_q?: number
@@ -512,10 +518,7 @@ export type Database = {
         Args: { batch_info: Json; order_id: number; product_id: number }
         Returns: undefined
       }
-      refresh_customer_amounts: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      refresh_customer_amounts: { Args: never; Returns: undefined }
     }
     Enums: {
       challan_status: "BILLED" | "REQ_DELETION" | "DELETED"
