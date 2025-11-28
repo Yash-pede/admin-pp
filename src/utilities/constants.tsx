@@ -15,7 +15,10 @@ export type challanProductAddingType = {
   actual_q: number;
   selling_price: number;
 };
-
+export type ChallanBatchInfo ={
+  batch_id: string;
+  quantity: number;
+}
 export const reportTypes = [
   // {
   //   title: "Fund transfer",
