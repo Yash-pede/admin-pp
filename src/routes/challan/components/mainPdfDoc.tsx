@@ -50,6 +50,48 @@ function amountToWords(amount: number) {
   return joined || "Zero Only";
 }
 
+// ========== CALCULATION FUNCTIONS ==========
+const calculateLineTotals = (
+  product: challanProductAddingType,
+  batchItem: ChallanBatchInfo,
+  productDetails: Database["public"]["Tables"]["products"]["Row"] | undefined,
+  totalActualQty: number
+) => {
+  const sellingPrice = product.selling_price || 0;
+  const discountPercent = product.discount || 0;
+  
+  // Use BATCH QUANTITY only (exclude free_q completely)
+  const batchQty = batchItem.quantity || 0;
+  
+  // Total discount for entire product (based on actual_q)
+  const totalSellingValue = sellingPrice * totalActualQty;
+  const totalDiscountAmount = totalSellingValue * (discountPercent / 100);
+  
+  // Distribute discount proportionally across batches
+  const batchProportion = totalActualQty ? batchQty / totalActualQty : 0;
+  const batchDiscount = totalDiscountAmount * batchProportion;
+  
+  // Line totals (GST inclusive)
+  const lineGross = sellingPrice * batchQty;
+  const lineNet = lineGross - batchDiscount; // Final amount for this batch
+  
+  const gstSlab = Number(productDetails?.gst_slab ?? 0);
+  const taxableValue = gstSlab > 0 ? lineNet / (1 + gstSlab / 100) : lineNet;
+  const taxAmount = lineNet - taxableValue;
+  const sgstAmount = taxAmount / 2;
+  const cgstAmount = taxAmount / 2;
+  
+  return {
+    lineNet,
+    taxableValue,
+    sgstAmount,
+    cgstAmount,
+    gstSlab,
+    batchDiscount
+  };
+};
+
+// ========== MAIN COMPONENT ==========
 export const MainPdfDoc: React.FC<Props> = ({
   distributor,
   customer,
@@ -60,450 +102,237 @@ export const MainPdfDoc: React.FC<Props> = ({
   challanBatchInfo,
   stocksDetails,
 }) => {
-  // aggregators
-  const gstSummaryMap: Record<
-    string,
-    { taxable: number; sgst: number; cgst: number; totalTax: number }
-  > = {};
-
+  // ========== AGGREGATORS ==========
+  const gstSummary: Record<string, { taxable: number; sgst: number; cgst: number; totalTax: number }> = {};
   let subtotalTaxable = 0;
   let totalSGST = 0;
   let totalCGST = 0;
   let grandTotal = 0;
 
-  // Build rows data by iterating billInfo and matching batches
-  const rows: {
-    productIdx: number;
-    batchIdx: number;
-    itemIdx: number;
-    product: challanProductAddingType;
-    batchItem: ChallanBatchInfo;
-    productDetails?: Database["public"]["Tables"]["products"]["Row"];
-    stockExpiry?: string | null;
-    lineNet: number; // selling_price * qty - distributed discount
-    taxableValue: number; // net / (1+gst/100)
-    taxAmount: number; // net - taxableValue
-    sgstAmount: number;
-    cgstAmount: number;
-  }[] = [];
+  // ========== BUILD TABLE ROWS ==========
+  const tableRows: React.ReactNode[] = [];
 
-  // iterate each bill product
   (billInfo ?? []).forEach((product, prodIdx) => {
-    // find challan_batch_info rows for this product
+    // Get all batches for this product
     const matchingBatchRows = (challanBatchInfo ?? []).filter(
       (b) => Number(b.product_id) === Number(product.product_id)
     );
-
-    // aggregate batchList across all matchingBatchRows
+    
     const batchListAll: ChallanBatchInfo[] = [];
     matchingBatchRows.forEach((b) => {
       const parsed = safeParseBatchInfo(b.batch_info);
       parsed.forEach((bi) => batchListAll.push(bi));
     });
 
-    // total actual qty for this product (sum of batch quantities)
-    const totalActualQty = batchListAll.reduce((s, it) => s + (it.quantity || 0), 0);
-    const totalSellingValue = (product.selling_price || 0) * totalActualQty;
-    const totalDiscountAmount = totalSellingValue * ((product.discount || 0) / 100);
+    const totalActualQty = batchListAll.reduce((sum, b) => sum + (b.quantity || 0), 0);
+    const productDetails = products?.find(p => Number(p.id) === Number(product.product_id));
 
-    // per-batch rows
+    // Create row for each batch
     batchListAll.forEach((batchItem, itemIdx) => {
-      const productDetails = (products ?? []).find(
-        (p) => Number(p.id) === Number(product.product_id)
-      );
-
-      // stock expiry lookup
-      const stock = (stocksDetails ?? []).find((s) => s.id === batchItem.batch_id);
-
-      // distribute discount proportionally across batches
-      const batchProportion = totalActualQty ? batchItem.quantity / totalActualQty : 0;
-      const batchDiscount = totalDiscountAmount * batchProportion;
-
-      const lineGross = (product.selling_price || 0) * batchItem.quantity; // GST inclusive
-      const lineNet = lineGross - batchDiscount; // after discount (GST inclusive)
-
-      const gstSlab = Number(productDetails?.gst_slab ?? 0);
-      const gstRate = gstSlab;
-      const taxableValue = gstRate > 0 ? (lineNet / (1 + gstRate / 100)) : lineNet;
-      const taxAmount = lineNet - taxableValue;
-      const sgstAmount = taxAmount / 2;
-      const cgstAmount = taxAmount / 2;
-
-      // accumulate for summary
-      const slabKey = String(gstSlab);
-      if (!gstSummaryMap[slabKey]) {
-        gstSummaryMap[slabKey] = { taxable: 0, sgst: 0, cgst: 0, totalTax: 0 };
+      const stock = stocksDetails?.find(s => s.id === batchItem.batch_id);
+      
+      // Calculate line totals (FREE_Q EXCLUDED)
+      const totals = calculateLineTotals(product, batchItem, productDetails, totalActualQty);
+      
+      // Update aggregators
+      const slabKey = String(totals.gstSlab);
+      if (!gstSummary[slabKey]) {
+        gstSummary[slabKey] = { taxable: 0, sgst: 0, cgst: 0, totalTax: 0 };
       }
-      gstSummaryMap[slabKey].taxable += taxableValue;
-      gstSummaryMap[slabKey].sgst += sgstAmount;
-      gstSummaryMap[slabKey].cgst += cgstAmount;
-      gstSummaryMap[slabKey].totalTax += taxAmount;
+      gstSummary[slabKey].taxable += totals.taxableValue;
+      gstSummary[slabKey].sgst += totals.sgstAmount;
+      gstSummary[slabKey].cgst += totals.cgstAmount;
+      gstSummary[slabKey].totalTax += (totals.sgstAmount + totals.cgstAmount);
 
-      subtotalTaxable += taxableValue;
-      totalSGST += sgstAmount;
-      totalCGST += cgstAmount;
-      grandTotal += lineNet; // net is inclusive of taxes, so sum of net lines = final amount
+      subtotalTaxable += totals.taxableValue;
+      totalSGST += totals.sgstAmount;
+      totalCGST += totals.cgstAmount;
+      grandTotal += totals.lineNet;
 
-      rows.push({
-        productIdx: prodIdx,
-        batchIdx: 0, // not used visually except maybe grouping
-        itemIdx,
-        product,
-        batchItem,
-        productDetails,
-        stockExpiry: stock?.expiry_date ?? null,
-        lineNet,
-        taxableValue,
-        taxAmount,
-        sgstAmount,
-        cgstAmount,
-      });
+      // Add table row
+      tableRows.push(
+        <View key={`${prodIdx}-${itemIdx}`} style={styles.tableRow}>
+          <View style={[styles.tableCell, styles.colQty]}>
+            <Text>{batchItem.quantity}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colFree]}>
+            {itemIdx === 0 && <Text>{product.free_q ?? 0}</Text>}
+          </View>
+          
+          <View style={[styles.tableCell, styles.colItem, styles.tableCellLeft]}>
+            <Text>{productDetails?.name ?? "N/A"}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colHSN]}>
+            <Text>{productDetails?.HSN_code ?? ""}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colBatch]}>
+            <Text>{batchItem.batch_id ?? ""}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colExp]}>
+            <Text>{stock?.expiry_date ? dayjs(stock.expiry_date).format("DD/MM/YY") : ""}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colMRP]}>
+            <Text>{productDetails?.mrp ? toTwo(Number(productDetails.mrp)) : ""}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colRate]}>
+            <Text>{toTwo(product.selling_price ?? 0)}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colDis]}>
+            <Text>{product.discount ?? 0}%</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colSGST]}>
+            <Text>{toTwo(totals.gstSlab ? totals.gstSlab / 2 : 0)}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colCGST]}>
+            <Text>{toTwo(totals.gstSlab ? totals.gstSlab / 2 : 0)}</Text>
+          </View>
+          
+          <View style={[styles.tableCell, styles.colAmount]}>
+            <Text>{toTwo(totals.lineNet)}</Text>
+          </View>
+        </View>
+      );
     });
   });
 
-  // formatting totals
-  const subtotalFormatted = Number.isFinite(subtotalTaxable) ? subtotalTaxable : 0;
-  const sgstFormatted = Number.isFinite(totalSGST) ? totalSGST : 0;
-  const cgstFormatted = Number.isFinite(totalCGST) ? totalCGST : 0;
-  const grandTotalFormatted = Number.isFinite(grandTotal) ? grandTotal : 0;
-
-  const totalInWords = amountToWords(Number(grandTotalFormatted));
+  const totalItems = billInfo?.length ?? 0;
+  const totalQty = billInfo?.reduce((sum, p) => sum + (p.actual_q ?? 0), 0) ?? 0;
+  const totalInWords = amountToWords(grandTotal);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
-          {/* ========== SECTION 1: HEADER (2-COLUMN GRID) ========== */}
+          {/* SECTION 1: HEADER */}
           <View style={styles.section1}>
             <View style={styles.headerCol}>
               <Text style={styles.companyName}>{distributor.full_name}</Text>
-              <Text style={styles.companyDetail}>
-                {distributor.address ?? "Address not provided"}
-              </Text>
+              <Text style={styles.companyDetail}>{distributor.address ?? "Address not provided"}</Text>
               <Text style={styles.companyDetail}>
                 {distributor.city ?? ""} PIN-{distributor.pin ?? ""}
               </Text>
-              <Text style={styles.companyDetail}>
-                Phone: {distributor.phone ?? "N/A"}
-              </Text>
+              <Text style={styles.companyDetail}>Phone: {distributor.phone ?? "N/A"}</Text>
             </View>
-
             <View style={styles.headerColRight}>
               <Text style={styles.companyName}>{customer.full_name}</Text>
-              <Text style={styles.companyDetail}>
-                Address: {customer.address ?? "N/A"}
-              </Text>
-              <Text style={styles.companyDetail}>
-                Phone: {customer.phone ?? "N/A"}
-              </Text>
-              <Text style={styles.companyDetail}>GST: {customer.full_name ?? "N/A"}</Text>
+              <Text style={styles.companyDetail}>Address: {customer.address ?? "N/A"}</Text>
+              <Text style={styles.companyDetail}>Phone: {customer.phone ?? "N/A"}</Text>
+              <Text style={styles.companyDetail}>GST: {customer.gst_no ?? "N/A"}</Text>
             </View>
           </View>
 
-          {/* ========== SECTION 2: LICENSE/GST/INVOICE (3-COLUMN GRID) ========== */}
+          {/* SECTION 2: LICENSE/INVOICE INFO */}
           <View style={styles.section2}>
             <View style={[styles.section2Col, styles.section2Divider]}>
-              <Text style={styles.labelSmall}>
-                License No: 20B/19922/2026, 21B/19923/2026
-              </Text>
+              <Text style={styles.labelSmall}>License No: 20B/19922/2026, 21B/19923/2026</Text>
               <Text style={styles.labelSmall}>TIN No: 22741405978</Text>
               <Text style={styles.valueSmall}>GSTIN: 22ANYPJIS34E1Z1</Text>
             </View>
-
             <View style={styles.section2Col}>
               <Text style={styles.labelSmall}>Invoice No. {challanData.id}</Text>
               <Text style={styles.labelSmall}>
                 Date: {dayjs(challanData.created_at).format("DD-MM-YYYY")}
               </Text>
-              <Text style={styles.valueSmall}>
-                Sales Man: {salesName ? salesName : "N/A"}
-              </Text>
+              <Text style={styles.valueSmall}>Sales Man: {salesName ?? "N/A"}</Text>
             </View>
           </View>
 
-          {/* ========== SECTION 3: PRODUCTS TABLE ========== */}
+          {/* SECTION 3: PRODUCTS TABLE */}
           <View style={styles.section3}>
             <View style={styles.tableContainer}>
-              {/* TABLE HEADER */}
+              {/* Table Header */}
               <View style={styles.tableHeader}>
-                <View style={[styles.tableCell, styles.colQty]}>
-                  <Text style={{ fontWeight: "bold" }}>Qty</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colFree]}>
-                  <Text style={{ fontWeight: "bold" }}>Free</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colItem]}>
-                  <Text style={{ fontWeight: "bold" }}>Item Name</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colHSN]}>
-                  <Text style={{ fontWeight: "bold" }}>HSN</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colBatch]}>
-                  <Text style={{ fontWeight: "bold" }}>Batch</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colExp]}>
-                  <Text style={{ fontWeight: "bold" }}>Exp</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colMRP]}>
-                  <Text style={{ fontWeight: "bold" }}>MRP</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colRate]}>
-                  <Text style={{ fontWeight: "bold" }}>Rate</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colDis]}>
-                  <Text style={{ fontWeight: "bold" }}>Dis%</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colSGST]}>
-                  <Text style={{ fontWeight: "bold" }}>SGST</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colCGST]}>
-                  <Text style={{ fontWeight: "bold" }}>CGST</Text>
-                </View>
-                <View style={[styles.tableCell, styles.colAmount]}>
-                  <Text style={{ fontWeight: "bold" }}>Amount</Text>
-                </View>
+                <View style={[styles.tableCell, styles.colQty]}><Text style={{ fontWeight: "bold" }}>Qty</Text></View>
+                <View style={[styles.tableCell, styles.colFree]}><Text style={{ fontWeight: "bold" }}>Free</Text></View>
+                <View style={[styles.tableCell, styles.colItem]}><Text style={{ fontWeight: "bold" }}>Item Name</Text></View>
+                <View style={[styles.tableCell, styles.colHSN]}><Text style={{ fontWeight: "bold" }}>HSN</Text></View>
+                <View style={[styles.tableCell, styles.colBatch]}><Text style={{ fontWeight: "bold" }}>Batch</Text></View>
+                <View style={[styles.tableCell, styles.colExp]}><Text style={{ fontWeight: "bold" }}>Exp</Text></View>
+                <View style={[styles.tableCell, styles.colMRP]}><Text style={{ fontWeight: "bold" }}>MRP</Text></View>
+                <View style={[styles.tableCell, styles.colRate]}><Text style={{ fontWeight: "bold" }}>Rate</Text></View>
+                <View style={[styles.tableCell, styles.colDis]}><Text style={{ fontWeight: "bold" }}>Dis%</Text></View>
+                <View style={[styles.tableCell, styles.colSGST]}><Text style={{ fontWeight: "bold" }}>SGST</Text></View>
+                <View style={[styles.tableCell, styles.colCGST]}><Text style={{ fontWeight: "bold" }}>CGST</Text></View>
+                <View style={[styles.tableCell, styles.colAmount]}><Text style={{ fontWeight: "bold" }}>Amount</Text></View>
               </View>
-
-              {/* PRODUCT ROWS */}
-              {(() => {
-                // We need to render grouped by product and include free only on first row
-                const elements: React.ReactNode[] = [];
-                const grouped = (billInfo ?? []).map((product) => {
-                  const matchingBatchRows = (challanBatchInfo ?? []).filter(
-                    (b) => Number(b.product_id) === Number(product.product_id)
-                  );
-                  const batchListAll: ChallanBatchInfo[] = [];
-                  matchingBatchRows.forEach((b) => {
-                    const parsed = safeParseBatchInfo(b.batch_info);
-                    parsed.forEach((bi) => batchListAll.push(bi));
-                  });
-                  return { product, batchListAll };
-                });
-
-                grouped.forEach(({ product, batchListAll }, prodIdx) => {
-                  const totalActualQty = batchListAll.reduce((s, it) => s + (it.quantity || 0), 0);
-                  // render each batch as row
-                  batchListAll.forEach((batchItem, itemIdx) => {
-                    const productDetails = (products ?? []).find(
-                      (p) => Number(p.id) === Number(product.product_id)
-                    );
-                    const stock = (stocksDetails ?? []).find((s) => s.id === batchItem.batch_id);
-
-                    const totalSellingValue = (product.selling_price || 0) * totalActualQty;
-                    const totalDiscountAmount = totalSellingValue * ((product.discount || 0) / 100);
-                    const batchProportion = totalActualQty ? batchItem.quantity / totalActualQty : 0;
-                    const batchDiscount = totalDiscountAmount * batchProportion;
-
-                    const lineGross = (product.selling_price || 0) * batchItem.quantity;
-                    const lineNet = lineGross - batchDiscount;
-                    const gstSlab = Number(productDetails?.gst_slab ?? 0);
-                    const taxableValue = gstSlab > 0 ? (lineNet / (1 + gstSlab / 100)) : lineNet;
-                    const taxAmount = lineNet - taxableValue;
-                    const sgstAmount = taxAmount / 2;
-                    const cgstAmount = taxAmount / 2;
-
-                    elements.push(
-                      <View style={styles.tableRow} key={`${prodIdx}-${itemIdx}`}>
-                        <View style={[styles.tableCell, styles.colQty]}>
-                          <Text>{batchItem.quantity}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colFree]}>
-                          {itemIdx === 0 && (
-                            <Text>{product.free_q ?? 0}</Text>
-                          )}
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colItem, styles.tableCellLeft]}>
-                          <Text>{productDetails?.name ?? "N/A"}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colHSN]}>
-                          <Text>{productDetails?.HSN_code ?? ""}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colBatch]}>
-                          <Text>{batchItem.batch_id ?? ""}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colExp]}>
-                          <Text>{stock?.expiry_date ? dayjs(stock.expiry_date).format("DD/MM/YY") : ""}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colMRP]}>
-                          <Text>{productDetails?.mrp ? toTwo(Number(productDetails.mrp)) : ""}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colRate]}>
-                          <Text>{product.selling_price ? toTwo(product.selling_price) : ""}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colDis]}>
-                          <Text>{product.discount ?? 0}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colSGST]}>
-                          <Text>{toTwo(gstSlab ? (gstSlab / 2) : 0)}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colCGST]}>
-                          <Text>{toTwo(gstSlab ? (gstSlab / 2) : 0)}</Text>
-                        </View>
-
-                        <View style={[styles.tableCell, styles.colAmount]}>
-                          <Text>{toTwo(lineNet)}</Text>
-                        </View>
-                      </View>
-                    );
-                  });
-                });
-
-                return elements;
-              })()}
+              
+              {/* Table Rows */}
+              {tableRows}
             </View>
-
-            {/* TOTAL ITEMS & QTY */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                fontSize: 7,
-                marginTop: 4,
-              }}
-            >
-              <Text>
-                TOTAL ITEM: {(billInfo ?? []).length} | TOTAL QTY:{" "}
-                {(billInfo ?? []).reduce((sum, p) => sum + (p.actual_q || 0), 0)}
-              </Text>
+            
+            {/* Total Items & Qty */}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", fontSize: 7, marginTop: 4 }}>
+              <Text>TOTAL ITEM: {totalItems} | TOTAL QTY: {totalQty}</Text>
             </View>
           </View>
 
-          {/* ========== SECTION 4: GST SUMMARY & TOTALS (2-COLUMN) ========== */}
+          {/* SECTION 4: GST SUMMARY & TOTALS */}
           <View style={styles.section4}>
-            {/* GST SUMMARY BOX */}
+            {/* GST Summary */}
             <View style={styles.gstSummaryBox}>
-              {/* Header Row */}
               <View style={[styles.gstRow, styles.gstRowHeader]}>
-                <View style={styles.gstLabel}>
-                  <Text style={{ fontWeight: "bold" }}>CLASS</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>SGST</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>CGST</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>Total</Text>
-                </View>
+                <View style={styles.gstLabel}><Text style={{ fontWeight: "bold" }}>CLASS</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>SGST</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>CGST</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>Total</Text></View>
               </View>
-
-              {/* GST Rows from gstSummaryMap */}
-              {Object.keys(gstSummaryMap).length === 0 ? (
-                <View style={styles.gstRow}>
-                  <View style={styles.gstLabel}><Text>No GST rows</Text></View>
-                </View>
-              ) : (
-                Object.entries(gstSummaryMap).map(([slab, vals]) => {
-                  return (
-                    <View key={slab} style={styles.gstRow}>
-                      <View style={styles.gstLabel}>
-                        <Text>GST {slab}%</Text>
-                      </View>
-                      <View style={styles.gstValue}>
-                        <Text>{toTwo(vals.sgst)}</Text>
-                      </View>
-                      <View style={styles.gstValue}>
-                        <Text>{toTwo(vals.cgst)}</Text>
-                      </View>
-                      <View style={styles.gstValue}>
-                        <Text>{toTwo(vals.totalTax)}</Text>
-                      </View>
-                    </View>
-                  );
-                })
-              )}
-
-              {/* Total GST Row */}
+              
+              {/* All GST slabs (5%, 12%, 18%) */}
+              {[5, 12, 18].map(slab => {
+                const data = gstSummary[String(slab)] || { taxable: 0, sgst: 0, cgst: 0, totalTax: 0 };
+                return (
+                  <View key={slab} style={styles.gstRow}>
+                    <View style={styles.gstLabel}><Text>GST {slab}%</Text></View>
+                    <View style={styles.gstValue}><Text>{toTwo(data.sgst)}</Text></View>
+                    <View style={styles.gstValue}><Text>{toTwo(data.cgst)}</Text></View>
+                    <View style={styles.gstValue}><Text>{toTwo(data.totalTax)}</Text></View>
+                  </View>
+                );
+              })}
+              
               <View style={[styles.gstRow, styles.gstRowHeader]}>
-                <View style={styles.gstLabel}>
-                  <Text style={{ fontWeight: "bold" }}>TOTAL</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>{toTwo(totalSGST)}</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>{toTwo(totalCGST)}</Text>
-                </View>
-                <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>{toTwo(totalSGST + totalCGST)}</Text>
-                </View>
+                <View style={styles.gstLabel}><Text style={{ fontWeight: "bold" }}>TOTAL</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>{toTwo(totalSGST)}</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>{toTwo(totalCGST)}</Text></View>
+                <View style={styles.gstValue}><Text style={{ fontWeight: "bold" }}>{toTwo(totalSGST + totalCGST)}</Text></View>
               </View>
             </View>
 
-            {/* TOTALS BOX */}
+            {/* Totals Box */}
             <View style={styles.totalsBox}>
-              {/* Subtotal Row */}
               <View style={styles.totalRow}>
-                <View style={styles.totalLabel}>
-                  <Text>SUBTOTAL</Text>
-                </View>
-                <View style={styles.totalValue}>
-                  <Text>{toTwo(subtotalFormatted)}</Text>
-                </View>
+                <View style={styles.totalLabel}><Text>SUBTOTAL</Text></View>
+                <View style={styles.totalValue}><Text>{toTwo(subtotalTaxable)}</Text></View>
               </View>
-
-              {/* SGST Row */}
               <View style={styles.totalRow}>
-                <View style={styles.totalLabel}>
-                  <Text>SGST</Text>
-                </View>
-                <View style={styles.totalValue}>
-                  <Text>{toTwo(sgstFormatted)}</Text>
-                </View>
+                <View style={styles.totalLabel}><Text>SGST</Text></View>
+                <View style={styles.totalValue}><Text>{toTwo(totalSGST)}</Text></View>
               </View>
-
-              {/* CGST Row */}
               <View style={styles.totalRow}>
-                <View style={styles.totalLabel}>
-                  <Text>CGST</Text>
-                </View>
-                <View style={styles.totalValue}>
-                  <Text>{toTwo(cgstFormatted)}</Text>
-                </View>
+                <View style={styles.totalLabel}><Text>CGST</Text></View>
+                <View style={styles.totalValue}><Text>{toTwo(totalCGST)}</Text></View>
               </View>
-
-              {/* Grand Total Row */}
-              <View
-                style={[
-                  styles.totalRow,
-                  styles.totalRowLast,
-                  { minHeight: 24 },
-                ]}
-              >
-                <View
-                  style={[
-                    styles.totalLabel,
-                    { justifyContent: "center", fontSize: 10 },
-                  ]}
-                >
+              <View style={[styles.totalRow, styles.totalRowLast]}>
+                <View style={[styles.totalLabel, { justifyContent: "center", fontSize: 10 }]}>
                   <Text style={{ fontWeight: "bold" }}>GRAND TOTAL</Text>
                 </View>
-                <View
-                  style={[
-                    styles.totalValue,
-                    { justifyContent: "center", paddingRight: 4, fontSize: 10 },
-                  ]}
-                >
-                  <Text style={{ fontWeight: "bold" }}>
-                    {toTwo(grandTotalFormatted)}
-                  </Text>
+                <View style={[styles.totalValue, { justifyContent: "center", paddingRight: 4, fontSize: 10 }]}>
+                  <Text style={{ fontWeight: "bold" }}>{toTwo(grandTotal)}</Text>
                 </View>
               </View>
             </View>
           </View>
 
-          {/* ========== SECTION 5: FOOTER (AMOUNT IN WORDS & SIGNATURE) ========== */}
+          {/* SECTION 5: FOOTER */}
           <View style={styles.section5}>
             <View style={styles.amountInWords}>
               <Text>{totalInWords}</Text>
