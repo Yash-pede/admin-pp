@@ -158,7 +158,7 @@ export const ChallanMainPdf: React.FC = () => {
 
         const { data } = await supabaseServiceRoleClient
           .from("stocks")
-          .select("expiry_date, id")
+          .select("*")
           .in("id", batchIds);
 
         setStocksDetails(data ?? []);

@@ -284,10 +284,10 @@ export const MainPdfDoc: React.FC<Props> = ({
             <View style={styles.headerCol}>
               <Text style={styles.companyName}>{distributor.full_name}</Text>
               <Text style={styles.companyDetail}>
-                {distributor.address ?? "Address not provided"}
+                {"Address not provided"}
               </Text>
               <Text style={styles.companyDetail}>
-                {distributor.city ?? ""} PIN-{distributor.pin ?? ""}
+                Not provided
               </Text>
               <Text style={styles.companyDetail}>
                 Phone: {distributor.phone ?? "N/A"}
@@ -302,7 +302,7 @@ export const MainPdfDoc: React.FC<Props> = ({
                 Phone: {customer.phone ?? "N/A"}
               </Text>
               <Text style={styles.companyDetail}>
-                GST: {customer.gst_no ?? "N/A"}
+                GST: { "N/A"}
               </Text>
             </View>
           </View>
