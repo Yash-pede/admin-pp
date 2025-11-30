@@ -354,7 +354,7 @@ export const MainPdfDoc: React.FC<Props> = ({
               </Text>
 
               <Text style={styles.topBuyerLine}>
-                GSTIN - {customer.gst_no || "XXXXXXXXXXXXXXX"} STATE - 22
+                GSTIN - { "XXXXXXXXXXXXXXX"} STATE - 22
               </Text>
               <Text style={styles.topBuyerLine}>
                 DL NO 1 - WLF20B2024CT000125
