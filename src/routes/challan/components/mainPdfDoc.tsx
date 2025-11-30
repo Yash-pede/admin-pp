@@ -43,7 +43,9 @@ function amountToWords(amount: number) {
   const rupees = Math.floor(amount);
   const paise = Math.round((amount - rupees) * 100);
   const rupeeWords =
-    rupees > 0 ? numberToWords.toWords(rupees).replace(/,/g, "") + " Rupees" : "";
+    rupees > 0
+      ? numberToWords.toWords(rupees).replace(/,/g, "") + " Rupees"
+      : "";
   const paiseWords =
     paise > 0 ? numberToWords.toWords(paise).replace(/,/g, "") + " Paise" : "";
   const joined =
@@ -79,8 +81,7 @@ function calculateLineTotalsInclusive(
   const lineNet = lineGross - batchDiscount; // after discount, GST inclusive
 
   // reverse-calc GST
-  const taxableValue =
-    gstSlab > 0 ? lineNet / (1 + gstSlab / 100) : lineNet;
+  const taxableValue = gstSlab > 0 ? lineNet / (1 + gstSlab / 100) : lineNet;
   const taxAmount = lineNet - taxableValue;
   const sgstAmount = taxAmount / 2;
   const cgstAmount = taxAmount / 2;
@@ -219,7 +220,9 @@ export const MainPdfDoc: React.FC<Props> = ({
             {itemIdx === 0 && <Text>{product.free_q ?? 0}</Text>}
           </View>
 
-          <View style={[styles.tableCell, styles.colItem, styles.tableCellLeft]}>
+          <View
+            style={[styles.tableCell, styles.colItem, styles.tableCellLeft]}
+          >
             <Text>{productDetails?.name ?? "N/A"}</Text>
           </View>
 
@@ -279,50 +282,88 @@ export const MainPdfDoc: React.FC<Props> = ({
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.container}>
-          {/* SECTION 1: HEADER */}
-          <View style={styles.section1}>
-            <View style={styles.headerCol}>
-              <Text style={styles.companyName}>{distributor.full_name}</Text>
-              <Text style={styles.companyDetail}>
-                {"Address not provided"}
+          {/* ========== TOP HEADER (3 BOXES LIKE SAMPLE) ========== */}
+          <View style={styles.topHeader}>
+            {/* LEFT BOX: COMPANY (CONSTANT TEMPLATE) */}
+            <View style={styles.topHeaderLeft}>
+              <Text style={styles.topCompanyName}>
+                PUREPRIDE PHARMA PVT LTD
               </Text>
-              <Text style={styles.companyDetail}>
-                Not provided
-              </Text>
-              <Text style={styles.companyDetail}>
-                Phone: {distributor.phone ?? "N/A"}
-              </Text>
-            </View>
-            <View style={styles.headerColRight}>
-              <Text style={styles.companyName}>{customer.full_name}</Text>
-              <Text style={styles.companyDetail}>
-                Address: {customer.address ?? "N/A"}
-              </Text>
-              <Text style={styles.companyDetail}>
-                Phone: {customer.phone ?? "N/A"}
-              </Text>
-              <Text style={styles.companyDetail}>
-                GST: { "N/A"}
-              </Text>
-            </View>
-          </View>
 
-          {/* SECTION 2: LICENSE/INVOICE INFO */}
-          <View style={styles.section2}>
-            <View style={[styles.section2Col, styles.section2Divider]}>
-              <Text style={styles.labelSmall}>
-                License No: 20B/19922/2026, 21B/19923/2026
+              <Text style={styles.topCompanyLine}>
+                E-54 1ST FLOOR MANSI BEAUTI PARLOUR RADHASWAMI
               </Text>
-              <Text style={styles.labelSmall}>TIN No: 22741405978</Text>
-              <Text style={styles.valueSmall}>GSTIN: 22ANYPJIS34E1Z1</Text>
+              <Text style={styles.topCompanyLine}>
+                NAGAR BHATAGAON CHOWK WARD NO 65 RAIPUR CG 492001
+              </Text>
+
+              <Text style={styles.topCompanyLine}>PHONE - : 9770384950</Text>
+              <Text style={styles.topCompanyLine}>
+                GSTIN - : 22AALCP1548E1ZN STATE : 22
+              </Text>
+              <Text style={styles.topCompanyLine}>PAN - : AALCP1548E</Text>
+              <Text style={styles.topCompanyLine}>
+                D.L. No : WLF20B2023CT000059, WLF21B2023CT000057
+              </Text>
+              <Text style={styles.topCompanyLine}>FSSAI NO-</Text>
+              <Text style={styles.topCompanyLine}>
+                EMAIL - purepridepharma@gmail.com
+              </Text>
+              <Text style={styles.topCompanyLine}>
+                Website : www.purepridepharma.com
+              </Text>
             </View>
-            <View style={styles.section2Col}>
-              <Text style={styles.labelSmall}>Invoice No. {challanData.id}</Text>
-              <Text style={styles.labelSmall}>
-                Date: {dayjs(challanData.created_at).format("DD-MM-YYYY")}
+
+            {/* MIDDLE BOX: GST INVOICE (DYNAMIC BY YOUR DATA) */}
+            <View style={styles.topHeaderMiddle}>
+              <Text style={styles.topMiddleTitle}>GST INVOICE</Text>
+
+              <Text style={styles.topMiddleSub}>
+                {distributor.full_name}
               </Text>
-              <Text style={styles.valueSmall}>
-                Sales Man: {salesName ?? "N/A"}
+              <Text style={styles.topMiddleSub}>
+                {distributor.phone}
+              </Text>
+
+              <Text style={styles.topMiddleLabel}>Invoice No.</Text>
+              <Text style={styles.topMiddleValue}>
+                {String(challanData.id)}
+              </Text>
+
+              <Text style={[styles.topMiddleLabel, { marginTop: 6 }]}>
+                Bill Date
+              </Text>
+              <Text style={styles.topMiddleValue}>
+                {dayjs(challanData.created_at).format("DD/MM/YYYY")}
+              </Text>
+            </View>
+
+            {/* RIGHT BOX: BUYER INFO (TEMPLATE, BUT NAME/ADDR FROM DATA) */}
+            <View style={styles.topHeaderRight}>
+              <Text style={styles.topBuyerLabel}>Buyer Name:-</Text>
+              <Text style={styles.topBuyerName}>
+                {customer.full_name?.toUpperCase()}
+              </Text>
+
+              <Text style={styles.topBuyerLine}>
+                {customer.address}
+              </Text>
+
+              <Text style={styles.topBuyerLine}>
+                PHONE - +91 {customer.phone}
+              </Text>
+
+              <Text style={styles.topBuyerLine}>
+                GSTIN - {customer.gst_no || "XXXXXXXXXXXXXXX"} STATE - 22
+              </Text>
+              <Text style={styles.topBuyerLine}>
+                DL NO 1 - WLF20B2024CT000125
+              </Text>
+              <Text style={styles.topBuyerLine}>
+                DL NO 2 - WLF21B2024CT000127
+              </Text>
+              <Text style={styles.topBuyerLine}>
+                FSSAI NO - XXXXXXXXXXXXXXXXXXXX
               </Text>
             </View>
           </View>
@@ -409,13 +450,12 @@ export const MainPdfDoc: React.FC<Props> = ({
               </View>
 
               {[5, 12, 18].map((slab) => {
-                const data =
-                  gstSummary[String(slab)] || {
-                    taxable: 0,
-                    sgst: 0,
-                    cgst: 0,
-                    totalTax: 0,
-                  };
+                const data = gstSummary[String(slab)] || {
+                  taxable: 0,
+                  sgst: 0,
+                  cgst: 0,
+                  totalTax: 0,
+                };
                 return (
                   <View key={slab} style={styles.gstRow}>
                     <View style={styles.gstLabel}>
@@ -439,14 +479,10 @@ export const MainPdfDoc: React.FC<Props> = ({
                   <Text style={{ fontWeight: "bold" }}>TOTAL</Text>
                 </View>
                 <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>
-                    {toTwo(totalSGST)}
-                  </Text>
+                  <Text style={{ fontWeight: "bold" }}>{toTwo(totalSGST)}</Text>
                 </View>
                 <View style={styles.gstValue}>
-                  <Text style={{ fontWeight: "bold" }}>
-                    {toTwo(totalCGST)}
-                  </Text>
+                  <Text style={{ fontWeight: "bold" }}>{toTwo(totalCGST)}</Text>
                 </View>
                 <View style={styles.gstValue}>
                   <Text style={{ fontWeight: "bold" }}>

@@ -4,7 +4,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   page: {
     padding: 20,
     backgroundColor: "#f5f5f5",
-    fontSize: 8,
+    fontSize: 12,
     fontFamily: "Helvetica",
   },
   container: {
@@ -12,64 +12,88 @@ export const mainPdfDocStyles = StyleSheet.create({
     padding: 16,
     height: "100%",
     display: "flex",
+    border: "1px solid #000000",
     flexDirection: "column",
   },
-
-  // ========== SECTION 1: HEADER WITH 2 COLUMNS ==========
-  section1: {
-    borderBottom: "1px solid #333333",
-    paddingBottom: 10,
-    marginBottom: 10,
-    display: "flex",
+  // ========== TOP HEADER (LIKE SAMPLE IMAGE) ==========
+  topHeader: {
+    borderWidth: 1,
+    borderColor: "#000000",
     flexDirection: "row",
-    justifyContent: "space-between",
+    marginBottom: 8,
   },
-  headerCol: {
-    flex: 1,
-    paddingRight: 15,
+
+  topHeaderLeft: {
+    flex: 1.6,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRightWidth: 1,
+    borderRightColor: "#000000",
   },
-  headerColRight: {
-    flex: 1,
-    paddingLeft: 15,
-    borderLeft: "1px solid #999999",
+
+  topHeaderMiddle: {
+    flex: 0.9,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRightWidth: 1,
+    borderRightColor: "#000000",
+    alignItems: "center",
   },
-  companyName: {
-    fontSize: 13,
-    fontWeight: "bold",
+
+  topHeaderRight: {
+    flex: 1.6,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+  },
+
+  // LEFT BOX TEXT
+  topCompanyName: {
+    fontSize: 11,fontFamily: 'Helvetica-Bold',
+    fontWeight: "bold", // PUREPRIDE PHARMA PVT LTD bold
     marginBottom: 3,
   },
-  companyDetail: {
+  topCompanyLine: {
     fontSize: 7,
-    lineHeight: 1.3,
-    marginBottom: 1,
+    marginBottom: 1.2,
   },
 
-  // ========== SECTION 2: LICENSE/GST/INVOICE - 3 COLUMNS ==========
-  section2: {
-    display: "flex",
-    flexDirection: "row",
-    borderBottom: "1px solid #cccccc",
-    paddingBottom: 8,
-    marginBottom: 8,
-    gap: 10,
+  // MIDDLE BOX TEXT
+  topMiddleTitle: {
+    fontSize: 11,
+    fontWeight: "bold", fontFamily: 'Helvetica-Bold',// GST INVOICE bold
+    textDecoration: "underline", // line under GST INVOICE
+    marginBottom: 4,
   },
-  section2Col: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    paddingRight: 10,
+  topMiddleSub: {
+    fontSize: 8,
+    marginBottom: 2,
   },
-  section2Divider: {
-    borderRight: "1px solid #cccccc",
-  },
-  labelSmall: {
-    fontSize: 7,
-    fontWeight: "bold",
+  topMiddleLabel: {
+    fontSize: 8,
+    fontWeight: "bold", fontFamily: 'Helvetica-Bold',// Invoice No / Bill Date labels bold
+    marginTop: 6,
     marginBottom: 1,
   },
-  valueSmall: {
-    fontSize: 7,
+  topMiddleValue: {
+    fontSize: 9,
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold', // PP‑105, 15/11/2025 bold
     marginBottom: 2,
+  },
+
+  // RIGHT BOX TEXT
+  topBuyerLabel: {
+    fontSize: 7,
+    fontStyle: "italic", // “Buyer Name:-” small & italic
+    marginBottom: 1,
+  },
+  topBuyerName: {
+    fontSize: 11,
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold', // buyer name bold
+    marginBottom: 2,
+  },
+  topBuyerLine: {
+    fontSize: 7,
+    marginBottom: 1.2,
   },
 
   // ========== SECTION 3: PRODUCTS TABLE ==========
@@ -161,7 +185,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   gstLabel: {
     flex: 0.6,
     fontSize: 7,
-    fontWeight: "bold",
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
     display: "flex",
     justifyContent: "flex-start",
     paddingTop: 2,
@@ -187,7 +211,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   totalLabel: {
     flex: 0.6,
     fontSize: 7,
-    fontWeight: "bold",
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
     display: "flex",
     justifyContent: "flex-start",
     paddingTop: 2,
@@ -195,7 +219,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   totalValue: {
     flex: 0.4,
     fontSize: 7,
-    fontWeight: "bold",
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
     display: "flex",
     justifyContent: "flex-end",
     paddingRight: 4,
@@ -225,6 +249,6 @@ export const mainPdfDocStyles = StyleSheet.create({
   },
   signatureText: {
     fontSize: 7,
-    fontWeight: "bold",
+    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
   },
 });
