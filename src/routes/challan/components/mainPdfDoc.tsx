@@ -299,13 +299,12 @@ export const MainPdfDoc: React.FC<Props> = ({
 
               <Text style={styles.topCompanyLine}>PHONE - : 9770384950</Text>
               <Text style={styles.topCompanyLine}>
-                GSTIN - : 22AALCP1548E1ZN STATE : 22
+                GSTIN - : 22AALCP1548E1ZN
               </Text>
               <Text style={styles.topCompanyLine}>PAN - : AALCP1548E</Text>
               <Text style={styles.topCompanyLine}>
                 D.L. No : WLF20B2023CT000059, WLF21B2023CT000057
               </Text>
-              <Text style={styles.topCompanyLine}>FSSAI NO-</Text>
               <Text style={styles.topCompanyLine}>
                 EMAIL - purepridepharma@gmail.com
               </Text>
@@ -318,12 +317,8 @@ export const MainPdfDoc: React.FC<Props> = ({
             <View style={styles.topHeaderMiddle}>
               <Text style={styles.topMiddleTitle}>GST INVOICE</Text>
 
-              <Text style={styles.topMiddleSub}>
-                {distributor.full_name}
-              </Text>
-              <Text style={styles.topMiddleSub}>
-                {distributor.phone}
-              </Text>
+              <Text style={styles.topMiddleSub}>{distributor.full_name}</Text>
+              <Text style={styles.topMiddleSub}>{distributor.phone}</Text>
 
               <Text style={styles.topMiddleLabel}>Invoice No.</Text>
               <Text style={styles.topMiddleValue}>
@@ -345,8 +340,8 @@ export const MainPdfDoc: React.FC<Props> = ({
                 {customer.full_name?.toUpperCase()}
               </Text>
 
-              <Text style={styles.topBuyerLine}>
-                {customer.address}
+              <Text style={[styles.topBuyerLine, { height: 40 }]}>
+                Address : {customer.address}
               </Text>
 
               <Text style={styles.topBuyerLine}>
@@ -354,16 +349,10 @@ export const MainPdfDoc: React.FC<Props> = ({
               </Text>
 
               <Text style={styles.topBuyerLine}>
-                GSTIN - { "XXXXXXXXXXXXXXX"} STATE - 22
-              </Text>
-              <Text style={styles.topBuyerLine}>
                 DL NO 1 - WLF20B2024CT000125
               </Text>
               <Text style={styles.topBuyerLine}>
                 DL NO 2 - WLF21B2024CT000127
-              </Text>
-              <Text style={styles.topBuyerLine}>
-                FSSAI NO - XXXXXXXXXXXXXXXXXXXX
               </Text>
             </View>
           </View>

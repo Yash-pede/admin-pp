@@ -2,14 +2,14 @@ import { StyleSheet } from "@react-pdf/renderer";
 
 export const mainPdfDocStyles = StyleSheet.create({
   page: {
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    padding: 5,
+    // backgroundColor: "#f5f5f5",
     fontSize: 12,
     fontFamily: "Helvetica",
   },
   container: {
     backgroundColor: "#ffffff",
-    padding: 16,
+    padding: 5,
     height: "100%",
     display: "flex",
     border: "1px solid #000000",
@@ -48,7 +48,8 @@ export const mainPdfDocStyles = StyleSheet.create({
 
   // LEFT BOX TEXT
   topCompanyName: {
-    fontSize: 11,fontFamily: 'Helvetica-Bold',
+    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
     fontWeight: "bold", // PUREPRIDE PHARMA PVT LTD bold
     marginBottom: 3,
   },
@@ -60,7 +61,8 @@ export const mainPdfDocStyles = StyleSheet.create({
   // MIDDLE BOX TEXT
   topMiddleTitle: {
     fontSize: 11,
-    fontWeight: "bold", fontFamily: 'Helvetica-Bold',// GST INVOICE bold
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold", // GST INVOICE bold
     textDecoration: "underline", // line under GST INVOICE
     marginBottom: 4,
   },
@@ -70,13 +72,15 @@ export const mainPdfDocStyles = StyleSheet.create({
   },
   topMiddleLabel: {
     fontSize: 8,
-    fontWeight: "bold", fontFamily: 'Helvetica-Bold',// Invoice No / Bill Date labels bold
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold", // Invoice No / Bill Date labels bold
     marginTop: 6,
     marginBottom: 1,
   },
   topMiddleValue: {
     fontSize: 9,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold', // PP‑105, 15/11/2025 bold
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold", // PP‑105, 15/11/2025 bold
     marginBottom: 2,
   },
 
@@ -88,7 +92,8 @@ export const mainPdfDocStyles = StyleSheet.create({
   },
   topBuyerName: {
     fontSize: 11,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold', // buyer name bold
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold", // buyer name bold
     marginBottom: 2,
   },
   topBuyerLine: {
@@ -119,8 +124,6 @@ export const mainPdfDocStyles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
-    borderBottomWidth: 1,
-    borderColor: "#cccccc",
     minHeight: 14,
   },
   tableCell: {
@@ -130,6 +133,10 @@ export const mainPdfDocStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#cccccc",
+    borderRightWidth: 1,
+    borderRightColor: "#333333",
   },
   tableCellLeft: {
     justifyContent: "flex-start",
@@ -153,7 +160,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   colDis: { width: "7%" },
   colSGST: { width: "7%" },
   colCGST: { width: "7%" },
-  colAmount: { width: "6%" },
+  colAmount: { width: "6%", borderRightWidth: 0 },
 
   // ========== SECTION 4: GST SUMMARY & TOTALS - 2 COLUMNS ==========
   section4: {
@@ -185,7 +192,8 @@ export const mainPdfDocStyles = StyleSheet.create({
   gstLabel: {
     flex: 0.6,
     fontSize: 7,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     display: "flex",
     justifyContent: "flex-start",
     paddingTop: 2,
@@ -211,7 +219,8 @@ export const mainPdfDocStyles = StyleSheet.create({
   totalLabel: {
     flex: 0.6,
     fontSize: 7,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     display: "flex",
     justifyContent: "flex-start",
     paddingTop: 2,
@@ -219,7 +228,8 @@ export const mainPdfDocStyles = StyleSheet.create({
   totalValue: {
     flex: 0.4,
     fontSize: 7,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
     display: "flex",
     justifyContent: "flex-end",
     paddingRight: 4,
@@ -249,6 +259,7 @@ export const mainPdfDocStyles = StyleSheet.create({
   },
   signatureText: {
     fontSize: 7,
-    fontWeight: "bold",fontFamily: 'Helvetica-Bold',
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
   },
 });

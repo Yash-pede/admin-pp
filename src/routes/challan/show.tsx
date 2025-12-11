@@ -2,14 +2,18 @@ import { Text } from "@/components";
 import { Database } from "@/utilities";
 import { StarOutlined } from "@ant-design/icons";
 import { Show, useModal, useTable } from "@refinedev/antd";
-import { useGo, useList, useOne } from "@refinedev/core";
+import { useGo, useList, useOne, useUpdate } from "@refinedev/core";
 import { Button, Card, Modal, Skeleton, Space, Table } from "antd";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
 export const ChallanShow = () => {
   const challanId = useLocation().pathname.split("/").pop();
-const go = useGo();
+  const go = useGo();
+  const { mutate } = useUpdate({
+    id: challanId,
+    resource: "challan",
+  });
   const { data: challan, isLoading: isLoading } = useOne<
     Database["public"]["Tables"]["challan"]["Row"]
   >({
@@ -113,8 +117,36 @@ const go = useGo();
             <Space size={15}>
               <StarOutlined className="sm" />
               <Text size="xl">Challan: {challanId}</Text>
-              <Button type="primary" onClick={() => go({ to: `/challan/pdf/${challanId}` })}>Bill</Button>
-              <Button type="dashed" onClick={() => go({ to: `/challan/pdf/simple/${challanId}` })}>Simple Bill</Button>
+              <Button
+                type={"primary"}
+                danger={challan?.data.gst_bill_status === "CANCELLED"}
+                onClick={() =>
+                  challan?.data.gst_bill_status === "PENDING" || challan?.data.gst_bill_status === "CANCELLED"
+                    ? mutate({
+                        id: challanId,
+                        values: { gst_bill_status: "REQUESTED" },
+                      })
+                    : go({ to: `/challan/pdf/${challanId}` })
+                }
+                disabled={
+                  challan?.data.gst_bill_status === "CANCELLED" ||
+                  challan?.data.gst_bill_status === "REQUESTED"
+                }
+              >
+                {challan?.data.gst_bill_status === "PENDING"
+                  ? "Generate GST Bill"
+                  : challan?.data.gst_bill_status === "REQUESTED"
+                  ? "GST Bill Requested"
+                  : challan?.data.gst_bill_status === "CREATED"
+                  ? "View GST Bill"
+                  : "bill Cancelled Request again"}
+              </Button>
+              <Button
+                type="dashed"
+                onClick={() => go({ to: `/challan/pdf/simple/${challanId}` })}
+              >
+                Simple Bill
+              </Button>
             </Space>
           }
           headStyle={{
@@ -175,7 +207,7 @@ const go = useGo();
                       discount: number;
                       quantity: number;
                       actual_q: number;
-                      free_q: number; 
+                      free_q: number;
                       product_id: number;
                     }>
                   }

@@ -80,6 +80,7 @@ import ExportDistroSalesData from "./routes/clients/export";
 import { SalesChallans } from "./routes/clients/sales/challans";
 import { NewDashboard } from "./routes/dashboard";
 import { ChallanMainPdf } from "./routes/challan/components/challanMainPfd";
+import { ReqGSTBillChallan } from "./routes/challan/reqGSTBill";
 
 function App() {
   return (
@@ -214,6 +215,10 @@ function App() {
                       <Route
                         path="req-deletion"
                         element={<ReqDeletionChallan />}
+                      />
+                      <Route
+                        path="req-gst-bill"
+                        element={<ReqGSTBillChallan />}
                       />
                       <Route path="deleted" element={<ChallanDeleted />} />
                       <Route path="pdf/:id" element={<ChallanMainPdf />} />

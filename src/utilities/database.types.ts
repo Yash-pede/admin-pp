@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           customer_id: number
           distributor_id: string
+          gst_bill_status: Database["public"]["Enums"]["gst_bill_status"]
           id: number
           pending_amt: number
           product_info: Json
@@ -33,6 +34,7 @@ export type Database = {
           created_at?: string
           customer_id: number
           distributor_id: string
+          gst_bill_status?: Database["public"]["Enums"]["gst_bill_status"]
           id?: number
           pending_amt: number
           product_info: Json
@@ -46,6 +48,7 @@ export type Database = {
           created_at?: string
           customer_id?: number
           distributor_id?: string
+          gst_bill_status?: Database["public"]["Enums"]["gst_bill_status"]
           id?: number
           pending_amt?: number
           product_info?: Json
@@ -522,6 +525,12 @@ export type Database = {
     }
     Enums: {
       challan_status: "BILLED" | "REQ_DELETION" | "DELETED"
+      gst_bill_status:
+        | "CREATED"
+        | "PENDING"
+        | "REQUESTED"
+        | "DELETED"
+        | "CANCELLED"
       order_status:
         | "Pending"
         | "Fulfilled"
@@ -658,6 +667,13 @@ export const Constants = {
   public: {
     Enums: {
       challan_status: ["BILLED", "REQ_DELETION", "DELETED"],
+      gst_bill_status: [
+        "CREATED",
+        "PENDING",
+        "REQUESTED",
+        "DELETED",
+        "CANCELLED",
+      ],
       order_status: [
         "Pending",
         "Fulfilled",

@@ -254,6 +254,9 @@ export const ChallanList = () => {
         <Button onClick={() => go({ to: "/challan/req-deletion" })}>
           <PullRequestOutlined /> Req Deletion
         </Button>,
+        <Button onClick={() => go({ to: "/challan/req-gst-bill" })}>
+          <PullRequestOutlined /> Req GST Bill
+        </Button>,
         <Button onClick={() => go({ to: "/challan/deleted" })}>
           <IconTrash /> Deleted
         </Button>,
