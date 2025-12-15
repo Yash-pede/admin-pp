@@ -18,6 +18,7 @@ export type challanProductAddingType = {
 export type ChallanBatchInfo ={
   batch_id: string;
   quantity: number;
+  expiry_date: string;
 }
 export const reportTypes = [
   // {

@@ -22,6 +22,7 @@ export type Database = {
           distributor_id: string
           gst_bill_status: Database["public"]["Enums"]["gst_bill_status"]
           id: number
+          metadata: Json | null
           pending_amt: number
           product_info: Json
           received_amt: number
@@ -36,6 +37,7 @@ export type Database = {
           distributor_id: string
           gst_bill_status?: Database["public"]["Enums"]["gst_bill_status"]
           id?: number
+          metadata?: Json | null
           pending_amt: number
           product_info: Json
           received_amt: number
@@ -50,6 +52,7 @@ export type Database = {
           distributor_id?: string
           gst_bill_status?: Database["public"]["Enums"]["gst_bill_status"]
           id?: number
+          metadata?: Json | null
           pending_amt?: number
           product_info?: Json
           received_amt?: number
@@ -107,6 +110,7 @@ export type Database = {
           email: string | null
           full_name: string
           id: number
+          metadata: Json | null
           pending_amt: number
           phone: string
           received_amt: number
@@ -121,6 +125,7 @@ export type Database = {
           email?: string | null
           full_name: string
           id?: number
+          metadata?: Json | null
           pending_amt?: number
           phone: string
           received_amt?: number
@@ -135,6 +140,7 @@ export type Database = {
           email?: string | null
           full_name?: string
           id?: number
+          metadata?: Json | null
           pending_amt?: number
           phone?: string
           received_amt?: number
